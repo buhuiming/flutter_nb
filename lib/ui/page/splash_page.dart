@@ -18,7 +18,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  int _count = 5;
+  int _count = 3;
   int _status = 0; //0启动页，1广告页，2引导页
   TimerUtil _timerUtil;
   List<String> _guideList = [
@@ -64,7 +64,7 @@ class _SplashPageState extends State<SplashPage> {
     setState(() {
       _status = 1;
     });
-    _timerUtil = new TimerUtil(mTotalTime: 5 * 1000);
+    _timerUtil = new TimerUtil(mTotalTime: 3 * 1000);
     _timerUtil.setOnTimerTickCallback((int tick) {
       double _tick = tick / 1000;
       setState(() {
@@ -176,11 +176,10 @@ class _SplashPageState extends State<SplashPage> {
                       autoStart: false,
                       circular: false,
                       indicator: CircleSwiperIndicator(
-                        radius: 4.0,
-                        padding: EdgeInsets.only(bottom: 30.0),
-                        itemColor: Colors.red,
-                        itemActiveColor: Colors.white
-                      ),
+                          radius: 4.0,
+                          padding: EdgeInsets.only(bottom: 30.0),
+                          itemColor: Colors.red,
+                          itemActiveColor: Colors.white),
                       children: _guideWidgetList)),
           _buildAdWidget(),
           new Offstage(
