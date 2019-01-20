@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/page/main_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/sp_util.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -174,7 +176,8 @@ class _LoginState extends State<Login> {
       FocusScope.of(context).requestFocus(firstTextFieldNode);
       DialogUtil.buildToast("username is 123456.");
       return;
-    } 
+    }
+    SPUtil.putBool(Constants.KEY_LOGIN, true);
 //    Navigator.of(context).pushReplacementNamed('/MainPage');
     operation.show();
   }
