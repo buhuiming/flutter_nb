@@ -18,6 +18,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  bool isLogin = false;
   int _count = 3;
   int _status = 0; //0启动页，1广告页，2引导页
   TimerUtil _timerUtil;
@@ -43,6 +44,11 @@ class _SplashPageState extends State<SplashPage> {
 
   void _checkPage() {
     Observable.just(1).delay(new Duration(milliseconds: 1000)).listen((_) {
+      if(SPUtil.getBool(Constants.KEY_LOGIN) != true){
+        isLogin = false;
+      }else{
+        isLogin = true;
+      }
       if (SPUtil.getBool(Constants.KEY_GUIDE) != true &&
           ObjectUtil.isNotEmpty(_guideList)) {
         //show guide page
@@ -155,7 +161,11 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   _goNext() {
-    Navigator.of(context).pushReplacementNamed('/LoginPage');
+    if(isLogin){
+      Navigator.of(context).pushReplacementNamed('/MainPage');
+    }else {
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    }
   }
 
   @override
