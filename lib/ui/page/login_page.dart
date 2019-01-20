@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
       FocusScope.of(context).requestFocus(firstTextFieldNode);
       DialogUtil.buildToast("username is 123456.");
       return;
-    }
+    } 
 //    Navigator.of(context).pushReplacementNamed('/MainPage');
     operation.show();
   }
