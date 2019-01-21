@@ -178,7 +178,7 @@ class _LoginState extends State<Login> {
       return;
     }
     SPUtil.putBool(Constants.KEY_LOGIN, true);
-//    Navigator.of(context).pushReplacementNamed('/MainPage');
+    Navigator.of(context).pushReplacementNamed('/MainPage');
     operation.show();
   }
 }

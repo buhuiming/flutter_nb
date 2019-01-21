@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/login_page.dart';
+import 'package:flutter_nb/utils/sp_util.dart';
 
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Colors.blue[300],
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'FlutterDemo'),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primaryColor: Colors.blue[300],
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(title: 'FlutterDemo'),
+        routes: {
+          '/LoginPage': (ctx) => LoginPage(),
+        });
   }
 }
 
@@ -54,6 +59,21 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            SizedBox(height: 30.0),
+            RaisedButton(
+              textColor: Colors.white,
+              color: Colors.blue[300],
+              shape: new StadiumBorder(
+                  side: new BorderSide(
+                style: BorderStyle.solid,
+                color: Colors.blue,
+              )),
+              child: Text('退出登录'),
+              onPressed: () {
+                SPUtil.putBool(Constants.KEY_LOGIN, false);
+                Navigator.of(context).pushReplacementNamed('/LoginPage');
+              },
+            )
           ],
         ),
       ),
