@@ -5,7 +5,7 @@ import 'package:flutter_nb/resource/colors.dart';
 *  loading page
 */
 class LoadingScaffold extends StatefulWidget {
-  final bool isShowAtNow;
+  final bool isShowLoadingAtNow;
   final BackPressType backPressType;
   final BackPressCallback backPressCallback;
   final Operation operation;
@@ -13,7 +13,7 @@ class LoadingScaffold extends StatefulWidget {
 
   const LoadingScaffold(
       {Key key,
-      this.isShowAtNow: false,
+      this.isShowLoadingAtNow: false,
       this.backPressType: BackPressType.CLOSE_CURRENT,
       this.backPressCallback,
       @required this.operation,
@@ -28,10 +28,31 @@ class LoadingScaffold extends StatefulWidget {
 }
 
 class LoadingState extends State<LoadingScaffold> {
+  VoidCallback listener;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    widget.operation._notifier = ValueNotifier<bool>(false);
+    if (widget.isShowLoadingAtNow != true) {
+      widget.operation._notifier.value = false;
+    } else {
+      widget.operation._notifier.value = true;
+    }
+    listener = () {
+      setState(() {});
+    };
+    widget.operation._notifier.addListener(listener);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (null != listener) {
+      widget.operation._notifier.removeListener(listener);
+    }
   }
 
   @override
@@ -44,7 +65,7 @@ class LoadingState extends State<LoadingScaffold> {
           child: widget.child,
         ),
         new Offstage(
-          offstage: (widget.isShowAtNow != true || widget.operation.isShow != true),
+          offstage: widget.operation._notifier.value != true,
           child: new Container(
               alignment: Alignment.center,
               color: ColorT.transparent_50,
@@ -72,11 +93,12 @@ class LoadingState extends State<LoadingScaffold> {
                         Text(
                           '玩命加载中...',
                           style: new TextStyle(
-                              fontSize: 17.0,
-                              color: Colors.white,
-                              letterSpacing: 0.8,
-                              fontWeight: FontWeight.normal,
-                              decoration: TextDecoration.none),
+                            fontSize: 17.0,
+                            color: Colors.white,
+                            letterSpacing: 0.8,
+                            fontWeight: FontWeight.normal,
+                            decoration: TextDecoration.none,
+                          ),
                         )
                       ],
                     ),
@@ -96,13 +118,11 @@ enum BackPressType {
 typedef BackPressCallback = Future<void> Function(); //按返回键时触发
 
 class Operation {
-  bool isShow;
-  Operation({this.isShow = false});
+  ValueNotifier<bool> _notifier;
 
-  void show() {
-    isShow = true;
+  void setShowLoading(bool isShow) {
+    _notifier.value = isShow;
   }
-  void hide() {
-    isShow = false;
-  }
+
+  bool get isShow => _notifier.value;
 }

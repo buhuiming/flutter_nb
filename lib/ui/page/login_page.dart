@@ -6,6 +6,7 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
+import 'package:rxdart/rxdart.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -38,8 +39,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new LoadingScaffold(//使用有Loading的widget
+    return new LoadingScaffold(
+      //使用有Loading的widget
       operation: operation,
+      isShowLoadingAtNow: false,
       child: new Scaffold(
         key: _scaffoldkey,
         backgroundColor: Colors.white,
@@ -177,8 +180,12 @@ class _LoginState extends State<Login> {
       DialogUtil.buildToast("username is 123456.");
       return;
     }
-    SPUtil.putBool(Constants.KEY_LOGIN, true);
-    Navigator.of(context).pushReplacementNamed('/MainPage');
-    operation.show();
+    operation.setShowLoading(true);
+    Observable.just(1).delay(new Duration(milliseconds: 3000)).listen((_) {
+      operation.setShowLoading(false);
+      DialogUtil.buildToast('登录成功');
+      SPUtil.putBool(Constants.KEY_LOGIN, true);
+      Navigator.of(context).pushReplacementNamed('/MainPage');
+    });
   }
 }
