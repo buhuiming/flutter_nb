@@ -2,40 +2,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/ui/page/main_page.dart';
-import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:rxdart/rxdart.dart';
 
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     DeviceUtil.setBarStatus(true);
-    return new MaterialApp(
-        title: "登录",
-        theme:
-            ThemeData(primaryColor: Colors.white, platform: TargetPlatform.iOS),
-        home: new Login(),
-        routes: {
-          '/MainPage': (ctx) => MainPage(),
-        });
+    return new Register();
   }
 }
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _LoginState createState() => new _LoginState();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return new _RegisterState();
+  }
 }
 
-class _LoginState extends State<Login> {
-  final _usernameController = TextEditingController(text: '15066668888');
-  final _passwordController = TextEditingController(text: '123456');
+class _RegisterState extends State<Register> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _passwordSureController = TextEditingController();
   FocusNode firstTextFieldNode = FocusNode();
   FocusNode secondTextFieldNode = FocusNode();
+  FocusNode thirdTextFieldNode = FocusNode();
   var _scaffoldkey = new GlobalKey<ScaffoldState>();
   Operation operation = new Operation();
   @override
@@ -55,14 +51,6 @@ class _LoginState extends State<Login> {
             padding: EdgeInsets.symmetric(horizontal: 40.0),
             children: <Widget>[
               SizedBox(height: 60.0),
-              new Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: new Image.asset('assets/images/logo.png',
-                      height: 100.0, width: 100.0),
-                ),
-              ),
-              SizedBox(height: 76.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
                 shadowColor: Colors.blue[100],
@@ -76,11 +64,11 @@ class _LoginState extends State<Login> {
                   maxLines: 1,
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(11), //长度限制11
-                    WhitelistingTextInputFormatter.digitsOnly
+                    WhitelistingTextInputFormatter.digitsOnly,
                   ], //只能输入整数
                   decoration: InputDecoration(
                       labelText: 'Username',
-                      hintText: '15066668888',
+                      hintText: '最大长度为11个数字',
                       prefixIcon: Icon(Icons.phone_android),
                       contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
                       filled: true,
@@ -103,17 +91,50 @@ class _LoginState extends State<Login> {
                 child: new TextField(
                     focusNode: secondTextFieldNode,
                     keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     controller: _passwordController,
                     maxLines: 1,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(18),
                       WhitelistingTextInputFormatter(RegExp(Constants.INPUTFORMATTERS))
                     ],
-                    obscureText: true,
+                    obscureText: false,
                     decoration: InputDecoration(
                         labelText: 'Password',
-                        hintText: '123456',
+                        hintText: '请输入密码',
+                        prefixIcon: Icon(Icons.lock),
+                        contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                        )),
+                    onEditingComplete: () {
+                      FocusScope.of(context).requestFocus(thirdTextFieldNode);
+                    }),
+              ),
+              SizedBox(height: 12.0),
+              new Material(
+                borderRadius: BorderRadius.circular(20.0),
+                shadowColor: Colors.blue[100],
+                color: Colors.blue[100],
+                elevation: 5.0,
+                child: new TextField(
+                    focusNode: thirdTextFieldNode,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    controller: _passwordSureController,
+                    maxLines: 1,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(18),
+                      WhitelistingTextInputFormatter(RegExp(Constants.INPUTFORMATTERS))
+                    ],
+                    obscureText: false,
+                    decoration: InputDecoration(
+                        labelText: 'Confirm password',
+                        hintText: '请确认密码',
                         prefixIcon: Icon(Icons.lock),
                         contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
                         filled: true,
@@ -137,36 +158,21 @@ class _LoginState extends State<Login> {
                   style: BorderStyle.solid,
                   color: Colors.blue,
                 )),
-                child: Text('登录', style: new TextStyle(fontSize: 16.0)),
+                child: Text('立即注册', style: new TextStyle(fontSize: 16.0)),
                 onPressed: () {
-//                  Navigator.pop(context);
                   _checkInput(context, operation);
                 },
               ),
-              new Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new CupertinoPageRoute<void>(
-                            builder: (ctx) => RegisterPage()));
-//                    DialogUtil.buildToast("soss----" + _getPositionY(_MarginKey).toString());
-                  },
-                  child: new Container(
-                      padding: EdgeInsets.only(right: 12.0),
-                      child: Text('没有账号？',
-                          style: new TextStyle(
-                              fontSize: 13.0,
-                              color: Colors.black54,
-                              letterSpacing: 0.6,
-                              fontWeight: FontWeight.normal,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline))),
-                ),
-              ),
             ],
           ),
+        ),
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          title: Text('注册账号'),
         ),
       ),
     );
@@ -176,35 +182,33 @@ class _LoginState extends State<Login> {
     var username = _usernameController.text;
     if (username.isEmpty) {
       FocusScope.of(context).requestFocus(firstTextFieldNode);
-//      DialogUtil.buildSnakeBarByKey( "please enter username.", _scaffoldkey);
       DialogUtil.buildToast("please enter username.");
       return;
     }
     var password = _passwordController.text;
     if (password.isEmpty) {
       FocusScope.of(context).requestFocus(secondTextFieldNode);
-//      DialogUtil.buildSnakeBarByKey( "please enter password.", _scaffoldkey);
       DialogUtil.buildToast("please enter password.");
       return;
     }
 
-    if (username != '15066668888') {
-      FocusScope.of(context).requestFocus(firstTextFieldNode);
-      DialogUtil.buildToast("username is 15066668888.");
+    var passwordSure = _passwordSureController.text;
+    if (passwordSure.isEmpty) {
+      FocusScope.of(context).requestFocus(thirdTextFieldNode);
+      DialogUtil.buildToast("please enter password.");
+      return;
+    }
+    if (password != passwordSure) {
+      FocusScope.of(context).requestFocus(thirdTextFieldNode);
+      DialogUtil.buildToast("please enter the same password.");
       return;
     }
 
-    if (password != '123456') {
-      FocusScope.of(context).requestFocus(firstTextFieldNode);
-      DialogUtil.buildToast("username is 123456.");
-      return;
-    }
     operation.setShowLoading(true);
     Observable.just(1).delay(new Duration(milliseconds: 3000)).listen((_) {
       operation.setShowLoading(false);
-      DialogUtil.buildToast('登录成功');
-      SPUtil.putBool(Constants.KEY_LOGIN, true);
-      Navigator.of(context).pushReplacementNamed('/MainPage');
+      DialogUtil.buildToast('注册成功');
+      Navigator.pop(context);
     });
   }
 }
