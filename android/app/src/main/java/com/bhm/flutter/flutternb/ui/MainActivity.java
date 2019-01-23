@@ -1,9 +1,11 @@
-package com.bhm.flutter.flutternb;
+package com.bhm.flutter.flutternb.ui;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.bhm.flutter.flutternb.plugins.FlutterPlugin;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
@@ -14,6 +16,7 @@ public class MainActivity extends FlutterActivity {
     setStatus();
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
+    FlutterPlugin.registerWith(this);
   }
 
   private void setStatus(){

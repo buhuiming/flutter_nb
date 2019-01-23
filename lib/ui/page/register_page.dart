@@ -5,8 +5,7 @@ import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
-import 'package:flutter_nb/utils/sp_util.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -41,6 +40,10 @@ class _RegisterState extends State<Register> {
       //使用有Loading的widget
       operation: operation,
       isShowLoadingAtNow: false,
+      backPressType: BackPressType.CLOSE_CURRENT,
+      backPressCallback: (backPressType){
+        print('back press and type is ' + backPressType.toString());//点击了返回键
+      },
       child: new Scaffold(
         key: _scaffoldkey,
         backgroundColor: Colors.white,
@@ -96,7 +99,8 @@ class _RegisterState extends State<Register> {
                     maxLines: 1,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(RegExp(Constants.INPUTFORMATTERS))
+                      WhitelistingTextInputFormatter(
+                          RegExp(Constants.INPUTFORMATTERS))
                     ],
                     obscureText: false,
                     decoration: InputDecoration(
@@ -129,7 +133,8 @@ class _RegisterState extends State<Register> {
                     maxLines: 1,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(RegExp(Constants.INPUTFORMATTERS))
+                      WhitelistingTextInputFormatter(
+                          RegExp(Constants.INPUTFORMATTERS))
                     ],
                     obscureText: false,
                     decoration: InputDecoration(
@@ -148,11 +153,11 @@ class _RegisterState extends State<Register> {
                       _checkInput(context, operation);
                     }),
               ),
-              SizedBox(height: 15.0),
+              SizedBox(height: 50.0),
               RaisedButton(
                 textColor: Colors.white,
                 color: Colors.blue[300],
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(12.0),
                 shape: new StadiumBorder(
                     side: new BorderSide(
                   style: BorderStyle.solid,
@@ -205,10 +210,19 @@ class _RegisterState extends State<Register> {
     }
 
     operation.setShowLoading(true);
-    Observable.just(1).delay(new Duration(milliseconds: 3000)).listen((_) {
+    Map<String, String> map = {"username": username, "password": password};
+    InteractNative.goNativeWithValue(
+        InteractNative.methodNames[0], map).then((success){
+          if('success' == success){
+//            operation.setShowLoading(false);
+            DialogUtil.buildToast('注册成功');
+            Navigator.pop(context);
+          }
+    }); //调用原生的方法
+   /* Observable.just(1).delay(new Duration(milliseconds: 6000)).listen((_) {
       operation.setShowLoading(false);
       DialogUtil.buildToast('注册成功');
-      Navigator.pop(context);
-    });
+//      Navigator.pop(context);
+    });*/
   }
 }

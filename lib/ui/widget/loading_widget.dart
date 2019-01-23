@@ -29,6 +29,7 @@ class LoadingScaffold extends StatefulWidget {
 
 class LoadingState extends State<LoadingScaffold> {
   VoidCallback listener;
+  Future<bool> _onWillPop() => new Future.value(false); //禁掉返回按钮和右滑关闭
 
   @override
   void initState() {
@@ -41,9 +42,15 @@ class LoadingState extends State<LoadingScaffold> {
       widget.operation._notifier.value = true;
     }
     listener = () {
-      setState(() {});
+      setState(() {
+        _hideKeyBord();
+      });
     };
     widget.operation._notifier.addListener(listener);
+  }
+
+  void _hideKeyBord(){
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   @override
@@ -66,56 +73,79 @@ class LoadingState extends State<LoadingScaffold> {
         ),
         new Offstage(
           offstage: widget.operation._notifier.value != true,
-          child: new Container(
-              alignment: Alignment.center,
-              color: ColorT.transparent_50,
-              width: double.infinity,
-              height: double.infinity,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: new Container(
-                    alignment: Alignment.center,
-                    color: ColorT.transparent_80,
-                    width: 220.0,
-                    height: 90.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 28.0,
-                          height: 28.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
-                            strokeWidth: 2.5,
-                          ),
-                        ),
-                        SizedBox(width: 15.0),
-                        Text(
-                          '玩命加载中...',
-                          style: new TextStyle(
-                            fontSize: 17.0,
-                            color: Colors.white,
-                            letterSpacing: 0.8,
-                            fontWeight: FontWeight.normal,
-                            decoration: TextDecoration.none,
-                          ),
-                        )
-                      ],
-                    ),
-                  ))),
+          child: widget.operation._notifier.value != true
+              ? _loadingWidget()
+              : _WillPopScopeWidget(), //显示loading，则禁掉返回按钮和右滑关闭
         )
       ],
     );
   }
+
+  Widget _WillPopScopeWidget() {
+    return new WillPopScope(
+        onWillPop: () {
+          if(null != widget.backPressCallback){
+            widget.backPressCallback(widget.backPressType);
+          }
+          if (widget.backPressType == BackPressType.SBLOCK) {
+            _onWillPop();//阻止返回
+          }else if (widget.backPressType == BackPressType.CLOSE_CURRENT) {
+            widget.operation.setShowLoading(false);//关闭当前页
+          }else if (widget.backPressType == BackPressType.CLOSE_PARENT) {
+            Navigator.pop(context);//关闭当前页及当前页的父页
+          }
+        },
+        child: _loadingWidget());
+  }
+
+  Widget _loadingWidget() {
+    return new Container(
+        alignment: Alignment.center,
+        color: ColorT.transparent_50,
+        width: double.infinity,
+        height: double.infinity,
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: new Container(
+              alignment: Alignment.center,
+              color: ColorT.transparent_80,
+              width: 220.0,
+              height: 90.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 28.0,
+                    height: 28.0,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                  SizedBox(width: 15.0),
+                  Text(
+                    '玩命加载中...',
+                    style: new TextStyle(
+                      fontSize: 17.0,
+                      color: Colors.white,
+                      letterSpacing: 0.8,
+                      fontWeight: FontWeight.normal,
+                      decoration: TextDecoration.none,
+                    ),
+                  )
+                ],
+              ),
+            )));
+  }
 }
 
 enum BackPressType {
-  sBLOCK, //阻止返回
+  SBLOCK, //阻止返回
   CLOSE_CURRENT, //关闭当前页
   CLOSE_PARENT //关闭当前页及当前页的父页
 }
 
-typedef BackPressCallback = Future<void> Function(); //按返回键时触发
+typedef BackPressCallback = Future<void> Function(BackPressType); //按返回键时触发
 
 class Operation {
   ValueNotifier<bool> _notifier;

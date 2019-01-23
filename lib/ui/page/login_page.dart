@@ -131,7 +131,7 @@ class _LoginState extends State<Login> {
               RaisedButton(
                 textColor: Colors.white,
                 color: Colors.blue[300],
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(12.0),
                 shape: new StadiumBorder(
                     side: new BorderSide(
                   style: BorderStyle.solid,
@@ -151,7 +151,6 @@ class _LoginState extends State<Login> {
                         context,
                         new CupertinoPageRoute<void>(
                             builder: (ctx) => RegisterPage()));
-//                    DialogUtil.buildToast("soss----" + _getPositionY(_MarginKey).toString());
                   },
                   child: new Container(
                       padding: EdgeInsets.only(right: 12.0),
