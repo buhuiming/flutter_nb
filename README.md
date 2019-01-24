@@ -1,10 +1,10 @@
 # flutter_nb
 
-A new Flutter application.
-
-## The original author([Click here](https://github.com/Sky24n/flutter_wanandroid)).
+一个集成环信IM的Flutter项目。
 
 ## Getting Started
+
+### 原理：原生集成环信IM SDK，利用MethodChannel和EventChannel，进行Flutter与原生的双向交互。
 
 This project is a starting point for a Flutter application.
 
