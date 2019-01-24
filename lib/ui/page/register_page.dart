@@ -6,6 +6,7 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/timer_util.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -28,9 +29,12 @@ class _RegisterState extends State<Register> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordSureController = TextEditingController();
+  final _aController = TextEditingController();
+  Map<String, String> authCodeMap = TimerUtil.getAuthCode();
   FocusNode firstTextFieldNode = FocusNode();
   FocusNode secondTextFieldNode = FocusNode();
   FocusNode thirdTextFieldNode = FocusNode();
+  FocusNode aTextFieldNode = FocusNode();
   var _scaffoldkey = new GlobalKey<ScaffoldState>();
   Operation operation = new Operation();
   @override
@@ -41,8 +45,8 @@ class _RegisterState extends State<Register> {
       operation: operation,
       isShowLoadingAtNow: false,
       backPressType: BackPressType.CLOSE_CURRENT,
-      backPressCallback: (backPressType){
-        print('back press and type is ' + backPressType.toString());//点击了返回键
+      backPressCallback: (backPressType) {
+        print('back press and type is ' + backPressType.toString()); //点击了返回键
       },
       child: new Scaffold(
         key: _scaffoldkey,
@@ -128,7 +132,7 @@ class _RegisterState extends State<Register> {
                 child: new TextField(
                     focusNode: thirdTextFieldNode,
                     keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     controller: _passwordSureController,
                     maxLines: 1,
                     inputFormatters: [
@@ -150,8 +154,40 @@ class _RegisterState extends State<Register> {
                           fontSize: 16.0,
                         )),
                     onEditingComplete: () {
-                      _checkInput(context, operation);
+                      FocusScope.of(context).requestFocus(aTextFieldNode);
                     }),
+              ),
+              SizedBox(height: 12.0),
+              new Material(
+                borderRadius: BorderRadius.circular(20.0),
+                shadowColor: Colors.blue[100],
+                color: Colors.blue[100],
+                elevation: 5.0,
+                child: new TextField(
+                  focusNode: aTextFieldNode,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.done,
+                  controller: _aController,
+                  maxLines: 1,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(11), //长度限制11
+                    WhitelistingTextInputFormatter.digitsOnly,
+                  ], //只能输入整数
+                  decoration: InputDecoration(
+                      labelText: '验证码',
+                      hintText: authCodeMap.keys.elementAt(0),
+                      prefixIcon: Icon(Icons.phone_android),
+                      contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      border: InputBorder.none,
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.0,
+                      )),
+                  onEditingComplete: () =>
+                    _checkInput(context, operation),
+                ),
               ),
               SizedBox(height: 50.0),
               RaisedButton(
@@ -208,18 +244,28 @@ class _RegisterState extends State<Register> {
       DialogUtil.buildToast("please enter the same password.");
       return;
     }
+    var authCode = _aController.text;
+    if(authCode != authCodeMap.values.elementAt(0)){
+      FocusScope.of(context).requestFocus(aTextFieldNode);
+      DialogUtil.buildToast("please enter the correct auth code.");
+      return;
+    }
 
     operation.setShowLoading(true);
     Map<String, String> map = {"username": username, "password": password};
-    InteractNative.goNativeWithValue(
-        InteractNative.methodNames[0], map).then((success){
-          if('success' == success){
-//            operation.setShowLoading(false);
-            DialogUtil.buildToast('注册成功');
-            Navigator.pop(context);
-          }
+    InteractNative.goNativeWithValue(InteractNative.methodNames['register'], map)
+        .then((success) {
+      operation.setShowLoading(false);
+      if (success == true) {
+        DialogUtil.buildToast('注册成功');
+        Navigator.pop(context);
+      } else if (success is String) {
+        DialogUtil.buildToast(success);
+      } else {
+        DialogUtil.buildToast('注册失败');
+      }
     }); //调用原生的方法
-   /* Observable.just(1).delay(new Duration(milliseconds: 6000)).listen((_) {
+    /* Observable.just(1).delay(new Duration(milliseconds: 6000)).listen((_) {
       operation.setShowLoading(false);
       DialogUtil.buildToast('注册成功');
 //      Navigator.pop(context);

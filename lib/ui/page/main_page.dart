@@ -3,6 +3,7 @@ import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -33,6 +34,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Operation operation = new Operation();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _addConnectionListener(); //添加监听
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -78,15 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )),
                 child: Text('退出登录'),
                 onPressed: () {
-                  operation.setShowLoading(true);
-                  Observable.just(1)
-                      .delay(new Duration(milliseconds: 3000))
-                      .listen((_) {
-                    operation.setShowLoading(false);
-                    DialogUtil.buildToast('登出成功');
-                    SPUtil.putBool(Constants.KEY_LOGIN, false);
-                    Navigator.of(context).pushReplacementNamed('/LoginPage');
-                  });
+                  _logOut();
                 },
               )
             ],
@@ -99,5 +99,45 @@ class _MyHomePageState extends State<MyHomePage> {
         ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
+  }
+
+  _logOut() {
+    operation.setShowLoading(true);
+    InteractNative.goNativeWithValue(InteractNative.methodNames['logout'])
+        .then((success) {
+      operation.setShowLoading(false);
+      if (success == true) {
+        DialogUtil.buildToast('登出成功');
+        SPUtil.putBool(Constants.KEY_LOGIN, false);
+        Navigator.of(context).pushReplacementNamed('/LoginPage');
+      } else if (success is String) {
+        DialogUtil.buildToast(success);
+      } else {
+        DialogUtil.buildToast('登出失败');
+      }
+    });
+  }
+
+  _addConnectionListener() {
+    InteractNative.goNativeWithValue(
+            InteractNative.methodNames['connectionListener'])
+        .then((success) {
+      if ('onConnected' == success) {
+        //已连接
+//        DialogUtil.buildToast('已连接');
+      } else if ('user_removed' == success) {
+        //显示帐号已经被移除
+        DialogUtil.buildToast('帐号已经被移除');
+      } else if ('user_login_another_device' == success) {
+        //显示帐号在其他设备登录
+        DialogUtil.buildToast('显示帐号在其他设备登录');
+      } else if ('disconnected_to_service' == success) {
+        //连接不到聊天服务器
+        DialogUtil.buildToast('连接不到聊天服务器');
+      } else if ('no_net' == success) {
+        //当前网络不可用，请检查网络设置
+        DialogUtil.buildToast('当前网络不可用，请检查网络设置');
+      }
+    });
   }
 }

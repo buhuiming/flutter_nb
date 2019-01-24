@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'dart:math';
+
 ///timer callback.(millisUntilFinished 毫秒).
 typedef void OnTimerTickCallback(int millisUntilFinished);
 
@@ -109,4 +111,23 @@ class TimerUtil {
   void setOnTimerTickCallback(OnTimerTickCallback callback) {
     _onTimerTickCallback = callback;
   }
+
+  static Map<String, String> getAuthCode(){
+    Map<String, String> map = new Map();
+    int d = Random.secure().nextInt(2);
+    int a = Random.secure().nextInt(999);
+    int b = Random.secure().nextInt(99);
+    int c = Random.secure().nextInt(9999);
+    if(d == 1){
+      int value = a * b + c;
+      String key = '$a × $b + $c = ?';
+      map[key] = value.toString();
+    }else{
+      int value = a + b + c;
+      String key = '$a + $b + $c = ?';
+      map[key] = value.toString();
+    }
+    return map;
+  }
+
 }

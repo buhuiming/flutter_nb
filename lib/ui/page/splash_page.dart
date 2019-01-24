@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/file_util.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:flutter_nb/utils/timer_util.dart';
@@ -162,10 +163,15 @@ class _SplashPageState extends State<SplashPage> {
 
   _goNext() {
     if(isLogin){
+      _autoLogin();
       Navigator.of(context).pushReplacementNamed('/MainPage');
     }else {
       Navigator.of(context).pushReplacementNamed('/LoginPage');
     }
+  }
+
+  _autoLogin(){
+    InteractNative.goNativeWithValue(InteractNative.methodNames['autoLogin']);
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -198,12 +199,27 @@ class _LoginState extends State<Login> {
       DialogUtil.buildToast("username is 123456.");
       return;
     }
-    operation.setShowLoading(true);
+    /*operation.setShowLoading(true);
     Observable.just(1).delay(new Duration(milliseconds: 3000)).listen((_) {
       operation.setShowLoading(false);
       DialogUtil.buildToast('登录成功');
       SPUtil.putBool(Constants.KEY_LOGIN, true);
       Navigator.of(context).pushReplacementNamed('/MainPage');
+    });*/
+    operation.setShowLoading(true);
+    Map<String, String> map = {"username": username, "password": password};
+    InteractNative.goNativeWithValue(InteractNative.methodNames['login'], map)
+        .then((success) {
+      operation.setShowLoading(false);
+      if (success == true) {
+        DialogUtil.buildToast('登录成功');
+        SPUtil.putBool(Constants.KEY_LOGIN, true);
+        Navigator.of(context).pushReplacementNamed('/MainPage');
+      } else if (success is String) {
+        DialogUtil.buildToast(success);
+      } else {
+        DialogUtil.buildToast('登录失败');
+      }
     });
   }
 }

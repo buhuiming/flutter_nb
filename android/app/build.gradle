@@ -48,6 +48,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    /*环信IM集成*/
+    //use legacy for android 6.0
+    useLibrary 'org.apache.http.legacy'
 }
 
 flutter {
@@ -56,7 +60,14 @@ flutter {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
+    //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile 'com.android.support:appcompat-v7:27.1.1'
+
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    /*环信IM集成*/
+    //Optional compile for GCM (Google Cloud Messaging).
+    implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+    implementation 'com.hyphenate:hyphenate-sdk:3.3.0'
 }

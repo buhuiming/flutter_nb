@@ -8,16 +8,16 @@ import io.flutter.plugin.common.MethodChannel;
 /**
  * flutter与原生双向交互的插件
  */
-public class FlutterPlugin implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler{
+public class FlutterPlugins implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler{
 
     private FlutterActivity activity;
 
-    private FlutterPlugin(FlutterActivity activity) {
+    private FlutterPlugins(FlutterActivity activity) {
         this.activity = activity;
     }
 
     public static void registerWith(FlutterActivity activity) {
-        FlutterPlugin instance = new FlutterPlugin(activity);
+        FlutterPlugins instance = new FlutterPlugins(activity);
         //flutter调用原生
         MethodChannel channel = new MethodChannel(activity.registrarFor(DealMethodCall.channels_flutter_to_native)
                 .messenger(), DealMethodCall.channels_flutter_to_native);
