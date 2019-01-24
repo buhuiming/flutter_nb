@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
@@ -32,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  StreamSubscription _subscription = null;
   int _counter = 0;
   Operation operation = new Operation();
 
@@ -119,25 +122,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _addConnectionListener() {
-    InteractNative.goNativeWithValue(
-            InteractNative.methodNames['connectionListener'])
-        .then((success) {
-      if ('onConnected' == success) {
-        //已连接
+    if (null == _subscription) {
+      _subscription = InteractNative.dealNativeWithValue()
+          .listen(_onEvent, onError: _onError);
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (_subscription != null) {
+      _subscription.cancel();
+    }
+  }
+
+  void _onEvent(Object event) {
+    if ('onConnected' == event) {
+      //已连接
 //        DialogUtil.buildToast('已连接');
-      } else if ('user_removed' == success) {
-        //显示帐号已经被移除
-        DialogUtil.buildToast('帐号已经被移除');
-      } else if ('user_login_another_device' == success) {
-        //显示帐号在其他设备登录
-        DialogUtil.buildToast('显示帐号在其他设备登录');
-      } else if ('disconnected_to_service' == success) {
-        //连接不到聊天服务器
-        DialogUtil.buildToast('连接不到聊天服务器');
-      } else if ('no_net' == success) {
-        //当前网络不可用，请检查网络设置
-        DialogUtil.buildToast('当前网络不可用，请检查网络设置');
-      }
-    });
+    } else if ('user_removed' == event) {
+      //显示帐号已经被移除
+      DialogUtil.buildToast('帐号已经被移除');
+    } else if ('user_login_another_device' == event) {
+      //显示帐号在其他设备登录
+      DialogUtil.buildToast('帐号在其他设备登录');
+      SPUtil.putBool(Constants.KEY_LOGIN, false);
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    } else if ('disconnected_to_service' == event) {
+      //连接不到聊天服务器
+      DialogUtil.buildToast('连接不到聊天服务器');
+    } else if ('no_net' == event) {
+      //当前网络不可用，请检查网络设置
+      DialogUtil.buildToast('当前网络不可用，请检查网络设置');
+    }
+  }
+
+  void _onError(Object error) {
+    DialogUtil.buildToast(error.toString());
   }
 }

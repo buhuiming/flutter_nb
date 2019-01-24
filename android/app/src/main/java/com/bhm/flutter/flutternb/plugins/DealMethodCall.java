@@ -28,7 +28,6 @@ class DealMethodCall {
             put("login", "login");
             put("logout", "logout");
             put("autoLogin", "autoLogin");
-            put("connectionListener", "connectionListener");
         }
     };
 
@@ -69,9 +68,6 @@ class DealMethodCall {
         }else if(methodNames.get("autoLogin").equals(methodCall.method)){//自动登录
             EMClient.getInstance().groupManager().loadAllGroups();
             EMClient.getInstance().chatManager().loadAllConversations();
-        }else if(methodNames.get("connectionListener").equals(methodCall.method)){//添加IM状态监听
-            //注册一个监听连接状态的listener
-            EMClient.getInstance().addConnectionListener(new ConnectionListener(activity, result));
         }
     }
 
@@ -81,7 +77,8 @@ class DealMethodCall {
      * @param eventSink eventSink
      */
     static void onListen(FlutterActivity activity, Object o, EventChannel.EventSink eventSink){
-
+        //注册一个监听连接状态的listener
+        EMClient.getInstance().addConnectionListener(new ConnectionListener(activity, eventSink));
     }
 
     /**原生调用flutter方法的回调

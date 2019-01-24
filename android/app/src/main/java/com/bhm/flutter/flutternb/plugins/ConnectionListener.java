@@ -5,38 +5,38 @@ import com.hyphenate.EMError;
 import com.hyphenate.util.NetUtils;
 
 import io.flutter.app.FlutterActivity;
-import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.EventChannel;
 
 public class ConnectionListener implements EMConnectionListener {
 
     private FlutterActivity mActivity;
-    private MethodChannel.Result mResult;
+    private EventChannel.EventSink mSink;
 
-    ConnectionListener(FlutterActivity activity, MethodChannel.Result result){
+    ConnectionListener(FlutterActivity activity, EventChannel.EventSink sink){
         mActivity = activity;
-        mResult = result;
+        mSink = sink;
     }
 
     @Override
     public void onConnected() {
-        mResult.success("onConnected");
+        mSink.success("onConnected");
     }
     @Override
     public void onDisconnected(final int error) {
         if(error == EMError.USER_REMOVED){
             // 显示帐号已经被移除
-            mResult.success("user_removed");
+            mSink.success("user_removed");
         }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
             // 显示帐号在其他设备登录
-            mResult.success("user_login_another_device");
+            mSink.success("user_login_another_device");
         } else {
             if (NetUtils.hasNetwork(mActivity)) {
                 //连接不到聊天服务器
-                mResult.success("disconnected_to_service");
+                mSink.success("disconnected_to_service");
             }
             else {
                 //当前网络不可用，请检查网络设置
-                mResult.success("no_net");
+                mSink.success("no_net");
             }
         }
     }
