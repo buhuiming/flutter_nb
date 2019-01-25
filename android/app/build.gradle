@@ -42,10 +42,20 @@ android {
     }
 
     buildTypes {
+        //flutter在Android平台下会默认生成arm-v7架构的的so库
+        //官方注释目前flutter只支持在debug模式下生成x86的so
+        debug{
+            ndk {
+                abiFilters 'x86', 'arm64-v8a'
+            }
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
         }
     }
 
