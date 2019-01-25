@@ -6,6 +6,8 @@
 
 ### 原理：原生集成环信IM SDK，利用MethodChannel和EventChannel，进行Flutter与原生的双向交互。
 
+### 1、[Flutter自定义加载圈](https://www.jianshu.com/p/17e256bc6230)
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
