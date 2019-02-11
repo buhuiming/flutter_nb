@@ -4,6 +4,6 @@
 
 ## Getting Started
 
->![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/1.jpg)</br>
->![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/2.jpg)</br>
->![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/3.jpg)</br>
+>![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/1.png)</br>
+>![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/2.png)</br>
+>![image](https://github.com/buhuiming/flutter_nb/tree/master/screens/3.png)</br>
