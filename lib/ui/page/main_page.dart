@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
+import 'package:flutter_nb/ui/page/message_page.dart';
+import 'package:flutter_nb/ui/page/mine_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
-import 'package:rxdart/rxdart.dart';
 
 class MainPage extends StatelessWidget {
   @override
@@ -35,26 +37,93 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription _subscription = null;
-  int _counter = 0;
   Operation operation = new Operation();
+
+  int _tabIndex = 0;
+  var tabImages;
+  var appBarTitles = ['消息', '朋友', '发现', '我的'];
+  /*
+   * 存放4个页面，跟fragmentList一样
+   */
+  var _pageList;
+
+  /*
+   * 根据选择获得对应的normal或是press的icon
+   */
+  Image getTabIcon(int curIndex) {
+    if (curIndex == _tabIndex) {
+      return tabImages[curIndex][1];
+    }
+    return tabImages[curIndex][0];
+  }
+
+  /*
+   * 获取bottomTab的颜色和文字
+   */
+  Text getTabTitle(int curIndex) {
+    if (curIndex == _tabIndex) {
+      return new Text(appBarTitles[curIndex],
+          style: new TextStyle(fontSize: 14.0, color: const Color(0xff1495eb)));
+    } else {
+      return new Text(appBarTitles[curIndex],
+          style: new TextStyle(fontSize: 14.0, color: const Color(0xff929292)));
+    }
+  }
+
+  /*
+   * 根据image路径获取图片
+   */
+  Image getTabImage(path) {
+    return new Image.asset(path, width: 24.0, height: 24.0);
+  }
+
+  void initData() {
+    /*
+     * 初始化选中和未选中的icon
+     */
+    tabImages = [
+      [
+        getTabImage(
+            FileUtil.getImagePath('message', dir: 'main_page', format: 'png')),
+        getTabImage(
+            FileUtil.getImagePath('message_c', dir: 'main_page', format: 'png'))
+      ],
+      [
+        getTabImage(
+            FileUtil.getImagePath('friends', dir: 'main_page', format: 'png')),
+        getTabImage(
+            FileUtil.getImagePath('friends_c', dir: 'main_page', format: 'png'))
+      ],
+      [
+        getTabImage(
+            FileUtil.getImagePath('more', dir: 'main_page', format: 'png')),
+        getTabImage(
+            FileUtil.getImagePath('more_c', dir: 'main_page', format: 'png'))
+      ],
+      [
+        getTabImage(
+            FileUtil.getImagePath('mine', dir: 'main_page', format: 'png')),
+        getTabImage(
+            FileUtil.getImagePath('mine_c', dir: 'main_page', format: 'png'))
+      ]
+    ];
+    /*
+     * 4个子界面
+     */
+    _pageList = [
+      new MessagePage(operation: operation, rootContext: context),
+      new MessagePage(operation: operation, rootContext: context),
+      new MessagePage(operation: operation, rootContext: context),
+      new MinePage(operation: operation, rootContext: context)
+    ];
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initData();
     _addConnectionListener(); //添加监听
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _MyCounter() {
-    setState(() {
-      _counter = _counter * 2;
-    });
   }
 
   @override
@@ -64,61 +133,30 @@ class _MyHomePageState extends State<MyHomePage> {
       operation: operation,
       isShowLoadingAtNow: false,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '点击的次数：',
-              ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.display1,
-              ),
-              SizedBox(height: 30.0),
-              RaisedButton(
-                textColor: Colors.white,
-                color: Colors.blue[300],
-                shape: new StadiumBorder(
-                    side: new BorderSide(
-                  style: BorderStyle.solid,
-                  color: Colors.blue,
-                )),
-                child: Text('退出登录'),
-                onPressed: () {
-                  _logOut();
-                },
-              )
+          body: _pageList[_tabIndex],
+          bottomNavigationBar: new BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              new BottomNavigationBarItem(
+                  icon: getTabIcon(0), title: getTabTitle(0)),
+              new BottomNavigationBarItem(
+                  icon: getTabIcon(1), title: getTabTitle(1)),
+              new BottomNavigationBarItem(
+                  icon: getTabIcon(2), title: getTabTitle(2)),
+              new BottomNavigationBarItem(
+                  icon: getTabIcon(3), title: getTabTitle(3)),
             ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: '看什么看',
-          child: Icon(Icons.add),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+            type: BottomNavigationBarType.fixed,
+            //默认选中首页
+            currentIndex: _tabIndex,
+            iconSize: 24.0,
+            //点击事件
+            onTap: (index) {
+              setState(() {
+                _tabIndex = index;
+              });
+            },
+          )),
     );
-  }
-
-  _logOut() {
-    operation.setShowLoading(true);
-    InteractNative.goNativeWithValue(InteractNative.methodNames['logout'])
-        .then((success) {
-      operation.setShowLoading(false);
-      if (success == true) {
-        DialogUtil.buildToast('登出成功');
-        SPUtil.putBool(Constants.KEY_LOGIN, false);
-        Navigator.of(context).pushReplacementNamed('/LoginPage');
-      } else if (success is String) {
-        DialogUtil.buildToast(success);
-      } else {
-        DialogUtil.buildToast('登出失败');
-      }
-    });
   }
 
   _addConnectionListener() {

@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:rxdart/rxdart.dart';
@@ -59,7 +60,7 @@ class _LoginState extends State<Login> {
               new Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: new Image.asset('assets/images/logo.png',
+                  child: new Image.asset(FileUtil.getImagePath('logo', dir:'splash', format: 'png'),
                       height: 100.0, width: 100.0),
                 ),
               ),

@@ -24,10 +24,10 @@ class _SplashPageState extends State<SplashPage> {
   int _status = 0; //0启动页，1广告页，2引导页
   TimerUtil _timerUtil;
   List<String> _guideList = [
-    FileUtil.getImagePath('guide1'),
-    FileUtil.getImagePath('guide2'),
-    FileUtil.getImagePath('guide3'),
-    FileUtil.getImagePath('guide4')
+    FileUtil.getImagePath('guide1', dir:'splash'),
+    FileUtil.getImagePath('guide2', dir:'splash'),
+    FileUtil.getImagePath('guide3', dir:'splash'),
+    FileUtil.getImagePath('guide4', dir:'splash')
   ];
   List<Widget> _guideWidgetList = new List();
 
@@ -130,7 +130,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Widget _buildSplashBg() {
     return new Image.asset(
-      FileUtil.getImagePath('splash_bg'),
+      FileUtil.getImagePath('splash_bg', dir:'splash'),
       width: double.infinity,
       fit: BoxFit.fill,
       height: double.infinity,
