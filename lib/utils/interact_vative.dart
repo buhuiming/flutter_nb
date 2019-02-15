@@ -33,7 +33,7 @@ class InteractNative {
   }
 
   /*
-  * 调用原生的方法（带参）
+  * 原生回调的方法（带参）
   */
   static Stream<dynamic> dealNativeWithValue(){
     Stream<dynamic> stream = native_to_flutter.receiveBroadcastStream();

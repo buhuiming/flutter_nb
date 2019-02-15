@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
+import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
+/*
+*  我的
+*/
 class MinePage extends StatelessWidget {
   MinePage({Key key, this.operation, this.rootContext}) : super(key: key);
   final Operation operation;
@@ -14,13 +18,11 @@ class MinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
         theme: ThemeData(
           primaryColor: Colors.blue[300],
           primarySwatch: Colors.blue,
         ),
         home: Mine(
-          title: 'FlutterDemo',
           operation: operation,
           rootContext: rootContext,
         ),
@@ -59,9 +61,7 @@ class _MineState extends State<Mine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: MoreWidgets.buildAppBar(context, '我的'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

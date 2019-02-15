@@ -2,22 +2,27 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/main/found_page.dart';
+import 'package:flutter_nb/ui/page/main/friends_page.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
-import 'package:flutter_nb/ui/page/message_page.dart';
-import 'package:flutter_nb/ui/page/mine_page.dart';
+import 'package:flutter_nb/ui/page/main/message_page.dart';
+import 'package:flutter_nb/ui/page/main/mine_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
+/*
+*  主页
+*/
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: Colors.blue[300],
+          primaryColor: Colors.white,
           primarySwatch: Colors.blue,
         ),
         home: MyHomePage(title: 'FlutterDemo'),
@@ -63,10 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Text getTabTitle(int curIndex) {
     if (curIndex == _tabIndex) {
       return new Text(appBarTitles[curIndex],
-          style: new TextStyle(fontSize: 14.0, color: const Color(0xff1495eb)));
+          style: new TextStyle(fontSize: 13.0, color: const Color(0xff1495eb)));
     } else {
       return new Text(appBarTitles[curIndex],
-          style: new TextStyle(fontSize: 14.0, color: const Color(0xff929292)));
+          style: new TextStyle(fontSize: 13.0, color: const Color(0xff929292)));
     }
   }
 
@@ -74,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
    * 根据image路径获取图片
    */
   Image getTabImage(path) {
-    return new Image.asset(path, width: 24.0, height: 24.0);
+    return new Image.asset(path, width: 22.0, height: 22.0);
   }
 
   void initData() {
@@ -112,8 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
      */
     _pageList = [
       new MessagePage(operation: operation, rootContext: context),
-      new MessagePage(operation: operation, rootContext: context),
-      new MessagePage(operation: operation, rootContext: context),
+      new FriendsPage(operation: operation, rootContext: context),
+      new FoundPage(operation: operation, rootContext: context),
       new MinePage(operation: operation, rootContext: context)
     ];
   }
@@ -148,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
             type: BottomNavigationBarType.fixed,
             //默认选中首页
             currentIndex: _tabIndex,
-            iconSize: 24.0,
+            iconSize: 22.0,
             //点击事件
             onTap: (index) {
               setState(() {

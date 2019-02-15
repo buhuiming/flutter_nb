@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
-
-class MessagePage extends StatefulWidget {
-  MessagePage({Key key, this.operation, this.rootContext}) : super(key: key);
+import 'package:flutter_nb/ui/widget/more_widgets.dart';
+/*
+*  发现
+*/
+class FoundPage extends StatefulWidget {
+  FoundPage({Key key, this.operation, this.rootContext}) : super(key: key);
   final Operation operation;
   final BuildContext rootContext;
 
@@ -10,11 +13,11 @@ class MessagePage extends StatefulWidget {
   State<StatefulWidget> createState() {
     // TODO: implement createState
 
-    return new Message();
+    return new Found();
   }
 }
 
-class Message extends State<MessagePage> {
+class Found extends State<FoundPage> {
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -22,7 +25,7 @@ class Message extends State<MessagePage> {
 
   Widget layout(BuildContext context) {
     return new Scaffold(
-      appBar: buildAppBar(context),
+      appBar: MoreWidgets.buildAppBar(context, '发现'),
       body: new ListView(
         children: <Widget>[
           header(context),
@@ -33,10 +36,6 @@ class Message extends State<MessagePage> {
         ],
       ),
     );
-  }
-
-  Widget buildAppBar(BuildContext context) {
-    return new AppBar(title: const Text('首页'));
   }
 
   Widget header(BuildContext context) {

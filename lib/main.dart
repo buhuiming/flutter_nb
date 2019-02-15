@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
-import 'package:flutter_nb/ui/page/main_page.dart';
+import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/splash_page.dart';
 
 void main() => runApp(MyApp());

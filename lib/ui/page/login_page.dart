@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/ui/page/main_page.dart';
+import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/device_util.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
-import 'package:rxdart/rxdart.dart';
 
 class LoginPage extends StatelessWidget {
   @override
