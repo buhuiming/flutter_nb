@@ -29,19 +29,15 @@ class Friends extends State<FriendsPage> {
       appBar: MoreWidgets.buildAppBar(context, '朋友'),
       body: new ListView(
         children: <Widget>[
-          header(context),
-          header(context),
-          header(context),
-          header(context),
-          header(context),
+          SizedBox(
+            height: 10.0,
+          ),
+          MoreWidgets.buildListViewItem('logo', '新的朋友', dir: 'splash'),
+          MoreWidgets.buildListViewItem('group_chat', '群聊'),
+          MoreWidgets.buildListViewItem('collection', '收藏'),
+          MoreWidgets.buildListViewItem('official_accounts', '公众号'),
         ],
       ),
-    );
-  }
-
-  Widget header(BuildContext context) {
-    return new Image.network(
-      'http://i2.yeyou.itc.cn/2014/huoying/hd_20140925/hyimage06.jpg',
     );
   }
 }

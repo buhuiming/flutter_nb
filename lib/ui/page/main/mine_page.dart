@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
@@ -10,40 +9,21 @@ import 'package:flutter_nb/utils/sp_util.dart';
 /*
 *  我的
 */
-class MinePage extends StatelessWidget {
-  MinePage({Key key, this.operation, this.rootContext}) : super(key: key);
-  final Operation operation;
-  final BuildContext rootContext;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.blue[300],
-          primarySwatch: Colors.blue,
-        ),
-        home: Mine(
-          operation: operation,
-          rootContext: rootContext,
-        ),
-        routes: {
-          '/LoginPage': (ctx) => LoginPage(),
-        });
-  }
-}
-
-class Mine extends StatefulWidget {
-  Mine({Key key, this.title, this.operation, this.rootContext})
+class MinePage extends StatefulWidget {
+  MinePage({Key key, this.title, this.operation, this.rootContext})
       : super(key: key);
   final String title;
   final Operation operation;
   final BuildContext rootContext;
 
   @override
-  _MineState createState() => _MineState();
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _MineState();
+  }
 }
 
-class _MineState extends State<Mine> {
+class _MineState extends State<MinePage> {
   int _counter = 0;
 
   @override

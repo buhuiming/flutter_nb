@@ -1,5 +1,7 @@
 package com.bhm.flutter.flutternb.plugins;
 
+import android.content.Intent;
+
 import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.bhm.flutter.flutternb.util.EMClientUtils;
 import com.hyphenate.chat.EMClient;
@@ -28,6 +30,7 @@ class DealMethodCall {
             put("login", "login");
             put("logout", "logout");
             put("autoLogin", "autoLogin");
+            put("backPress", "backPress");
         }
     };
 
@@ -68,6 +71,15 @@ class DealMethodCall {
         }else if(methodNames.get("autoLogin").equals(methodCall.method)){//自动登录
             EMClient.getInstance().groupManager().loadAllGroups();
             EMClient.getInstance().chatManager().loadAllConversations();
+        }else if(methodNames.get("backPress").equals(methodCall.method)){//返回键返回桌面
+            try {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
+                intent.addCategory(Intent.CATEGORY_HOME);
+                activity.startActivity(intent);
+            }catch (Exception e){
+                activity.finish();
+            }
         }
     }
 

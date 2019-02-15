@@ -15,7 +15,7 @@ class InteractNative {
     'login': 'login',
     'logout': 'logout',
     'autoLogin': 'autoLogin',
-    'connectionListener': 'connectionListener',
+    'backPress': 'backPress',
   };
 
   /*

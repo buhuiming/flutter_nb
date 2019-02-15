@@ -134,34 +134,42 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new LoadingScaffold(
-      //使用有Loading的widget
-      operation: operation,
-      isShowLoadingAtNow: false,
-      child: Scaffold(
-          body: _pageList[_tabIndex],
-          bottomNavigationBar: new BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              new BottomNavigationBarItem(
-                  icon: getTabIcon(0), title: getTabTitle(0)),
-              new BottomNavigationBarItem(
-                  icon: getTabIcon(1), title: getTabTitle(1)),
-              new BottomNavigationBarItem(
-                  icon: getTabIcon(2), title: getTabTitle(2)),
-              new BottomNavigationBarItem(
-                  icon: getTabIcon(3), title: getTabTitle(3)),
-            ],
-            type: BottomNavigationBarType.fixed,
-            //默认选中首页
-            currentIndex: _tabIndex,
-            iconSize: 22.0,
-            //点击事件
-            onTap: (index) {
-              setState(() {
-                _tabIndex = index;
-              });
-            },
-          )),
-    );
+        //使用有Loading的widget
+        operation: operation,
+        isShowLoadingAtNow: false,
+        child: new WillPopScope(
+          onWillPop: () {
+            _backPress(); //物理返回键，返回到桌面
+          },
+          child: Scaffold(
+              body: _pageList[_tabIndex],
+              bottomNavigationBar: new BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  new BottomNavigationBarItem(
+                      icon: getTabIcon(0), title: getTabTitle(0)),
+                  new BottomNavigationBarItem(
+                      icon: getTabIcon(1), title: getTabTitle(1)),
+                  new BottomNavigationBarItem(
+                      icon: getTabIcon(2), title: getTabTitle(2)),
+                  new BottomNavigationBarItem(
+                      icon: getTabIcon(3), title: getTabTitle(3)),
+                ],
+                type: BottomNavigationBarType.fixed,
+                //默认选中首页
+                currentIndex: _tabIndex,
+                iconSize: 22.0,
+                //点击事件
+                onTap: (index) {
+                  setState(() {
+                    _tabIndex = index;
+                  });
+                },
+              )),
+        ));
+  }
+
+  _backPress() {
+    InteractNative.goNativeWithValue(InteractNative.methodNames['backPress']);
   }
 
   _addConnectionListener() {
