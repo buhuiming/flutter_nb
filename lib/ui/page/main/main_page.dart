@@ -194,10 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
 //        DialogUtil.buildToast('已连接');
     } else if ('user_removed' == event) {
       //显示帐号已经被移除
-      DialogUtil.buildToast('帐号已经被移除');
+      DialogUtil.buildToast('flutter帐号已经被移除');
     } else if ('user_login_another_device' == event) {
       //显示帐号在其他设备登录
-      DialogUtil.buildToast('帐号在其他设备登录');
+      DialogUtil.buildToast('flutter帐号在其他设备登录');
       SPUtil.putBool(Constants.KEY_LOGIN, false);
       Navigator.of(context).pushReplacementNamed('/LoginPage');
     } else if ('disconnected_to_service' == event) {
