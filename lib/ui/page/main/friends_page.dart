@@ -31,19 +31,35 @@ class Friends extends State<FriendsPage> {
       appBar: MoreWidgets.buildAppBar(context, '朋友'),
       body: new ListView(
         children: <Widget>[
-          SizedBox(
-            height: 10.0,
-          ),
-          new GestureDetector(
-            child: MoreWidgets.buildListViewItem('logo', '新的朋友', dir: 'splash'),
+          new InkWell(
+            //点击带波纹的控件
             onTap: () {
               Navigator.push(context,
                   new CupertinoPageRoute<void>(builder: (ctx) => SearchPage()));
             },
+            child: MoreWidgets.buildListViewItem('logo', '新的朋友', dir: 'splash'),
           ),
-          MoreWidgets.buildListViewItem('group_chat', '群聊'),
-          MoreWidgets.buildListViewItem('collection', '收藏'),
-          MoreWidgets.buildListViewItem('official_accounts', '公众号'),
+          new InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  new CupertinoPageRoute<void>(builder: (ctx) => SearchPage()));
+            },
+            child: MoreWidgets.buildListViewItem('group_chat', '群聊'),
+          ),
+          new InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  new CupertinoPageRoute<void>(builder: (ctx) => SearchPage()));
+            },
+            child: MoreWidgets.buildListViewItem('collection', '收藏'),
+          ),
+          new InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  new CupertinoPageRoute<void>(builder: (ctx) => SearchPage()));
+            },
+            child: MoreWidgets.buildListViewItem('official_accounts', '公众号'),
+          ),
         ],
       ),
     );

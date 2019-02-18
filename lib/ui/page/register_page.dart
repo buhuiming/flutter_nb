@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
+import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
@@ -207,13 +208,16 @@ class _RegisterState extends State<Register> {
             ],
           ),
         ),
-        appBar: AppBar(
+        appBar: MoreWidgets.buildAppBar(
+          context,
+          '立即注册',
+          centerTitle: true,
+          elevation: 2.0,
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text('注册账号'),
         ),
       ),
     );

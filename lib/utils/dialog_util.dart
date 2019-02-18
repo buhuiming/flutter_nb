@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class DialogUtil {
@@ -9,7 +10,7 @@ class DialogUtil {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIos: 1,
-        backgroundColor: ColorT.app_main,
+        backgroundColor: ObjectUtil.getThemeSwatchColor(),
         textColor: Colors.white);
   }
 
@@ -17,7 +18,7 @@ class DialogUtil {
     final snackBar = new SnackBar(
         content: new Text(str),
         duration: Duration(milliseconds: 1500),
-        backgroundColor: Colors.blue[300]);
+        backgroundColor: ObjectUtil.getThemeSwatchColor());
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
@@ -26,7 +27,7 @@ class DialogUtil {
     final snackBar = new SnackBar(
         content: new Text(str),
         duration: Duration(milliseconds: 1500),
-        backgroundColor: Colors.blue[300]);
+        backgroundColor: ObjectUtil.getThemeSwatchColor());
     key.currentState.showSnackBar(snackBar);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/splash_page.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
-            primaryColor: ColorT.app_main,
-            accentColor: ColorT.app_main,
-            indicatorColor: Colors.white),
+            primaryColor: ObjectUtil.getThemeColor(),
+            accentColor: ObjectUtil.getThemeSwatchColor(color: 'lightBlue'),
+            indicatorColor: ObjectUtil.getThemeColor()),
         home: new SplashPage(),
         routes: {
           '/LoginPage': (ctx) => LoginPage(),

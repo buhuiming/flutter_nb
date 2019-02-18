@@ -9,6 +9,7 @@ import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
 class LoginPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class LoginPage extends StatelessWidget {
     return new MaterialApp(
         title: "登录",
         theme:
-            ThemeData(primaryColor: Colors.white, platform: TargetPlatform.iOS),
+            ThemeData(primaryColor: ObjectUtil.getThemeColor(color: 'white'), platform: TargetPlatform.iOS),
         home: new Login(),
         routes: {
           '/MainPage': (ctx) => MainPage(),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/main/found_page.dart';
 import 'package:flutter_nb/ui/page/main/friends_page.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
 /*
@@ -22,8 +24,8 @@ class MainPage extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: Colors.white,
-          primarySwatch: Colors.blue,
+          primaryColor: ObjectUtil.getThemeColor(),
+          primarySwatch: ObjectUtil.getThemeSwatchColor(),
         ),
         home: MyHomePage(title: 'FlutterDemo'),
         routes: {
@@ -68,10 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Text getTabTitle(int curIndex) {
     if (curIndex == _tabIndex) {
       return new Text(appBarTitles[curIndex],
-          style: new TextStyle(fontSize: 13.0, color: const Color(0xff1495eb)));
+          style: new TextStyle(fontSize: 13.0, color: ObjectUtil.getThemeSwatchColor()));
     } else {
       return new Text(appBarTitles[curIndex],
-          style: new TextStyle(fontSize: 13.0, color: const Color(0xff929292)));
+          style: new TextStyle(fontSize: 13.0, color: ColorT.text_gray));
     }
   }
 
