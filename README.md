@@ -10,6 +10,8 @@
 
 ### 2、[Flutter爬坑过程小总结](https://www.jianshu.com/p/08dded076f59)
 
+### 3、[Flutter自定义带搜索框的AppBar](https://www.jianshu.com/p/03f5db68567b)
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
