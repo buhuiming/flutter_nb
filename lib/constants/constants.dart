@@ -5,4 +5,5 @@ class Constants{
   static const String KEY_LOGIN = 'key_login';//false: show login page;
   static const String URL_ADVERTISING = 'https://raw.githubusercontent.com/Sky24n/LDocuments/master/AppImgs/flutter_common_utils_a.png';
   static const String INPUTFORMATTERS = '[a-zA-Z0-9!.?,~@#%^&*()]';
+  static const String FUNCTION_SEARCH_FRIENDS = "function_Search_friends";//搜索功能-查找朋友
 }

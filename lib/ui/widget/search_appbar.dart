@@ -15,6 +15,7 @@ class SearchAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final IconData prefixIcon;
   final List<TextInputFormatter> inputFormatters;
   final VoidCallback onEditingComplete;
+  final OnChangedCallback onChangedCallback;
 
   const SearchAppBarWidget(
       {Key key,
@@ -26,6 +27,7 @@ class SearchAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
       this.controller,
       this.inputFormatters,
       this.onEditingComplete,
+      this.onChangedCallback,
       this.prefixIcon: Icons.search})
       : super(key: key);
 
@@ -82,6 +84,9 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
                               child: _hasdeleteIcon
                                   ? new InkWell(
                                       onTap: (() {
+                                        if(null != widget.onChangedCallback) {
+                                          widget.onChangedCallback();
+                                        }
                                         setState(() {
                                           widget.controller.text = '';
                                           _hasdeleteIcon = false;
@@ -99,6 +104,9 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
                           border: InputBorder.none,
                         ),
                         onChanged: (str) {
+                          if(null != widget.onChangedCallback) {
+                            widget.onChangedCallback();
+                          }
                           setState(() {
                             if (str.isEmpty) {
                               _hasdeleteIcon = false;
@@ -113,3 +121,4 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
         preferredSize: Size.fromHeight(widget.height));
   }
 }
+typedef OnChangedCallback = Future<void> Function(); //输入内容变化时触发

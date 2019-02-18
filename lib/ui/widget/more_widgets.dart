@@ -25,9 +25,13 @@ class MoreWidgets {
   *  生成朋友-ListView的item
   */
   static Widget buildListViewItem(String fileName, String text,
-      {String dir = 'icon', String format = 'png'}) {
+      {String dir = 'icon',
+      String format = 'png',
+      double padding = 8.0,
+      double imageSize = 38.0}) {
     return Container(
-        padding: const EdgeInsets.only(left: 16.0, right: 0, top: 8, bottom: 0),
+        padding:
+            EdgeInsets.only(left: 16.0, right: 16, top: padding, bottom: 0),
         child: Column(children: <Widget>[
           Row(
             children: <Widget>[
@@ -38,18 +42,27 @@ class MoreWidgets {
                 borderRadius: BorderRadius.circular(6.0),
                 child: Image.asset(
                     FileUtil.getImagePath(fileName, dir: dir, format: format),
-                    width: 38.0,
-                    height: 38.0),
+                    width: imageSize,
+                    height: imageSize),
               ),
               SizedBox(
                 width: 15.0,
               ),
-              Text(text,
-                  style: TextStyle(fontSize: 17.0, color: ColorT.text_dark)),
+              new Expanded(
+                //文本过长，打点
+                flex: 1,
+                child: new Text(
+                  text,
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 17.0, color: ColorT.text_dark),
+                ),
+              ),
             ],
           ),
           Container(
-            padding: const EdgeInsets.only(left: 55.0, top: 8.0),
+            padding: EdgeInsets.only(left: 55.0, top: padding),
             child: new Divider(height: 1.5),
           )
         ]));

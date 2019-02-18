@@ -188,18 +188,6 @@ class _LoginState extends State<Login> {
       DialogUtil.buildToast("please enter password.");
       return;
     }
-
-    if (username != '15066668888') {
-      FocusScope.of(context).requestFocus(firstTextFieldNode);
-      DialogUtil.buildToast("username is 15066668888.");
-      return;
-    }
-
-    if (password != '123456') {
-      FocusScope.of(context).requestFocus(firstTextFieldNode);
-      DialogUtil.buildToast("username is 123456.");
-      return;
-    }
     /*operation.setShowLoading(true);
     Observable.just(1).delay(new Duration(milliseconds: 3000)).listen((_) {
       operation.setShowLoading(false);

@@ -57,7 +57,7 @@ public class EMClientUtils {
             }
             @Override
             public void onError(int code, String message) {
-                callBack.call(false);
+                callBack.call(message);
             }
         });
     }
@@ -79,7 +79,7 @@ public class EMClientUtils {
             @Override
             public void onError(int code, String message) {
                 // TODO Auto-generated method stub
-                callBack.call(false);
+                callBack.call(message);
             }
         });
     }
