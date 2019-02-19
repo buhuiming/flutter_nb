@@ -132,12 +132,12 @@ class _LoginState extends State<Login> {
               SizedBox(height: 15.0),
               RaisedButton(
                 textColor: Colors.white,
-                color: Colors.blue[300],
+                color: ObjectUtil.getThemeSwatchColor(),
                 padding: EdgeInsets.all(12.0),
                 shape: new StadiumBorder(
                     side: new BorderSide(
                   style: BorderStyle.solid,
-                  color: Colors.blue,
+                  color: ObjectUtil.getThemeSwatchColor(),
                 )),
                 child: Text('登录', style: new TextStyle(fontSize: 16.0)),
                 onPressed: () {

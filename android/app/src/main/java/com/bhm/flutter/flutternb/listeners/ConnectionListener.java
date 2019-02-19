@@ -1,4 +1,4 @@
-package com.bhm.flutter.flutternb.plugins;
+package com.bhm.flutter.flutternb.listeners;
 
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
@@ -7,12 +7,15 @@ import com.hyphenate.util.NetUtils;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.EventChannel;
 
+/**
+ * 网络连接状态监听
+ */
 public class ConnectionListener implements EMConnectionListener {
 
     private FlutterActivity mActivity;
     private EventChannel.EventSink mSink;
 
-    ConnectionListener(FlutterActivity activity, EventChannel.EventSink sink){
+    public ConnectionListener(FlutterActivity activity, EventChannel.EventSink sink){
         mActivity = activity;
         mSink = sink;
     }
@@ -33,8 +36,7 @@ public class ConnectionListener implements EMConnectionListener {
             if (NetUtils.hasNetwork(mActivity)) {
                 //连接不到聊天服务器
                 mSink.success("disconnected_to_service");
-            }
-            else {
+            } else {
                 //当前网络不可用，请检查网络设置
                 mSink.success("no_net");
             }

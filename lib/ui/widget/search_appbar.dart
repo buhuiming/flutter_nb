@@ -52,8 +52,8 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
           children: <Widget>[
             new Offstage(
               offstage: false,
-              child:
-                  MoreWidgets.buildAppBar(context, '', leading: widget.leading),
+              child: MoreWidgets.buildAppBar(context, '',
+                  elevation: 2.0, leading: widget.leading),
             ),
             new Offstage(
                 offstage: false,
@@ -84,7 +84,7 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
                               child: _hasdeleteIcon
                                   ? new InkWell(
                                       onTap: (() {
-                                        if(null != widget.onChangedCallback) {
+                                        if (null != widget.onChangedCallback) {
                                           widget.onChangedCallback();
                                         }
                                         setState(() {
@@ -104,7 +104,7 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
                           border: InputBorder.none,
                         ),
                         onChanged: (str) {
-                          if(null != widget.onChangedCallback) {
+                          if (null != widget.onChangedCallback) {
                             widget.onChangedCallback();
                           }
                           setState(() {
@@ -121,4 +121,5 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
         preferredSize: Size.fromHeight(widget.height));
   }
 }
+
 typedef OnChangedCallback = Future<void> Function(); //输入内容变化时触发

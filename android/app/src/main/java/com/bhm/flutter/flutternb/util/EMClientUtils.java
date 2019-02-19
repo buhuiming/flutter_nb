@@ -83,4 +83,26 @@ public class EMClientUtils {
             }
         });
     }
+
+    /** 添加好友
+     * @param toAddUsername 好友帐号
+     * @param reason 验证信息
+     * @param callBack
+     */
+    public static void addFriends(final String toAddUsername, final String reason, final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().contactManager().addContact(toAddUsername, reason);//同步方法
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
 }

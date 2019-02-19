@@ -1,19 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/ui/page/base/base_state.dart';
+import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/page/main/found_page.dart';
 import 'package:flutter_nb/ui/page/main/friends_page.dart';
-import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/page/main/message_page.dart';
 import 'package:flutter_nb/ui/page/main/mine_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
-import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
-import 'package:flutter_nb/utils/sp_util.dart';
 
 /*
 *  主页
@@ -24,9 +20,9 @@ class MainPage extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: ObjectUtil.getThemeColor(),
-          primarySwatch: ObjectUtil.getThemeSwatchColor(),
-        ),
+            primaryColor: ObjectUtil.getThemeColor(),
+            primarySwatch: ObjectUtil.getThemeSwatchColor(),
+            platform: TargetPlatform.iOS),
         home: MyHomePage(title: 'FlutterDemo'),
         routes: {
           '/LoginPage': (ctx) => LoginPage(),
@@ -42,8 +38,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  StreamSubscription _subscription = null;
+class _MyHomePageState extends BaseState<MyHomePage> {
   Operation operation = new Operation();
 
   int _tabIndex = 0;
@@ -70,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Text getTabTitle(int curIndex) {
     if (curIndex == _tabIndex) {
       return new Text(appBarTitles[curIndex],
-          style: new TextStyle(fontSize: 13.0, color: ObjectUtil.getThemeSwatchColor()));
+          style: new TextStyle(
+              fontSize: 13.0, color: ObjectUtil.getThemeSwatchColor()));
     } else {
       return new Text(appBarTitles[curIndex],
           style: new TextStyle(fontSize: 13.0, color: ColorT.text_gray));
@@ -130,7 +126,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     initData();
-    _addConnectionListener(); //添加监听
   }
 
   @override
@@ -172,46 +167,5 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _backPress() {
     InteractNative.goNativeWithValue(InteractNative.methodNames['backPress']);
-  }
-
-  _addConnectionListener() {
-    if (null == _subscription) {
-      _subscription = InteractNative.dealNativeWithValue()
-          .listen(_onEvent, onError: _onError);
-    }
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    if (_subscription != null) {
-      _subscription.cancel();
-    }
-  }
-
-  void _onEvent(Object event) {
-    if ('onConnected' == event) {
-      //已连接
-//        DialogUtil.buildToast('已连接');
-    } else if ('user_removed' == event) {
-      //显示帐号已经被移除
-      DialogUtil.buildToast('flutter帐号已经被移除');
-    } else if ('user_login_another_device' == event) {
-      //显示帐号在其他设备登录
-      DialogUtil.buildToast('flutter帐号在其他设备登录');
-      SPUtil.putBool(Constants.KEY_LOGIN, false);
-      Navigator.of(context).pushReplacementNamed('/LoginPage');
-    } else if ('disconnected_to_service' == event) {
-      //连接不到聊天服务器
-      DialogUtil.buildToast('连接不到聊天服务器');
-    } else if ('no_net' == event) {
-      //当前网络不可用，请检查网络设置
-      DialogUtil.buildToast('当前网络不可用，请检查网络设置');
-    }
-  }
-
-  void _onError(Object error) {
-    DialogUtil.buildToast(error.toString());
   }
 }

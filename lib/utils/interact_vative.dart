@@ -11,11 +11,12 @@ class InteractNative {
    * 方法名称，必须与flutter注册的一致
    */
   static final Map<String, String> methodNames = const {
-    'register': 'register',
-    'login': 'login',
-    'logout': 'logout',
-    'autoLogin': 'autoLogin',
-    'backPress': 'backPress',
+    'register': 'register',//注册
+    'login': 'login',//登录
+    'logout': 'logout',//退出登录
+    'autoLogin': 'autoLogin',//自动登录
+    'backPress': 'backPress',//物理返回键触发，主要是让应用返回桌面，而不是关闭应用
+    'addFriends': 'addFriends',//添加好友
   };
 
   /*

@@ -3,6 +3,8 @@ package com.bhm.flutter.flutternb.plugins;
 import android.content.Intent;
 
 import com.bhm.flutter.flutternb.interfaces.CallBack;
+import com.bhm.flutter.flutternb.listeners.ConnectionListener;
+import com.bhm.flutter.flutternb.listeners.ContactListener;
 import com.bhm.flutter.flutternb.util.EMClientUtils;
 import com.hyphenate.chat.EMClient;
 
@@ -26,11 +28,12 @@ class DealMethodCall {
      */
     private static final HashMap<String, String> methodNames = new HashMap<String, String>(){
         {
-            put("register", "register");
-            put("login", "login");
-            put("logout", "logout");
-            put("autoLogin", "autoLogin");
-            put("backPress", "backPress");
+            put("register", "register");//注册
+            put("login", "login");//登录
+            put("logout", "logout");//退出登录
+            put("autoLogin", "autoLogin");//自动登录
+            put("backPress", "backPress");//物理返回键触发，主要是让应用返回桌面，而不是关闭应用
+            put("addFriends", "addFriends");//添加好友
         }
     };
 
@@ -80,6 +83,16 @@ class DealMethodCall {
             }catch (Exception e){
                 activity.finish();
             }
+        }else if(methodNames.get("addFriends").equals(methodCall.method)){//添加好友
+            EMClientUtils.addFriends(Objects.requireNonNull(methodCall.argument("toAddUsername")).toString(),
+                    Objects.requireNonNull(methodCall.argument("reason")).toString(),
+                    new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
         }
     }
 
@@ -91,6 +104,8 @@ class DealMethodCall {
     static void onListen(FlutterActivity activity, Object o, EventChannel.EventSink eventSink){
         //注册一个监听连接状态的listener
         EMClient.getInstance().addConnectionListener(new ConnectionListener(activity, eventSink));
+        //注册一个监听好友状态的listener
+        EMClient.getInstance().contactManager().setContactListener(new ContactListener(eventSink));
     }
 
     /**原生调用flutter方法的回调

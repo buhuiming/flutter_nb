@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/base/default_texefield_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/ui/widget/search_appbar.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:rxdart/rxdart.dart';
 
 /*
@@ -85,9 +88,13 @@ class SearchState extends State<Search> {
     Widget resWidget;
     if (Constants.FUNCTION_SEARCH_FRIENDS == widget.function) {
       //搜索朋友列表
-      resWidget = MoreWidgets.buildListViewItem(
-          'search_friend', _controller.text,
-          format: 'jpg', dir: 'icon', padding: 10.0, imageSize: 42.0);
+      resWidget = new InkWell(
+        child: MoreWidgets.buildListViewItem('search_friend', _controller.text,
+            format: 'jpg', dir: 'icon', padding: 10.0, imageSize: 42.0),
+        onTap: () {
+          _doAddFriends();
+        },
+      );
     }
     return resWidget;
   }
@@ -105,5 +112,40 @@ class SearchState extends State<Search> {
         });
       });
     }
+  }
+
+  void _doAddFriends() {
+    String text = _controller.text;
+    Navigator.push(
+        context,
+        new CupertinoPageRoute<void>(
+            builder: (ctx) => DefaultTextFieldPage(
+                  titleText: '添加好友',
+                  contentText: '添加\'$text\'为好友',
+                  contentTextMaxLines: 1,
+                  contentTextCount: 150,
+                  hintText: '请输入好友验证消息',
+                  onSubmitCallback: (res, operation, resContext) {
+                    operation.setShowLoading(true);
+                    Map<String, String> map = {
+                      "toAddUsername": text,
+                      "reason": res
+                    };
+                    InteractNative.goNativeWithValue(
+                            InteractNative.methodNames['addFriends'], map)
+                        .then((success) {
+                      operation.setShowLoading(false);
+                      if (success == true) {
+                        DialogUtil.buildToast('已发送添加好友申请');
+                        Navigator.pop(resContext);
+                        Navigator.pop(context);
+                      } else if (success is String) {
+                        DialogUtil.buildToast(success);
+                      } else {
+                        DialogUtil.buildToast('添加失败');
+                      }
+                    });
+                  },
+                )));
   }
 }

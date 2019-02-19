@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/timer_util.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -193,12 +194,12 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 50.0),
               RaisedButton(
                 textColor: Colors.white,
-                color: Colors.blue[300],
+                color: ObjectUtil.getThemeSwatchColor(),
                 padding: EdgeInsets.all(12.0),
                 shape: new StadiumBorder(
                     side: new BorderSide(
                   style: BorderStyle.solid,
-                  color: Colors.blue,
+                  color: ObjectUtil.getThemeSwatchColor(),
                 )),
                 child: Text('立即注册', style: new TextStyle(fontSize: 16.0)),
                 onPressed: () {
