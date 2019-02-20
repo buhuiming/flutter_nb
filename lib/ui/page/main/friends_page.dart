@@ -49,7 +49,7 @@ class Friends extends State<FriendsPage> {
                   context,
                   new CupertinoPageRoute<void>(
                       builder: (ctx) =>
-                          SearchPage(Constants.FUNCTION_SEARCH_FRIENDS)));
+                          SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('group_chat', '群聊'),
           ),
@@ -59,7 +59,7 @@ class Friends extends State<FriendsPage> {
                   context,
                   new CupertinoPageRoute<void>(
                       builder: (ctx) =>
-                          SearchPage(Constants.FUNCTION_SEARCH_FRIENDS)));
+                          SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('collection', '收藏'),
           ),
@@ -69,7 +69,7 @@ class Friends extends State<FriendsPage> {
                   context,
                   new CupertinoPageRoute<void>(
                       builder: (ctx) =>
-                          SearchPage(Constants.FUNCTION_SEARCH_FRIENDS)));
+                          SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('official_accounts', '公众号'),
           ),

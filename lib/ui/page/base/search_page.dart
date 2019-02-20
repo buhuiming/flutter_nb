@@ -111,6 +111,8 @@ class SearchState extends State<Search> {
           _items.add(0);
         });
       });
+    }else{
+      _operation.setShowLoading(false);
     }
   }
 
