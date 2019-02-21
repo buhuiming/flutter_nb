@@ -19,8 +19,9 @@ class LoginPage extends StatelessWidget {
     DeviceUtil.setBarStatus(true);
     return new MaterialApp(
         title: "登录",
-        theme:
-            ThemeData(primaryColor: ObjectUtil.getThemeColor(color: 'white'), platform: TargetPlatform.iOS),
+        theme: ThemeData(
+            primaryColor: ObjectUtil.getThemeColor(color: 'white'),
+            platform: TargetPlatform.iOS),
         home: new Login(),
         routes: {
           '/MainPage': (ctx) => MainPage(),
@@ -34,8 +35,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _usernameController = TextEditingController(text: '15066668888');
-  final _passwordController = TextEditingController(text: '123456');
+  final _usernameController = TextEditingController(
+      text: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT));
+  final _passwordController = TextEditingController();
   FocusNode firstTextFieldNode = FocusNode();
   FocusNode secondTextFieldNode = FocusNode();
   var _scaffoldkey = new GlobalKey<ScaffoldState>();
@@ -60,8 +62,11 @@ class _LoginState extends State<Login> {
               new Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: new Image.asset(FileUtil.getImagePath('logo', dir:'splash', format: 'png'),
-                      height: 100.0, width: 100.0),
+                  child: new Image.asset(
+                      FileUtil.getImagePath('logo',
+                          dir: 'splash', format: 'png'),
+                      height: 100.0,
+                      width: 100.0),
                 ),
               ),
               SizedBox(height: 76.0),
@@ -82,7 +87,7 @@ class _LoginState extends State<Login> {
                   ], //只能输入整数
                   decoration: InputDecoration(
                       labelText: 'Username',
-                      hintText: '15066668888',
+                      hintText: '请输入帐号',
                       prefixIcon: Icon(Icons.phone_android),
                       contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
                       filled: true,
@@ -110,12 +115,13 @@ class _LoginState extends State<Login> {
                     maxLines: 1,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(RegExp(Constants.INPUTFORMATTERS))
+                      WhitelistingTextInputFormatter(
+                          RegExp(Constants.INPUTFORMATTERS))
                     ],
                     obscureText: true,
                     decoration: InputDecoration(
                         labelText: 'Password',
-                        hintText: '123456',
+                        hintText: '请输入密码',
                         prefixIcon: Icon(Icons.lock),
                         contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
                         filled: true,
@@ -203,6 +209,7 @@ class _LoginState extends State<Login> {
       if (success == true) {
         DialogUtil.buildToast('登录成功');
         SPUtil.putBool(Constants.KEY_LOGIN, true);
+        SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
         Navigator.of(context).pushReplacementNamed('/MainPage');
       } else if (success is String) {
         DialogUtil.buildToast(success);
