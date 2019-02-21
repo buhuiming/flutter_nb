@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/utils/functions.dart';
 
 /*
 *  loading page
@@ -145,7 +146,7 @@ enum BackPressType {
   CLOSE_PARENT //关闭当前页及当前页的父页
 }
 
-typedef BackPressCallback = Future<void> Function(BackPressType); //按返回键时触发
+
 
 class Operation {
   ValueNotifier<bool> _notifier;

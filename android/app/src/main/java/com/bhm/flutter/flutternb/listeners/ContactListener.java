@@ -16,44 +16,47 @@ public class ContactListener implements EMContactListener {
     @Override
     public void onContactAdded(String username) {
         //增加联系人时回调此方法
-        mSink.success(new Gson().toJson(new ContactEntity("onContactAdded", username)));
+        mSink.success(new Gson().toJson(new ContactEntity("message", "onContactAdded", username)));
     }
 
     @Override
     public void onContactDeleted(String username) {
         //被删除时回调此方法
-        mSink.success(new Gson().toJson(new ContactEntity("onContactDeleted", username)));
+        mSink.success(new Gson().toJson(new ContactEntity("message", "onContactDeleted", username)));
     }
 
     @Override
     public void onContactInvited(String username, String reason) {
         //收到好友邀请
-        mSink.success(new Gson().toJson(new ContactEntity("onContactInvited", username, reason)));
+        mSink.success(new Gson().toJson(new ContactEntity("message", "onContactInvited", username, reason)));
     }
 
     @Override
     public void onFriendRequestAccepted(String username) {
         //好友请求被同意
-        mSink.success(new Gson().toJson(new ContactEntity("onFriendRequestAccepted", username)));
+        mSink.success(new Gson().toJson(new ContactEntity("message", "onFriendRequestAccepted", username)));
     }
 
     @Override
     public void onFriendRequestDeclined(String username) {
         //好友请求被拒绝
-        mSink.success(new Gson().toJson(new ContactEntity("onFriendRequestDeclined", username)));
+        mSink.success(new Gson().toJson(new ContactEntity("message", "onFriendRequestDeclined", username)));
     }
 
     class ContactEntity{
+        private String type;
         private String method;
         private String username;
         private String reason;
 
-        public ContactEntity(String method, String username, String reason){
+        public ContactEntity(String type, String method, String username, String reason){
+            this.type = type;
             this.method = method;
             this.username = username;
             this.reason = reason;
         }
-        public ContactEntity(String method, String username){
+        public ContactEntity(String type, String method, String username){
+            this.type = type;
             this.method = method;
             this.username = username;
         }

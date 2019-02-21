@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/functions.dart';
 
 /*
 *  只带输入框的AppBar
@@ -121,5 +122,3 @@ class SearchAppBarState extends State<SearchAppBarWidget> {
         preferredSize: Size.fromHeight(widget.height));
   }
 }
-
-typedef OnChangedCallback = Future<void> Function(); //输入内容变化时触发

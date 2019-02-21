@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/ui/widget/search_appbar.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -173,5 +174,3 @@ class DefaultTextFieldState extends State<DefaultTextField> {
     }
   }
 }
-
-typedef OnSubmitCallback = Future<void> Function(Object, Operation, BuildContext); //输入完成时触发
