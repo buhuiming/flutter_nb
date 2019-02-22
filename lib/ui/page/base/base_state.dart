@@ -36,22 +36,28 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   }
 
   void onEvent(Object event) {
-    if ('onConnected' == event) {
-      //已连接
-    } else if ('user_removed' == event) {
-      //显示帐号已经被移除
-      DialogUtil.buildToast('flutter帐号已经被移除');
-    } else if ('user_login_another_device' == event) {
-      //显示帐号在其他设备登录
-      DialogUtil.buildToast('flutter帐号在其他设备登录');
-      SPUtil.putBool(Constants.KEY_LOGIN, false);
-      Navigator.of(context).pushReplacementNamed('/LoginPage');
-    } else if ('disconnected_to_service' == event) {
-      //连接不到聊天服务器
-      DialogUtil.buildToast('连接不到聊天服务器');
-    } else if ('no_net' == event) {
-      //当前网络不可用，请检查网络设置
-      DialogUtil.buildToast('当前网络不可用，请检查网络设置');
+    if(event == null || !(event is Map)){
+      return;
+    }
+    Map res = event;
+    if(res.containsKey('string')) {
+      if (res.containsValue('onConnected')) {
+        //已连接
+      } else if (res.containsValue('user_removed')) {
+        //显示帐号已经被移除
+        DialogUtil.buildToast('flutter帐号已经被移除');
+      } else if (res.containsValue('user_login_another_device')) {
+        //显示帐号在其他设备登录
+        DialogUtil.buildToast('flutter帐号在其他设备登录');
+        SPUtil.putBool(Constants.KEY_LOGIN, false);
+        Navigator.of(context).pushReplacementNamed('/LoginPage');
+      } else if (res.containsValue('disconnected_to_service')) {
+        //连接不到聊天服务器
+        DialogUtil.buildToast('连接不到聊天服务器');
+      } else if (res.containsValue('no_net')) {
+        //当前网络不可用，请检查网络设置
+        DialogUtil.buildToast('当前网络不可用，请检查网络设置');
+      }
     }
   }
 

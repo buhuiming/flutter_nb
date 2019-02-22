@@ -45,12 +45,14 @@ class MessageDataBase {
         onCreate: (Database db, int version) async {
       // When creating the db, create the table，数据库名：登录帐号_nb_db
       //创建2个表，一个存放消息类型（表名固定），一个存放某个类型的所有消息（表名为发送方帐号）
-      await db.execute("CREATE TABLE ${DataBaseConfig.MESSAGE_TABLE} ("
-          "${MessageTypeEntity.DB_ID} BIGINT  IDENTITY(1,1) PRIMARY KEY,"
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ${DataBaseConfig.MESSAGE_TABLE} ("
+          "${MessageTypeEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "${MessageTypeEntity.IS_UNREAD_COUNT} INTEGER,"
           "${MessageTypeEntity.SENDER_ACCOUNT} TEXT"
           ")");
-      await db.execute("CREATE TABLE $senderAccount ("
-          "${MessageEntity.DB_ID} BIGINT  IDENTITY(1,1) PRIMARY KEY,"
+      await db.execute("CREATE TABLE IF NOT EXISTS nb_$senderAccount ("
+          "${MessageEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
           "${MessageEntity.TYPE} TEXT,"
           "${MessageEntity.IMAGE_URL} TEXT,"
           "${MessageEntity.IS_UNREAD} INTEGER,"
@@ -60,6 +62,7 @@ class MessageDataBase {
           "${MessageEntity.CONTENT_TYPE} TEXT,"
           "${MessageEntity.CONTENT_URL} TEXT,"
           "${MessageEntity.TIME} TEXT,"
+          "${MessageEntity.NOTE} TEXT,"
           "${MessageEntity.MESSAGE_OWNER} INTEGER,"
           "${MessageEntity.IS_REMIND} INTEGER"
           ")");
@@ -73,7 +76,7 @@ class MessageDataBase {
   Future<List<MessageTypeEntity>> getMessageTypeEntity() async {
     var db = await _getDb();
     var result = await db.rawQuery(
-        'SELECT ${MessageTypeEntity.SENDER_ACCOUNT} FROM ${DataBaseConfig.MESSAGE_TABLE}');
+        'SELECT * FROM ${DataBaseConfig.MESSAGE_TABLE}');
     List<MessageTypeEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new MessageTypeEntity.fromMap(item));
@@ -82,12 +85,27 @@ class MessageDataBase {
   }
 
   /*
+  *  查询消息类别的未读数
+  */
+  Future<int> getOneMessageUnreadCount(String senderAccount) async {
+    var db = await _getDb();
+    var result = await db.rawQuery(
+        'SELECT ${MessageTypeEntity.IS_UNREAD_COUNT} FROM ${DataBaseConfig.MESSAGE_TABLE} '
+        'where ${MessageTypeEntity.SENDER_ACCOUNT} = "$senderAccount"');
+    List<MessageTypeEntity> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(new MessageTypeEntity.fromMap(item));
+    }
+    return res.length > 0 ? res.elementAt(0).isUnreadCount : 0;
+  }
+
+  /*
   * 查出某个消息类型（某个用户的对话即算一个消息类型）的所有消息
   */
   Future<List<MessageEntity>> getMessageEntityInType(
       String senderAccount) async {
     var db = await _getDb();
-    var result = await db.rawQuery('SELECT * FROM $senderAccount');
+    var result = await db.rawQuery('SELECT * FROM nb_$senderAccount');
     List<MessageEntity> books = [];
     for (Map<String, dynamic> item in result) {
       books.add(new MessageEntity.fromMap(item));
@@ -107,10 +125,11 @@ class MessageDataBase {
     var db = await _getDb();
     await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        '${DataBaseConfig.MESSAGE_TABLE}(${MessageTypeEntity.SENDER_ACCOUNT})'
-        ' VALUES(?)',
+        '${DataBaseConfig.MESSAGE_TABLE}(${MessageTypeEntity.SENDER_ACCOUNT},${MessageTypeEntity.IS_UNREAD_COUNT})'
+        ' VALUES(?,?)',
         [
           entity.senderAccount,
+          entity.isUnreadCount,
         ]);
   }
 
@@ -118,8 +137,8 @@ class MessageDataBase {
     var db = await _getDb();
     await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        '$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND})'
-        ' VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+        'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE})'
+        ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           entity.type,
           entity.imageUrl,
@@ -131,7 +150,8 @@ class MessageDataBase {
           entity.contentUrl,
           entity.time,
           entity.messageOwner,
-          entity.isRemind
+          entity.isRemind,
+          entity.note
         ]);
   }
 
@@ -149,9 +169,9 @@ class MessageDataBase {
       {MessageEntity entity}) async {
     var db = await _getDb();
     if (entity == null) {
-      await db.delete(senderAccount);
+      await db.delete('nb_$senderAccount');
     } else {
-      await db.delete(senderAccount,
+      await db.delete('nb_$senderAccount',
           where: "${MessageEntity.DB_ID} = ?", whereArgs: [entity.id]);
     }
   }

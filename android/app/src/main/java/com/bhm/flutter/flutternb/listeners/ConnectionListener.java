@@ -1,5 +1,6 @@
 package com.bhm.flutter.flutternb.listeners;
 
+import com.bhm.flutter.flutternb.util.CallBackData;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.util.NetUtils;
@@ -22,23 +23,23 @@ public class ConnectionListener implements EMConnectionListener {
 
     @Override
     public void onConnected() {
-        mSink.success("onConnected");
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "onConnected"));
     }
     @Override
     public void onDisconnected(final int error) {
         if(error == EMError.USER_REMOVED){
             // 显示帐号已经被移除
-            mSink.success("user_removed");
+            mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "user_removed"));
         }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
             // 显示帐号在其他设备登录
-            mSink.success("user_login_another_device");
+            mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "user_login_another_device"));
         } else {
             if (NetUtils.hasNetwork(mActivity)) {
                 //连接不到聊天服务器
-                mSink.success("disconnected_to_service");
+                mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "disconnected_to_service"));
             } else {
                 //当前网络不可用，请检查网络设置
-                mSink.success("no_net");
+                mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "no_net"));
             }
         }
     }

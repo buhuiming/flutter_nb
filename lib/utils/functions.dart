@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 
 class Functions {}
@@ -13,3 +14,5 @@ typedef OnSubmitCallback = Future<void> Function(
 typedef OnItemClick = Future<void> Function(Object); //控件点击时触发
 
 typedef OnItemLongClick = Future<void> Function(Object); //控件点击时触发
+
+typedef OnUpdateCallback = Future<void> Function(Object, int, MessageEntity); //数据更新时触发
