@@ -23,6 +23,7 @@ class MessagePage extends StatefulWidget {
 class Message extends MessageState<MessagePage> {
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
+  bool isShowNoPage = true;
 
   @override
   void initState() {
@@ -39,11 +40,27 @@ class Message extends MessageState<MessagePage> {
   Widget layout(BuildContext context) {
     return new Scaffold(
       appBar: MoreWidgets.buildAppBar(context, '消息'),
-      body: new ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            return _itemWidget(index);
-          },
-          itemCount: list.length),
+      body: !isShowNoPage
+          ? ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return _itemWidget(index);
+              },
+              itemCount: list.length)
+          : new Align(
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {},
+                child: Text('没有数据',
+                    maxLines: 1,
+                    style: new TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.black54,
+                        letterSpacing: 0.6,
+                        fontWeight: FontWeight.normal,
+                        fontStyle: FontStyle.normal,
+                        decoration: TextDecoration.none)),
+              ),
+            ),
     );
   }
 
@@ -78,6 +95,7 @@ class Message extends MessageState<MessagePage> {
               list.insert(0, messageEntity.titleName);
               map[messageEntity.titleName] = messageEntity;
             }
+            isShowNoPage = list.length <= 0;
             setState(() {});
           }
         });
@@ -97,6 +115,7 @@ class Message extends MessageState<MessagePage> {
         list.insert(0, entity.titleName);
         map[entity.titleName] = entity;
       }
+      isShowNoPage = list.length <= 0;
       setState(() {});
     }
   }

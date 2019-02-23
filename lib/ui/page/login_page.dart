@@ -161,8 +161,8 @@ class _LoginState extends State<Login> {
                             builder: (ctx) => RegisterPage()));
                   },
                   child: new Container(
-                      padding: EdgeInsets.only(right: 12.0),
-                      child: Text('没有账号？',
+                      padding: EdgeInsets.only(right: 12.0, top: 6),
+                      child: Text('没有账号？ ',maxLines: 1,
                           style: new TextStyle(
                               fontSize: 13.0,
                               color: Colors.black54,
