@@ -7,18 +7,24 @@ class MoreWidgets {
   /*
   *  生成常用的AppBar
   */
-  static Widget buildAppBar(BuildContext context, String text,
-      {double fontSize: 18.0,
-      double height: 46.0,
-      double elevation: 0.5,
-      Widget leading,
-      bool centerTitle: false}) {
+  static Widget buildAppBar(
+    BuildContext context,
+    String text, {
+    double fontSize: 18.0,
+    double height: 46.0,
+    double elevation: 0.5,
+    Widget leading,
+    bool centerTitle: false,
+    List<Widget> actions,
+  }) {
     return PreferredSize(
         child: AppBar(
-            elevation: elevation, //阴影
-            centerTitle: centerTitle,
-            title: Text(text, style: TextStyle(fontSize: fontSize)),
-            leading: leading),
+          elevation: elevation, //阴影
+          centerTitle: centerTitle,
+          title: Text(text, style: TextStyle(fontSize: fontSize)),
+          leading: leading,
+          actions: actions,
+        ),
         preferredSize: Size.fromHeight(height));
   }
 
@@ -183,6 +189,182 @@ class MoreWidgets {
                 padding: EdgeInsets.only(left: 65.0, top: 10),
                 child: Divider(height: 1.5),
               )
+            ])));
+  }
+
+  /*
+  *  生成我的-ListView的item
+  */
+  static Widget mineListViewItem1(String imageUrl, String text,
+      {bool isNetImage = false,
+      int unread = 0,
+      String content = '',
+      String time = '',
+      double imageSize = 64.0,
+      OnItemClick onItemClick}) {
+    return InkWell(
+        onTap: () {
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+        },
+        onLongPress: () {},
+        child: Container(
+            padding:
+                EdgeInsets.only(left: 20.0, right: 16, top: 20, bottom: 20),
+            child: Column(children: <Widget>[
+              //1列n行
+              Row(
+                children: <Widget>[
+                  //1行3列
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: isNetImage
+                        ? Image.network(
+                            imageUrl,
+                            width: imageSize,
+                            height: imageSize,
+                          )
+                        : Image.asset(imageUrl,
+                            width: imageSize, height: imageSize),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          text,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 24.0, color: themeColorMap['black']),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          content,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 15.0, color: ColorT.text_normal),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: ColorT.text_gray,
+                      size: 20,
+                    ),
+                  )
+                ],
+              ),
+            ])));
+  }
+
+  /*
+  *  生成一个分割线
+  */
+  static Widget buildDivider({
+    double height = 10,
+    Color bgColor = ColorT.divider,
+    double dividerHeight = 0.5,
+    Color dividerColor = ColorT.divider,
+  }) {
+    BorderSide side = BorderSide(
+        color: dividerColor, width: dividerHeight, style: BorderStyle.solid);
+    return new Container(
+        padding: EdgeInsets.all(height / 2),
+        decoration: new BoxDecoration(
+          color: bgColor,
+          border: Border(top: side, bottom: side),
+        ));
+  }
+
+  /*
+  *  生成我的-ListView的item
+  */
+  static Widget defaultListViewItem(IconData iconData, String text,
+      {double padding = 12.0,
+      double imageSize = 20.0,
+      bool isDivider = true,
+      Color iconColor = ColorT.text_dark,
+      Color textColor = ColorT.text_dark,
+      OnItemClick onItemClick}) {
+    return InkWell(
+        onTap: () {
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+        },
+        onLongPress: () {},
+        child: Container(
+            padding:
+                EdgeInsets.only(left: 20.0, right: 0, top: padding, bottom: 0),
+            child: Column(children: <Widget>[
+              Row(
+                children: <Widget>[
+                  iconData == null
+                      ? SizedBox(
+                          width: 0.0,
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(6.0),
+                          child: Icon(
+                            iconData,
+                            size: imageSize,
+                            color: iconColor,
+                          ),
+                        ),
+                  SizedBox(
+                    width: iconData == null ? 0 : 15.0,
+                  ),
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Text(
+                      text,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 17.0, color: textColor),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(right: 16),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: ColorT.text_gray,
+                      size: 20,
+                    ),
+                  )
+                ],
+              ),
+              isDivider
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          left: iconData == null ? 0 : 40.0, top: padding + 2),
+                      child: Divider(
+                        height: 1.5,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 14,
+                    )
             ])));
   }
 }

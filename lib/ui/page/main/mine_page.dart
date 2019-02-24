@@ -3,6 +3,7 @@ import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
@@ -24,58 +25,63 @@ class MinePage extends StatefulWidget {
 }
 
 class _MineState extends State<MinePage> {
-  int _counter = 0;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MoreWidgets.buildAppBar(context, '我的'),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: MoreWidgets.buildAppBar(context, '',
+            elevation: 0.0, height: 56, actions: _actions(context)),
+        body: ListView(
           children: <Widget>[
-            Text(
-              '点击的次数：',
+            MoreWidgets.mineListViewItem1(
+              FileUtil.getImagePath('logo', dir: 'splash', format: 'png'),
+              SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT),
+              content: '萍水相逢，尽是他乡之客',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            SizedBox(height: 30.0),
-            RaisedButton(
-              textColor: Colors.white,
-              color: Colors.blue[300],
-              shape: new StadiumBorder(
-                  side: new BorderSide(
-                style: BorderStyle.solid,
-                color: Colors.blue,
-              )),
-              child: Text('退出登录'),
-              onPressed: () {
-                _logOut();
-              },
-            )
+            MoreWidgets.buildDivider(),
+            MoreWidgets.defaultListViewItem(Icons.add_shopping_cart, '支付',
+                textColor: Colors.black),
+            MoreWidgets.defaultListViewItem(Icons.favorite, '收藏',
+                textColor: Colors.black),
+            MoreWidgets.defaultListViewItem(Icons.photo, '相册',
+                textColor: Colors.black),
+            MoreWidgets.defaultListViewItem(Icons.content_copy, '卡包',
+                textColor: Colors.black),
+            MoreWidgets.defaultListViewItem(Icons.face, '表情',
+                textColor: Colors.black),
+            MoreWidgets.defaultListViewItem(Icons.settings, '设置',
+                textColor: Colors.black, isDivider: false),
+            MoreWidgets.buildDivider(),
+            MoreWidgets.defaultListViewItem(Icons.exit_to_app, '退出',
+                textColor: Colors.black, isDivider: false, onItemClick: (res) {
+              _logOut();
+            }),
+            MoreWidgets.buildDivider(),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: '看什么看',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        )
+        // This trailing comma makes auto-formatting nicer for build methods.
+        );
+  }
+
+  List<Widget> _actions(BuildContext context) {
+    List<Widget> actions = new List();
+    Widget widget = InkWell(
+        child: Container(
+            padding: EdgeInsets.only(right: 20, left: 20),
+            child: Icon(
+              Icons.add_a_photo,
+              size: 22,
+            )),
+        onTap: () {
+          DialogUtil.buildSnakeBar(context, '想拍照吗');
+        });
+    actions.add(widget);
+    return actions;
   }
 
   _logOut() {
