@@ -5,6 +5,7 @@ import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
 
 class MessagePage extends StatefulWidget {
@@ -23,12 +24,13 @@ class MessagePage extends StatefulWidget {
 class Message extends MessageState<MessagePage> {
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
-  bool isShowNoPage = true;
+  bool isShowNoPage = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    NotificationUtil.build().cancelMessage();
     _getData();
   }
 

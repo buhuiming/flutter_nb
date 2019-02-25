@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Required --><!--环信IM集成-->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -34,6 +33,8 @@
     <application
         android:name=".FlutterNBApplication"
         android:label="buhuiming"
+        tools:replace="android:appComponentFactory"
+        android:appComponentFactory="FlutterNBApplication"
         android:icon="@mipmap/ic_launcher_new">
         <activity
             android:name=".ui.MainActivity"
@@ -77,5 +78,11 @@
             </intent-filter>
         </receiver>
         <!--环信IM集成-->
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
     </application>
 </manifest>

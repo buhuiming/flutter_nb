@@ -5,6 +5,7 @@ import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
 /*
@@ -55,7 +56,12 @@ class _MineState extends State<MinePage> {
             MoreWidgets.defaultListViewItem(Icons.face, '表情',
                 textColor: Colors.black),
             MoreWidgets.defaultListViewItem(Icons.settings, '设置',
-                textColor: Colors.black, isDivider: false),
+                textColor: Colors.black, isDivider: false, onItemClick: (res) {
+              NotificationUtil.build().showChat('聊天消息',
+                  '后来也怕了，我也不想租了。不过说实话，那地方住的很舒服，很安静，很大。', Constants.MESSAGE_TYPE_CHAT);
+//              NotificationUtil.build().showSystem('系统消息',
+//                  '您收到一个好友添加邀请，请求添加您为好友！', Constants.MESSAGE_TYPE_SYSTEM);
+            }),
             MoreWidgets.buildDivider(),
             MoreWidgets.defaultListViewItem(Icons.exit_to_app, '退出',
                 textColor: Colors.black, isDivider: false, onItemClick: (res) {
@@ -90,6 +96,7 @@ class _MineState extends State<MinePage> {
         .then((success) {
       widget.operation.setShowLoading(false);
       if (success == true) {
+        NotificationUtil.build().cancelAll();
         DialogUtil.buildToast('登出成功');
         SPUtil.putBool(Constants.KEY_LOGIN, false);
         Navigator.of(widget.rootContext).pushReplacementNamed('/LoginPage');

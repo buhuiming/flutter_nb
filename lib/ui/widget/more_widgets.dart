@@ -200,7 +200,7 @@ class MoreWidgets {
       int unread = 0,
       String content = '',
       String time = '',
-      double imageSize = 64.0,
+      double imageSize = 62.0,
       OnItemClick onItemClick}) {
     return InkWell(
         onTap: () {
@@ -243,7 +243,7 @@ class MoreWidgets {
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontSize: 24.0, color: themeColorMap['black']),
+                              fontSize: 22.0, color: themeColorMap['black']),
                         ),
                         SizedBox(
                           height: 5.0,
@@ -254,7 +254,7 @@ class MoreWidgets {
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontSize: 15.0, color: ColorT.text_normal),
+                              fontSize: 14.0, color: ColorT.text_normal),
                         ),
                       ],
                     ),
@@ -267,7 +267,7 @@ class MoreWidgets {
                     child: Icon(
                       Icons.arrow_forward_ios,
                       color: ColorT.text_gray,
-                      size: 20,
+                      size: 18,
                     ),
                   )
                 ],
@@ -349,7 +349,7 @@ class MoreWidgets {
                     child: Icon(
                       Icons.arrow_forward_ios,
                       color: ColorT.text_gray,
-                      size: 20,
+                      size: 18,
                     ),
                   )
                 ],

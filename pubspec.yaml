@@ -25,6 +25,7 @@ dependencies:
   cached_network_image: ^0.6.0+1 #网络图片
   fluttertoast: ^2.2.4 #提示
   sqflite: ^1.1.1 #数据库
+  flutter_local_notifications: ^0.5.2 #通知栏
 
   flukit:
       git:
