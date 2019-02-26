@@ -111,7 +111,7 @@ class NotificationUtil {
 
   void cancelMessage() async {
     cancel(id: 1);
-    for (int id; id < NotificationConfig.ID_CHAT; id++) {
+    for (int id = 100; id < NotificationConfig.ID_CHAT; id++) {
       cancel(id: id);
     }
   }

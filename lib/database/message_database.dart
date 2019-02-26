@@ -75,8 +75,8 @@ class MessageDataBase {
   */
   Future<List<MessageTypeEntity>> getMessageTypeEntity() async {
     var db = await _getDb();
-    var result = await db.rawQuery(
-        'SELECT * FROM ${DataBaseConfig.MESSAGE_TABLE}');
+    var result =
+        await db.rawQuery('SELECT * FROM ${DataBaseConfig.MESSAGE_TABLE}');
     List<MessageTypeEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new MessageTypeEntity.fromMap(item));
@@ -177,8 +177,9 @@ class MessageDataBase {
   }
 
   Future close() async {
-    didInit = false;
     var db = await _getDb();
-    return db.close();
+    db.close();
+    didInit = false;
+    return db = null;
   }
 }

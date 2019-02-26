@@ -17,7 +17,7 @@ class FoundPage extends StatefulWidget {
   }
 }
 
-class Found extends State<FoundPage> {
+class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -43,4 +43,8 @@ class Found extends State<FoundPage> {
       'http://i2.yeyou.itc.cn/2014/huoying/hd_20140925/hyimage06.jpg',
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -26,6 +26,7 @@ dependencies:
   fluttertoast: ^2.2.4 #提示
   sqflite: ^1.1.1 #数据库
   flutter_local_notifications: ^0.5.2 #通知栏
+  image_picker: ^0.5.0+3 #相机相册
 
   flukit:
       git:

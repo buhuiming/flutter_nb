@@ -195,13 +195,13 @@ class MoreWidgets {
   /*
   *  生成我的-ListView的item
   */
-  static Widget mineListViewItem1(String imageUrl, String text,
-      {bool isNetImage = false,
-      int unread = 0,
+  static Widget mineListViewItem1(String text,
+      {int unread = 0,
       String content = '',
       String time = '',
-      double imageSize = 62.0,
-      OnItemClick onItemClick}) {
+      @required Widget imageChild,
+      OnItemClick onItemClick,
+      OnItemClick onImageClick}) {
     return InkWell(
         onTap: () {
           if (null != onItemClick) {
@@ -217,17 +217,15 @@ class MoreWidgets {
               Row(
                 children: <Widget>[
                   //1行3列
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: isNetImage
-                        ? Image.network(
-                            imageUrl,
-                            width: imageSize,
-                            height: imageSize,
-                          )
-                        : Image.asset(imageUrl,
-                            width: imageSize, height: imageSize),
-                  ),
+                  InkWell(
+                      onTap: () {
+                        if (onImageClick != null) {
+                          onImageClick(null);
+                        }
+                      },
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: imageChild)),
                   SizedBox(
                     width: 20.0,
                   ),

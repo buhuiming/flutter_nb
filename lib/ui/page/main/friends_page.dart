@@ -21,7 +21,7 @@ class FriendsPage extends StatefulWidget {
   }
 }
 
-class Friends extends State<FriendsPage> {
+class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -77,4 +77,8 @@ class Friends extends State<FriendsPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

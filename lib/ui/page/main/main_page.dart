@@ -38,8 +38,18 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends BaseState<MyHomePage> {
+/*
+* 如果子页面是继承StatefulWidget和State，则子页面的State要有with AutomaticKeepAliveClientMixin且
+* bool get wantKeepAlive => true;父页面（此页面），要有with SingleTickerProviderStateMixin(多个动画
+* 效果的则用TickerProviderStateMixin)，才能保证页面切换，不刷新重置；单一页面不需要刷新，bool get wantKeepAlive => false;
+*
+* 如果子页面是普通的Widget，则父页面（此页面），要有with AutomaticKeepAliveClientMixin且，且
+* bool get wantKeepAlive => true;才能保证页面切换，不刷新重置；
+*/
+class _MyHomePageState extends BaseState<MyHomePage>
+    with SingleTickerProviderStateMixin {
   Operation operation = new Operation();
+  var _pageController = new PageController(initialPage: 0);
 
   int _tabIndex = 0;
   var tabImages;
@@ -129,6 +139,13 @@ class _MyHomePageState extends BaseState<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new LoadingScaffold(
         //使用有Loading的widget
@@ -139,7 +156,14 @@ class _MyHomePageState extends BaseState<MyHomePage> {
             _backPress(); //物理返回键，返回到桌面
           },
           child: Scaffold(
-              body: _pageList[_tabIndex],
+              body: new PageView.builder(
+                onPageChanged: _pageChange,
+                controller: _pageController,
+                itemBuilder: (BuildContext context, int index) {
+                  return _pageList[index];
+                },
+                itemCount: 4,
+              ),
               bottomNavigationBar: new BottomNavigationBar(
                 items: <BottomNavigationBarItem>[
                   new BottomNavigationBarItem(
@@ -157,12 +181,20 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                 iconSize: 22.0,
                 //点击事件
                 onTap: (index) {
-                  setState(() {
-                    _tabIndex = index;
-                  });
+                  _pageController.animateToPage(index,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.ease);
                 },
               )),
         ));
+  }
+
+  void _pageChange(int index) {
+    setState(() {
+      if (_tabIndex != index) {
+        _tabIndex = index;
+      }
+    });
   }
 
   _backPress() {

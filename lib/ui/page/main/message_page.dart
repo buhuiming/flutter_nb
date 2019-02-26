@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MessagePage extends StatefulWidget {
   MessagePage({Key key, this.operation, this.rootContext}) : super(key: key);
@@ -21,7 +22,8 @@ class MessagePage extends StatefulWidget {
   }
 }
 
-class Message extends MessageState<MessagePage> {
+class Message extends MessageState<MessagePage>
+    with AutomaticKeepAliveClientMixin {
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
   bool isShowNoPage = false;
@@ -78,30 +80,35 @@ class Message extends MessageState<MessagePage> {
 
   _getData() {
     MessageDataBase.get().getMessageTypeEntity().then((listTypeEntity) {
-      listTypeEntity.forEach((typeEntity) {
-        String type = typeEntity.senderAccount;
-        if (type == '系统消息') {
-          type = Constants.MESSAGE_TYPE_SYSTEM;
-        }
-        MessageDataBase.get().getMessageEntityInType(type).then((listEntity) {
-          if (null != listEntity && listEntity.length > 0) {
-            MessageEntity messageEntity =
-                listEntity.elementAt(listEntity.length - 1);
-            messageEntity.isUnreadCount = typeEntity.isUnreadCount;
-            if (type == Constants.MESSAGE_TYPE_SYSTEM) {
-              if (list.contains(messageEntity.titleName)) {
-                //如果已经存在
-                list.remove(messageEntity.titleName);
-                map.remove(messageEntity.titleName);
+      if (listTypeEntity.length > 0) {
+        listTypeEntity.forEach((typeEntity) {
+          String type = typeEntity.senderAccount;
+          if (type == '系统消息') {
+            type = Constants.MESSAGE_TYPE_SYSTEM;
+          }
+          MessageDataBase.get().getMessageEntityInType(type).then((listEntity) {
+            if (null != listEntity && listEntity.length > 0) {
+              MessageEntity messageEntity =
+                  listEntity.elementAt(listEntity.length - 1);
+              messageEntity.isUnreadCount = typeEntity.isUnreadCount;
+              if (type == Constants.MESSAGE_TYPE_SYSTEM) {
+                if (list.contains(messageEntity.titleName)) {
+                  //如果已经存在
+                  list.remove(messageEntity.titleName);
+                  map.remove(messageEntity.titleName);
+                }
+                list.insert(0, messageEntity.titleName);
+                map[messageEntity.titleName] = messageEntity;
               }
-              list.insert(0, messageEntity.titleName);
-              map[messageEntity.titleName] = messageEntity;
             }
             isShowNoPage = list.length <= 0;
             setState(() {});
-          }
+          });
         });
-      });
+      } else {
+        isShowNoPage = list.length <= 0;
+        setState(() {});
+      }
     });
   }
 
@@ -121,4 +128,8 @@ class Message extends MessageState<MessagePage> {
       setState(() {});
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
