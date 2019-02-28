@@ -52,9 +52,9 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
                           .add(InteractNative.RESET_THEME_COLOR);
                     },
                     child: new Container(
-                      margin: EdgeInsets.all(15.0),
-                      width: 36.0,
-                      height: 36.0,
+                      margin: EdgeInsets.all(13.0),
+                      width: 34.0,
+                      height: 34.0,
                       color: value,
                     ),
                   );
