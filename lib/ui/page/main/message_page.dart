@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/database/message_database.dart';
@@ -7,7 +9,6 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
-import 'package:rxdart/rxdart.dart';
 
 class MessagePage extends StatefulWidget {
   MessagePage({Key key, this.operation, this.rootContext}) : super(key: key);
@@ -27,6 +28,7 @@ class Message extends MessageState<MessagePage>
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
   bool isShowNoPage = false;
+  Timer _refreshTimer;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class Message extends MessageState<MessagePage>
     super.initState();
     NotificationUtil.build().cancelMessage();
     _getData();
+    _startRefresh();
   }
 
   @override
@@ -127,6 +130,26 @@ class Message extends MessageState<MessagePage>
       isShowNoPage = list.length <= 0;
       setState(() {});
     }
+  }
+
+  _startRefresh() {
+    _refreshTimer =
+        Timer.periodic(const Duration(milliseconds: 1000 * 60), _handleTime);
+  }
+
+  _handleTime(Timer timer) {
+    setState(() {
+      print('refresh data');
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    if (null != _refreshTimer) {
+      _refreshTimer.cancel();
+    }
+    super.dispose();
   }
 
   @override

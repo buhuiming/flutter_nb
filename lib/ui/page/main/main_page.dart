@@ -180,9 +180,11 @@ class _MyHomePageState extends ThemeState<MyHomePage>
                     iconSize: 22.0,
                     //点击事件
                     onTap: (index) {
-                      _pageController.animateToPage(index,
-                          duration: const Duration(milliseconds: 120),
-                          curve: Curves.ease);
+//                      _pageController.animateToPage(index,
+//                          duration: const Duration(milliseconds: 120),
+//                          curve: Curves.ease);
+                      //以上方式，动画过度太明显
+                      _pageController.jumpToPage(index);
                     },
                   )),
             )));

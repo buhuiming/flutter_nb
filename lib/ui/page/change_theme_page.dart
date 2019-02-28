@@ -40,9 +40,9 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
           backgroundColor: Colors.white,
           primary: true,
           body: SafeArea(
-              child: ListView(
-            children: <Widget>[
-              new Wrap(
+            child: GridView.count(
+                crossAxisCount: 5,
+                padding: EdgeInsets.all(10.0),
                 children: themeSwatchColorMap.keys.map((String key) {
                   Color value = themeSwatchColorMap[key];
                   return new InkWell(
@@ -58,10 +58,8 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
                       color: value,
                     ),
                   );
-                }).toList(),
-              )
-            ],
-          )),
+                }).toList()),
+          ),
           appBar: MoreWidgets.buildAppBar(
             context,
             '切换主题',

@@ -11,7 +11,7 @@ class MoreWidgets {
     BuildContext context,
     String text, {
     double fontSize: 18.0,
-    double height: 46.0,
+    double height: 50.0,
     double elevation: 0.5,
     Widget leading,
     bool centerTitle: false,

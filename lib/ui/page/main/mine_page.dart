@@ -38,7 +38,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MoreWidgets.buildAppBar(context, '',
-            elevation: 0.0, height: 56, actions: _actions(context)),
+            elevation: 0.0, actions: _actions(context)),
         body: ListView(
           children: <Widget>[
             MoreWidgets.mineListViewItem1(
