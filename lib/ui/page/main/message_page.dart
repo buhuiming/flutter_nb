@@ -24,16 +24,18 @@ class MessagePage extends StatefulWidget {
 }
 
 class Message extends MessageState<MessagePage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
   bool isShowNoPage = false;
   Timer _refreshTimer;
+  AppLifecycleState currentState = AppLifecycleState.resumed;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     NotificationUtil.build().cancelMessage();
     _getData();
     _startRefresh();
@@ -93,7 +95,7 @@ class Message extends MessageState<MessagePage>
             if (null != listEntity && listEntity.length > 0) {
               MessageEntity messageEntity =
                   listEntity.elementAt(listEntity.length - 1);
-              messageEntity.isUnreadCount = typeEntity.isUnreadCount;
+              messageEntity.isUnreadCount = listTypeEntity.length;
               if (type == Constants.MESSAGE_TYPE_SYSTEM) {
                 if (list.contains(messageEntity.titleName)) {
                   //如果已经存在
@@ -132,15 +134,31 @@ class Message extends MessageState<MessagePage>
     }
   }
 
+  /*
+  * 定时刷新
+  */
   _startRefresh() {
     _refreshTimer =
         Timer.periodic(const Duration(milliseconds: 1000 * 60), _handleTime);
   }
 
   _handleTime(Timer timer) {
-    setState(() {
-      print('refresh data');
-    });
+    //当APP在前台，且当前页是0（即本页），则刷新
+    if (null != currentState &&
+        currentState != AppLifecycleState.paused &&
+        Constants.currentPage == 0) {
+      setState(() {
+        print('refresh data');
+      });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+    //initState后，未调用，所以初始化为resume，当APP进入后台，则为onPause；APP进入前台，为resume
+    currentState = state;
   }
 
   @override
@@ -150,6 +168,7 @@ class Message extends MessageState<MessagePage>
       _refreshTimer.cancel();
     }
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

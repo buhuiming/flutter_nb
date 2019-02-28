@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/functions.dart';
+import 'package:flutter_nb/utils/object_util.dart';
 
 class MoreWidgets {
   /*
@@ -350,6 +351,83 @@ class MoreWidgets {
                       size: 18,
                     ),
                   )
+                ],
+              ),
+              isDivider
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          left: iconData == null ? 0 : 40.0, top: padding + 2),
+                      child: Divider(
+                        height: 1.5,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 14,
+                    )
+            ])));
+  }
+
+  /*
+  *  生成switch button-ListView的item
+  */
+  static Widget switchListViewItem(IconData iconData, String text,
+      {double padding = 4.0,
+      double imageSize = 16.0,
+      bool isDivider = true,
+      Color iconColor = ColorT.text_dark,
+      Color textColor = ColorT.text_dark,
+      OnItemClick onItemClick,
+      OnItemClick onSwitch,
+      bool value = true}) {
+    return InkWell(
+        onTap: () {
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+        },
+        onLongPress: () {},
+        child: Container(
+            padding:
+                EdgeInsets.only(left: 20.0, right: 0, top: padding, bottom: 0),
+            child: Column(children: <Widget>[
+              Row(
+                children: <Widget>[
+                  iconData == null
+                      ? SizedBox(
+                          width: 0.0,
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(6.0),
+                          child: Icon(
+                            iconData,
+                            size: imageSize,
+                            color: iconColor,
+                          ),
+                        ),
+                  SizedBox(
+                    width: iconData == null ? 0 : 15.0,
+                  ),
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Text(
+                      text,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 17.0, color: textColor),
+                    ),
+                  ),
+                  Switch(
+                      value: value,
+                      activeColor: ObjectUtil.getThemeColor(), //激活时原点的颜色。
+                      activeTrackColor:
+                          ObjectUtil.getThemeLightColor(), //激活时横条的颜色。
+                      onChanged: (isCheck) {
+                        if (null != onSwitch) {
+                          onSwitch(isCheck);
+                        }
+                      })
                 ],
               ),
               isDivider

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
+import 'package:flutter_nb/utils/sp_util.dart';
 
 /*
 *  State基类，监听原生的回调，更新页面
@@ -12,6 +14,14 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     // TODO: implement initState
     super.initState();
     _addConnectionListener(); //添加监听
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (SPUtil.getBool(Constants.KEY_LOGIN) != true) {
+      ObjectUtil.doExit(context);
+    }
   }
 
   _addConnectionListener() {

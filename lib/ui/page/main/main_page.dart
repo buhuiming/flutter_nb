@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/base/theme_state.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
@@ -191,6 +192,7 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   }
 
   void _pageChange(int index) {
+    Constants.currentPage = index;
     setState(() {
       if (_tabIndex != index) {
         _tabIndex = index;

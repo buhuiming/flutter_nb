@@ -14,4 +14,14 @@ class Constants {
   static const String CONTENT_TYPE_SYSTEM = "text"; //消息内容类型：文本
 
   static const String KET_THEME_COLOR = "ket_theme_color"; //主题色
+
+  static int currentPage = 0;
+
+  static const String NOTIFICATION_KEY_ALL = "notification_key_all"; //新消息提醒总开关
+  static const String NOTIFICATION_KEY_SYSTEM =
+      "notification_key_system"; //系统消息提醒开关
+  static const String NOTIFICATION_KEY_CHAT =
+      "notification_key_chat"; //聊天消息提醒开关
+  static const String NOTIFICATION_KEY_OTHERS =
+      "notification_key_others"; //其他消息提醒开关
 }

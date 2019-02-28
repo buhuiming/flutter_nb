@@ -96,7 +96,7 @@ class MessageDataBase {
     for (Map<String, dynamic> item in result) {
       res.add(new MessageTypeEntity.fromMap(item));
     }
-    return res.length > 0 ? res.elementAt(0).isUnreadCount : 0;
+    return res.length > 0 ? res.length : 0;
   }
 
   /*

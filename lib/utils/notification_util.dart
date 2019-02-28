@@ -55,7 +55,8 @@ class NotificationUtil {
     return _show(3, title, content, payload);
   }
 
-  Future _show(int type, String title, String content, String payload) async {
+  Future _show(int type, String title, String content, String payload,
+      {String icon}) async {
     String groupKey;
     String groupChannelId;
     String groupChannelName;
@@ -97,7 +98,8 @@ class NotificationUtil {
             groupChannelId, groupChannelName, groupChannelDescription,
             importance: Importance.Max,
             priority: Priority.High,
-            groupKey: groupKey);
+            groupKey: groupKey,
+            icon: icon, );
     NotificationDetails firstNotificationPlatformSpecifics =
         new NotificationDetails(firstNotificationAndroidSpecifics, null);
     return await flutterLocalNotificationsPlugin.show(
@@ -125,7 +127,7 @@ class NotificationConfig {
   static const int ID_SYSTEM = 1;
   static const String GROUP_KEY_SYSTEM = '系统推送消息';
   static const String GROUP_CHANNEL_ID_SYSTEM = 'channel_id_system';
-  static const String GROUP_CHANNEL_NAME_SYSTEM = '常规推送';
+  static const String GROUP_CHANNEL_NAME_SYSTEM = '系统推送';
   static const String GROUP_CHANNEL_DESCRIPTION_SYSTEM = '包括好友验证、好友删除等';
 
   static int ID_CHAT = 100;

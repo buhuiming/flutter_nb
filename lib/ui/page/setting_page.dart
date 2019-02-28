@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/page/base/theme_state.dart';
 import 'package:flutter_nb/ui/page/change_theme_page.dart';
+import 'package:flutter_nb/ui/page/notification_settings_page.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
@@ -52,6 +53,13 @@ class _SettingState extends ThemeState<Setting> {
                   textColor: Colors.black, onItemClick: (res) {
                 DialogUtil.buildToast('清理完成');
               }),
+              MoreWidgets.defaultListViewItem(null, '新消息提醒',
+                  textColor: Colors.black, onItemClick: (res) {
+                    Navigator.push(
+                        context,
+                        new CupertinoPageRoute<void>(
+                            builder: (ctx) => NotificationSettings()));
+                  }),
             ],
           )),
           appBar: MoreWidgets.buildAppBar(
