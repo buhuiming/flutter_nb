@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/ui/page/base/theme_state.dart';
 import 'package:flutter_nb/ui/page/base/base_state.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/page/main/found_page.dart';
@@ -38,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 * 如果子页面是普通的Widget，则父页面（此页面），要有with AutomaticKeepAliveClientMixin且，且
 * bool get wantKeepAlive => true;才能保证页面切换，不刷新重置；
 */
-class _MyHomePageState extends BaseState<MyHomePage>
+class _MyHomePageState extends ThemeState<MyHomePage>
     with SingleTickerProviderStateMixin {
   Operation operation = new Operation();
   var _pageController = new PageController(initialPage: 0);
@@ -135,17 +136,6 @@ class _MyHomePageState extends BaseState<MyHomePage>
     // TODO: implement initState
     super.initState();
     initData();
-  }
-
-  @override
-  void didChange(int type) {
-    // TODO: implement didChange
-    super.didChange(type);
-    if (type == InteractNative.RESET_THEME_COLOR) {
-      setState(() {
-        initData();
-      });
-    }
   }
 
   @override

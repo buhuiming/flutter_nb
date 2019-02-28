@@ -1,18 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/database/message_database.dart';
-import 'package:flutter_nb/ui/page/base/app_state.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
-import 'package:flutter_nb/utils/sp_util.dart';
 
 /*
 *  State基类，监听原生的回调，更新页面
 */
-abstract class BaseState<T extends StatefulWidget> extends AppState<T> {
+abstract class BaseState<T extends StatefulWidget> extends State<T> {
   @override
   void initState() {
     // TODO: implement initState

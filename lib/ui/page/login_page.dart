@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/ui/page/base/app_state.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
@@ -27,7 +26,7 @@ class Login extends StatefulWidget {
   _LoginState createState() => new _LoginState();
 }
 
-class _LoginState extends AppState<Login> {
+class _LoginState extends State<Login> {
   final _usernameController = TextEditingController(
       text: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT));
   final _passwordController = TextEditingController();
@@ -41,7 +40,7 @@ class _LoginState extends AppState<Login> {
     return new MaterialApp(
         title: "登录",
         theme: ThemeData(
-            primarySwatch: primarySwatch,
+            primarySwatch: ObjectUtil.getThemeSwatchColor(),
             primaryColor: ObjectUtil.getThemeColor(color: 'white'),
             platform: TargetPlatform.iOS),
         routes: {
@@ -74,8 +73,8 @@ class _LoginState extends AppState<Login> {
                   SizedBox(height: 76.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                       focusNode: firstTextFieldNode,
@@ -106,8 +105,8 @@ class _LoginState extends AppState<Login> {
                   SizedBox(height: 12.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                         focusNode: secondTextFieldNode,

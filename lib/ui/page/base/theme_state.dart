@@ -2,10 +2,11 @@
 *  State基类，更新页面用
 */
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/ui/page/base/base_state.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 
-abstract class AppState<T extends StatefulWidget> extends State<T> {
+abstract class ThemeState<T extends StatefulWidget> extends BaseState<T> {
   Color primaryColor;
   MaterialColor primarySwatch;
   Color themeLightColor;
@@ -27,23 +28,11 @@ abstract class AppState<T extends StatefulWidget> extends State<T> {
   _addListener() {
     InteractNative.initAppEvent();
     InteractNative.getAppEventStream().listen((value) {
-      didChange(value);
       setState(() {
         if (value == InteractNative.RESET_THEME_COLOR) {
           _init();
         }
       });
     });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    InteractNative.initAppEvent().close();
-  }
-
-  void didChange(int type){
-
   }
 }

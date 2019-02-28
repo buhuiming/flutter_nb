@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/ui/page/base/app_state.dart';
+import 'package:flutter_nb/ui/page/base/theme_state.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
@@ -28,7 +28,7 @@ class Register extends StatefulWidget {
   }
 }
 
-class _RegisterState extends AppState<Register> {
+class _RegisterState extends State<Register> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordSureController = TextEditingController();
@@ -68,8 +68,8 @@ class _RegisterState extends AppState<Register> {
                   SizedBox(height: 60.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                       focusNode: firstTextFieldNode,
@@ -100,8 +100,8 @@ class _RegisterState extends AppState<Register> {
                   SizedBox(height: 12.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                         focusNode: secondTextFieldNode,
@@ -135,8 +135,8 @@ class _RegisterState extends AppState<Register> {
                   SizedBox(height: 12.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                         focusNode: thirdTextFieldNode,
@@ -169,8 +169,8 @@ class _RegisterState extends AppState<Register> {
                   SizedBox(height: 12.0),
                   new Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    shadowColor: themeLightColor,
-                    color: themeLightColor,
+                    shadowColor: ObjectUtil.getThemeLightColor(),
+                    color: ObjectUtil.getThemeLightColor(),
                     elevation: 5.0,
                     child: new TextField(
                       focusNode: aTextFieldNode,

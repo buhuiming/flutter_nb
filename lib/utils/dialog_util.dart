@@ -66,7 +66,10 @@ class DialogUtil {
                     },
                   ),
                   new FlatButton(
-                    child: new Text(right),
+                    child: new Text(
+                      right,
+                      style: TextStyle(color: ObjectUtil.getThemeColor()),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                       if (null != rightClick) {
