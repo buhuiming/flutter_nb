@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 class InteractNative {
   /* 通道名称，必须与原生注册的一致*/
@@ -10,6 +11,10 @@ class InteractNative {
       const EventChannel('com.bhm.flutter.flutternb.plugins/native_to_flutter');
 
   static StreamSubscription streamSubscription;
+
+  static BehaviorSubject<int> _appEvent = BehaviorSubject<int>(); //APP内部通信对象
+
+  static const int RESET_THEME_COLOR = 1;
   /*
    * 方法名称，必须与flutter注册的一致
    */
@@ -47,9 +52,37 @@ class InteractNative {
     return streamSubscription;
   }
 
+  /*
+  * 自定义通信
+  */
+  static BehaviorSubject<int> initAppEvent() {
+    if (null == _appEvent) {
+      _appEvent = BehaviorSubject<int>();
+    }
+    return _appEvent;
+  }
+
+  /*发送*/
+  static Sink<int> getAppEventSink() {
+    initAppEvent();
+    return _appEvent.sink;
+  }
+
+  /*接收*/
+  static Stream<int> getAppEventStream() {
+    initAppEvent();
+    return _appEvent.stream;
+  }
+
+  /*
+  *  退出登录时，需要关闭
+  */
   static void closeStream() {
     if (null != streamSubscription) {
       streamSubscription.cancel();
+    }
+    if (null != _appEvent) {
+      _appEvent.close();
     }
   }
 }

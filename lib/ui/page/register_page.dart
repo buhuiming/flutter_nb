@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/base/app_state.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
@@ -15,12 +16,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     DeviceUtil.setBarStatus(true);
-    return new MaterialApp(
-        theme: ThemeData(
-            primaryColor: ObjectUtil.getThemeColor(),
-            platform: TargetPlatform.iOS),
-        home: new Register(),
-       );
+    return new Register();
   }
 }
 
@@ -32,7 +28,7 @@ class Register extends StatefulWidget {
   }
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterState extends AppState<Register> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordSureController = TextEditingController();
@@ -47,186 +43,191 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new LoadingScaffold(
-      //使用有Loading的widget
-      operation: operation,
-      isShowLoadingAtNow: false,
-      backPressType: BackPressType.CLOSE_CURRENT,
-      backPressCallback: (backPressType) {
-        print('back press and type is ' + backPressType.toString()); //点击了返回键
-      },
-      child: new Scaffold(
-        key: _scaffoldkey,
-        backgroundColor: Colors.white,
-        primary: true,
-        body: SafeArea(
-          child: ListView(
-            physics: AlwaysScrollableScrollPhysics(), //内容不足一屏
-            padding: EdgeInsets.symmetric(horizontal: 40.0),
-            children: <Widget>[
-              SizedBox(height: 60.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                  focusNode: firstTextFieldNode,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  controller: _usernameController,
-                  maxLines: 1,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(11), //长度限制11
-                    WhitelistingTextInputFormatter.digitsOnly,
-                  ], //只能输入整数
-                  decoration: InputDecoration(
-                      labelText: 'Username',
-                      hintText: '最大长度为11个数字',
-                      prefixIcon: Icon(Icons.phone_android),
-                      contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: InputBorder.none,
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                      )),
-                  onEditingComplete: () =>
-                      FocusScope.of(context).requestFocus(secondTextFieldNode),
-                ),
+    return new MaterialApp(
+        theme: ThemeData(
+            primaryColor: ObjectUtil.getThemeColor(),
+            platform: TargetPlatform.iOS),
+        home: new LoadingScaffold(
+          //使用有Loading的widget
+          operation: operation,
+          isShowLoadingAtNow: false,
+          backPressType: BackPressType.CLOSE_CURRENT,
+          backPressCallback: (backPressType) {
+            print(
+                'back press and type is ' + backPressType.toString()); //点击了返回键
+          },
+          child: new Scaffold(
+            key: _scaffoldkey,
+            backgroundColor: Colors.white,
+            primary: true,
+            body: SafeArea(
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(), //内容不足一屏
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                children: <Widget>[
+                  SizedBox(height: 60.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                      focusNode: firstTextFieldNode,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      controller: _usernameController,
+                      maxLines: 1,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(11), //长度限制11
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ], //只能输入整数
+                      decoration: InputDecoration(
+                          labelText: 'Username',
+                          hintText: '最大长度为11个数字',
+                          prefixIcon: Icon(Icons.phone_android),
+                          contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                          filled: true,
+                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          )),
+                      onEditingComplete: () => FocusScope.of(context)
+                          .requestFocus(secondTextFieldNode),
+                    ),
+                  ),
+                  SizedBox(height: 12.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                        focusNode: secondTextFieldNode,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        controller: _passwordController,
+                        maxLines: 1,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(18),
+                          WhitelistingTextInputFormatter(
+                              RegExp(Constants.INPUTFORMATTERS))
+                        ],
+                        obscureText: false,
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            hintText: '请输入密码',
+                            prefixIcon: Icon(Icons.lock),
+                            contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            )),
+                        onEditingComplete: () {
+                          FocusScope.of(context)
+                              .requestFocus(thirdTextFieldNode);
+                        }),
+                  ),
+                  SizedBox(height: 12.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                        focusNode: thirdTextFieldNode,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        controller: _passwordSureController,
+                        maxLines: 1,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(18),
+                          WhitelistingTextInputFormatter(
+                              RegExp(Constants.INPUTFORMATTERS))
+                        ],
+                        obscureText: false,
+                        decoration: InputDecoration(
+                            labelText: 'Confirm password',
+                            hintText: '请确认密码',
+                            prefixIcon: Icon(Icons.lock),
+                            contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            )),
+                        onEditingComplete: () {
+                          FocusScope.of(context).requestFocus(aTextFieldNode);
+                        }),
+                  ),
+                  SizedBox(height: 12.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                      focusNode: aTextFieldNode,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      controller: _aController,
+                      maxLines: 1,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(11), //长度限制11
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ], //只能输入整数
+                      decoration: InputDecoration(
+                          labelText: '验证码',
+                          hintText: authCodeMap.keys.elementAt(0),
+                          prefixIcon: Icon(Icons.phone_android),
+                          contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                          filled: true,
+                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          )),
+                      onEditingComplete: () => _checkInput(context, operation),
+                    ),
+                  ),
+                  SizedBox(height: 50.0),
+                  RaisedButton(
+                    textColor: Colors.white,
+                    color: ObjectUtil.getThemeSwatchColor(),
+                    padding: EdgeInsets.all(12.0),
+                    shape: new StadiumBorder(
+                        side: new BorderSide(
+                      style: BorderStyle.solid,
+                      color: ObjectUtil.getThemeSwatchColor(),
+                    )),
+                    child: Text('立即注册', style: new TextStyle(fontSize: 16.0)),
+                    onPressed: () {
+                      _checkInput(context, operation);
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: 12.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                    focusNode: secondTextFieldNode,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    controller: _passwordController,
-                    maxLines: 1,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(
-                          RegExp(Constants.INPUTFORMATTERS))
-                    ],
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        labelText: 'Password',
-                        hintText: '请输入密码',
-                        prefixIcon: Icon(Icons.lock),
-                        contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                        )),
-                    onEditingComplete: () {
-                      FocusScope.of(context).requestFocus(thirdTextFieldNode);
-                    }),
-              ),
-              SizedBox(height: 12.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                    focusNode: thirdTextFieldNode,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    controller: _passwordSureController,
-                    maxLines: 1,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(
-                          RegExp(Constants.INPUTFORMATTERS))
-                    ],
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        labelText: 'Confirm password',
-                        hintText: '请确认密码',
-                        prefixIcon: Icon(Icons.lock),
-                        contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                        )),
-                    onEditingComplete: () {
-                      FocusScope.of(context).requestFocus(aTextFieldNode);
-                    }),
-              ),
-              SizedBox(height: 12.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                  focusNode: aTextFieldNode,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  controller: _aController,
-                  maxLines: 1,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(11), //长度限制11
-                    WhitelistingTextInputFormatter.digitsOnly,
-                  ], //只能输入整数
-                  decoration: InputDecoration(
-                      labelText: '验证码',
-                      hintText: authCodeMap.keys.elementAt(0),
-                      prefixIcon: Icon(Icons.phone_android),
-                      contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: InputBorder.none,
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                      )),
-                  onEditingComplete: () =>
-                    _checkInput(context, operation),
-                ),
-              ),
-              SizedBox(height: 50.0),
-              RaisedButton(
-                textColor: Colors.white,
-                color: ObjectUtil.getThemeSwatchColor(),
-                padding: EdgeInsets.all(12.0),
-                shape: new StadiumBorder(
-                    side: new BorderSide(
-                  style: BorderStyle.solid,
-                  color: ObjectUtil.getThemeSwatchColor(),
-                )),
-                child: Text('立即注册', style: new TextStyle(fontSize: 16.0)),
-                onPressed: () {
-                  _checkInput(context, operation);
-                },
-              ),
-            ],
+            ),
+            appBar: MoreWidgets.buildAppBar(
+              context,
+              '立即注册',
+              centerTitle: true,
+              elevation: 2.0,
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ),
           ),
-        ),
-        appBar: MoreWidgets.buildAppBar(
-          context,
-          '立即注册',
-          centerTitle: true,
-          elevation: 2.0,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-        ),
-      ),
-    );
+        ));
   }
 
   void _checkInput(BuildContext context, Operation operation) {
@@ -255,7 +256,7 @@ class _RegisterState extends State<Register> {
       return;
     }
     var authCode = _aController.text;
-    if(authCode != authCodeMap.values.elementAt(0)){
+    if (authCode != authCodeMap.values.elementAt(0)) {
       FocusScope.of(context).requestFocus(aTextFieldNode);
       DialogUtil.buildToast("please enter the correct auth code.");
       return;
@@ -263,7 +264,8 @@ class _RegisterState extends State<Register> {
 
     operation.setShowLoading(true);
     Map<String, String> map = {"username": username, "password": password};
-    InteractNative.goNativeWithValue(InteractNative.methodNames['register'], map)
+    InteractNative.goNativeWithValue(
+            InteractNative.methodNames['register'], map)
         .then((success) {
       operation.setShowLoading(false);
       if (success == true) {

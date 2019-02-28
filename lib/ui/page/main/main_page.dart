@@ -19,22 +19,12 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DeviceUtil.setBarStatus(true);
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            primaryColor: ObjectUtil.getThemeColor(),
-            primarySwatch: ObjectUtil.getThemeSwatchColor(),
-            platform: TargetPlatform.iOS),
-        home: MyHomePage(title: 'FlutterDemo'),
-        routes: {
-          '/LoginPage': (ctx) => LoginPage(),
-        });
+    return MyHomePage();
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -78,7 +68,7 @@ class _MyHomePageState extends BaseState<MyHomePage>
     if (curIndex == _tabIndex) {
       return new Text(appBarTitles[curIndex],
           style: new TextStyle(
-              fontSize: 13.0, color: ObjectUtil.getThemeSwatchColor()));
+              fontSize: 13.0, color: primarySwatch));
     } else {
       return new Text(appBarTitles[curIndex],
           style: new TextStyle(fontSize: 13.0, color: ColorT.text_gray));
@@ -91,7 +81,7 @@ class _MyHomePageState extends BaseState<MyHomePage>
   Image getTabImage(path, {bool isSelect = false}) {
     return isSelect
         ? Image.asset(path,
-            width: 22.0, height: 22.0, color: ObjectUtil.getThemeSwatchColor())
+            width: 22.0, height: 22.0, color: primarySwatch)
         : Image.asset(path, width: 22.0, height: 22.0);
   }
 
@@ -148,6 +138,17 @@ class _MyHomePageState extends BaseState<MyHomePage>
   }
 
   @override
+  void didChange(int type) {
+    // TODO: implement didChange
+    super.didChange(type);
+    if (type == InteractNative.RESET_THEME_COLOR) {
+      setState(() {
+        initData();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     _pageController.dispose();
@@ -156,46 +157,54 @@ class _MyHomePageState extends BaseState<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return new LoadingScaffold(
-        //使用有Loading的widget
-        operation: operation,
-        isShowLoadingAtNow: false,
-        child: new WillPopScope(
-          onWillPop: () {
-            _backPress(); //物理返回键，返回到桌面
-          },
-          child: Scaffold(
-              body: new PageView.builder(
-                onPageChanged: _pageChange,
-                controller: _pageController,
-                itemBuilder: (BuildContext context, int index) {
-                  return _pageList[index];
-                },
-                itemCount: 4,
-              ),
-              bottomNavigationBar: new BottomNavigationBar(
-                items: <BottomNavigationBarItem>[
-                  new BottomNavigationBarItem(
-                      icon: getTabIcon(0), title: getTabTitle(0)),
-                  new BottomNavigationBarItem(
-                      icon: getTabIcon(1), title: getTabTitle(1)),
-                  new BottomNavigationBarItem(
-                      icon: getTabIcon(2), title: getTabTitle(2)),
-                  new BottomNavigationBarItem(
-                      icon: getTabIcon(3), title: getTabTitle(3)),
-                ],
-                type: BottomNavigationBarType.fixed,
-                //默认选中首页
-                currentIndex: _tabIndex,
-                iconSize: 22.0,
-                //点击事件
-                onTap: (index) {
-                  _pageController.animateToPage(index,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.ease);
-                },
-              )),
-        ));
+    return MaterialApp(
+        theme: ThemeData(
+            primaryColor: primaryColor,
+            primarySwatch: primarySwatch,
+            platform: TargetPlatform.iOS),
+        routes: {
+          '/LoginPage': (ctx) => LoginPage(),
+        },
+        home: new LoadingScaffold(
+            //使用有Loading的widget
+            operation: operation,
+            isShowLoadingAtNow: false,
+            child: new WillPopScope(
+              onWillPop: () {
+                _backPress(); //物理返回键，返回到桌面
+              },
+              child: Scaffold(
+                  body: new PageView.builder(
+                    onPageChanged: _pageChange,
+                    controller: _pageController,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _pageList[index];
+                    },
+                    itemCount: 4,
+                  ),
+                  bottomNavigationBar: new BottomNavigationBar(
+                    items: <BottomNavigationBarItem>[
+                      new BottomNavigationBarItem(
+                          icon: getTabIcon(0), title: getTabTitle(0)),
+                      new BottomNavigationBarItem(
+                          icon: getTabIcon(1), title: getTabTitle(1)),
+                      new BottomNavigationBarItem(
+                          icon: getTabIcon(2), title: getTabTitle(2)),
+                      new BottomNavigationBarItem(
+                          icon: getTabIcon(3), title: getTabTitle(3)),
+                    ],
+                    type: BottomNavigationBarType.fixed,
+                    //默认选中首页
+                    currentIndex: _tabIndex,
+                    iconSize: 22.0,
+                    //点击事件
+                    onTap: (index) {
+                      _pageController.animateToPage(index,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease);
+                    },
+                  )),
+            )));
   }
 
   void _pageChange(int index) {

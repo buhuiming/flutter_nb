@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/ui/page/base/app_state.dart';
 import 'package:flutter_nb/ui/page/login_page.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/splash_page.dart';
@@ -11,11 +12,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DeviceUtil.setBarStatus(true);
+    return new MyAppPage();
+  }
+}
+
+class MyAppPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return new MyAppState();
+  }
+}
+
+class MyAppState extends AppState<MyAppPage> {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
     return MaterialApp(
         theme: ThemeData(
-            primaryColor: ObjectUtil.getThemeColor(),
-            accentColor: ObjectUtil.getThemeSwatchColor(),
-            indicatorColor: ObjectUtil.getThemeColor()),
+            primaryColor: primaryColor,
+            accentColor: primarySwatch,
+            indicatorColor: primaryColor),
         home: new SplashPage(),
         routes: {
           '/LoginPage': (ctx) => LoginPage(),

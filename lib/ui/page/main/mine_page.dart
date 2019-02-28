@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/change_theme_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/ui/widget/popupwindow_widget.dart';
@@ -60,9 +62,12 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
             MoreWidgets.defaultListViewItem(Icons.face, '表情',
                 textColor: Colors.black),
             MoreWidgets.defaultListViewItem(Icons.settings, '设置',
-                textColor: Colors.black,
-                isDivider: false,
-                onItemClick: (res) {}),
+                textColor: Colors.black, isDivider: false, onItemClick: (res) {
+              Navigator.push(
+                  context,
+                  new CupertinoPageRoute<void>(
+                      builder: (ctx) => ChangeThemePage()));
+            }),
             MoreWidgets.buildDivider(),
             MoreWidgets.defaultListViewItem(Icons.exit_to_app, '退出',
                 textColor: Colors.black, isDivider: false, onItemClick: (res) {

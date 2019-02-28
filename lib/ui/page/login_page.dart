@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/ui/page/base/app_state.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/ui/page/register_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
@@ -17,15 +18,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     DeviceUtil.setBarStatus(true);
-    return new MaterialApp(
-        title: "登录",
-        theme: ThemeData(
-            primaryColor: ObjectUtil.getThemeColor(color: 'white'),
-            platform: TargetPlatform.iOS),
-        home: new Login(),
-        routes: {
-          '/MainPage': (ctx) => MainPage(),
-        });
+    return new Login();
   }
 }
 
@@ -34,7 +27,7 @@ class Login extends StatefulWidget {
   _LoginState createState() => new _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends AppState<Login> {
   final _usernameController = TextEditingController(
       text: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT));
   final _passwordController = TextEditingController();
@@ -45,138 +38,148 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new LoadingScaffold(
-      //使用有Loading的widget
-      operation: operation,
-      isShowLoadingAtNow: false,
-      child: new Scaffold(
-        key: _scaffoldkey,
-        backgroundColor: Colors.white,
-        primary: true,
-        body: SafeArea(
-          child: ListView(
-            physics: AlwaysScrollableScrollPhysics(), //内容不足一屏
-            padding: EdgeInsets.symmetric(horizontal: 40.0),
-            children: <Widget>[
-              SizedBox(height: 60.0),
-              new Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: new Image.asset(
-                      FileUtil.getImagePath('logo',
-                          dir: 'splash', format: 'png'),
-                      height: 100.0,
-                      width: 100.0),
-                ),
-              ),
-              SizedBox(height: 76.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                  focusNode: firstTextFieldNode,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  controller: _usernameController,
-                  maxLines: 1,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(11), //长度限制11
-                    WhitelistingTextInputFormatter.digitsOnly
-                  ], //只能输入整数
-                  decoration: InputDecoration(
-                      labelText: 'Username',
-                      hintText: '请输入帐号',
-                      prefixIcon: Icon(Icons.phone_android),
-                      contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: InputBorder.none,
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                      )),
-                  onEditingComplete: () =>
-                      FocusScope.of(context).requestFocus(secondTextFieldNode),
-                ),
-              ),
-              SizedBox(height: 12.0),
-              new Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: ObjectUtil.getThemeLightColor(),
-                color: ObjectUtil.getThemeLightColor(),
-                elevation: 5.0,
-                child: new TextField(
-                    focusNode: secondTextFieldNode,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
-                    controller: _passwordController,
-                    maxLines: 1,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(18),
-                      WhitelistingTextInputFormatter(
-                          RegExp(Constants.INPUTFORMATTERS))
-                    ],
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        labelText: 'Password',
-                        hintText: '请输入密码',
-                        prefixIcon: Icon(Icons.lock),
-                        contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                        )),
-                    onEditingComplete: () {
-                      _checkInput(context, operation);
-                    }),
-              ),
-              SizedBox(height: 15.0),
-              RaisedButton(
-                textColor: Colors.white,
-                color: ObjectUtil.getThemeSwatchColor(),
-                padding: EdgeInsets.all(12.0),
-                shape: new StadiumBorder(
-                    side: new BorderSide(
-                  style: BorderStyle.solid,
-                  color: ObjectUtil.getThemeSwatchColor(),
-                )),
-                child: Text('登录', style: new TextStyle(fontSize: 16.0)),
-                onPressed: () {
+    return new MaterialApp(
+        title: "登录",
+        theme: ThemeData(
+            primarySwatch: primarySwatch,
+            primaryColor: ObjectUtil.getThemeColor(color: 'white'),
+            platform: TargetPlatform.iOS),
+        routes: {
+          '/MainPage': (ctx) => MainPage(),
+        },
+        home: new LoadingScaffold(
+          //使用有Loading的widget
+          operation: operation,
+          isShowLoadingAtNow: false,
+          child: new Scaffold(
+            key: _scaffoldkey,
+            backgroundColor: Colors.white,
+            primary: true,
+            body: SafeArea(
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(), //内容不足一屏
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                children: <Widget>[
+                  SizedBox(height: 60.0),
+                  new Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: new Image.asset(
+                          FileUtil.getImagePath('logo',
+                              dir: 'splash', format: 'png'),
+                          height: 100.0,
+                          width: 100.0),
+                    ),
+                  ),
+                  SizedBox(height: 76.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                      focusNode: firstTextFieldNode,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      controller: _usernameController,
+                      maxLines: 1,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(11), //长度限制11
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ], //只能输入整数
+                      decoration: InputDecoration(
+                          labelText: 'Username',
+                          hintText: '请输入帐号',
+                          prefixIcon: Icon(Icons.phone_android),
+                          contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                          filled: true,
+                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          )),
+                      onEditingComplete: () => FocusScope.of(context)
+                          .requestFocus(secondTextFieldNode),
+                    ),
+                  ),
+                  SizedBox(height: 12.0),
+                  new Material(
+                    borderRadius: BorderRadius.circular(20.0),
+                    shadowColor: themeLightColor,
+                    color: themeLightColor,
+                    elevation: 5.0,
+                    child: new TextField(
+                        focusNode: secondTextFieldNode,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        controller: _passwordController,
+                        maxLines: 1,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(18),
+                          WhitelistingTextInputFormatter(
+                              RegExp(Constants.INPUTFORMATTERS))
+                        ],
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            hintText: '请输入密码',
+                            prefixIcon: Icon(Icons.lock),
+                            contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            )),
+                        onEditingComplete: () {
+                          _checkInput(context, operation);
+                        }),
+                  ),
+                  SizedBox(height: 15.0),
+                  RaisedButton(
+                    textColor: Colors.white,
+                    color: ObjectUtil.getThemeSwatchColor(),
+                    padding: EdgeInsets.all(12.0),
+                    shape: new StadiumBorder(
+                        side: new BorderSide(
+                      style: BorderStyle.solid,
+                      color: ObjectUtil.getThemeSwatchColor(),
+                    )),
+                    child: Text('登录', style: new TextStyle(fontSize: 16.0)),
+                    onPressed: () {
 //                  Navigator.pop(context);
-                  _checkInput(context, operation);
-                },
+                      _checkInput(context, operation);
+                    },
+                  ),
+                  new Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            new CupertinoPageRoute<void>(
+                                builder: (ctx) => RegisterPage()));
+                      },
+                      child: new Container(
+                          padding: EdgeInsets.only(right: 12.0, top: 6),
+                          child: Text('没有账号？ ',
+                              maxLines: 1,
+                              style: new TextStyle(
+                                  fontSize: 13.0,
+                                  color: Colors.black54,
+                                  letterSpacing: 0.6,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.italic,
+                                  decoration: TextDecoration.underline))),
+                    ),
+                  ),
+                ],
               ),
-              new Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        new CupertinoPageRoute<void>(
-                            builder: (ctx) => RegisterPage()));
-                  },
-                  child: new Container(
-                      padding: EdgeInsets.only(right: 12.0, top: 6),
-                      child: Text('没有账号？ ',maxLines: 1,
-                          style: new TextStyle(
-                              fontSize: 13.0,
-                              color: Colors.black54,
-                              letterSpacing: 0.6,
-                              fontWeight: FontWeight.normal,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline))),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   void _checkInput(BuildContext context, Operation operation) {

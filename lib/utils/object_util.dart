@@ -29,21 +29,89 @@ class ObjectUtil {
   *  获取app的AppBar、ToolBar颜色
   */
   static Color getThemeColor({String color: "red"}) {
-    return themeColorMap[color];
+    return themeColorMap[SPUtil.getString(Constants.KET_THEME_COLOR) == null
+        ? "red"
+        : SPUtil.getString(Constants.KET_THEME_COLOR)];
   }
 
   /*
   *  生成与app主题相近的亮颜色
   */
   static Color getThemeLightColor() {
-    return Colors.red[100];
+    String res = SPUtil.getString(Constants.KET_THEME_COLOR);
+    Color color;
+    switch (res) {
+      case 'null':
+        color = Colors.red[50];
+        break;
+      case 'pink':
+        color = Colors.pink[50];
+        break;
+      case 'purple':
+        color = Colors.purple[50];
+        break;
+      case 'deepPurple':
+        color = Colors.deepPurple[50];
+        break;
+      case 'indigo':
+        color = Colors.indigo[50];
+        break;
+      case 'blue':
+        color = Colors.blue[50];
+        break;
+      case 'lightBlue':
+        color = Colors.lightBlue[50];
+        break;
+      case 'cyan':
+        color = Colors.cyan[50];
+        break;
+      case 'teal':
+        color = Colors.teal[50];
+        break;
+      case 'green':
+        color = Colors.green[50];
+        break;
+      case 'lightGreen':
+        color = Colors.lightGreen[50];
+        break;
+      case 'lime':
+        color = Colors.lime[50];
+        break;
+      case 'yellow':
+        color = Colors.yellow[50];
+        break;
+      case 'amber':
+        color = Colors.amber[50];
+        break;
+      case 'orange':
+        color = Colors.orange[50];
+        break;
+      case 'red':
+        color = Colors.red[50];
+        break;
+      case 'deepOrange':
+        color = Colors.deepOrange[50];
+        break;
+      case 'brown':
+        color = Colors.brown[50];
+        break;
+      case 'blueGrey':
+        color = Colors.blueGrey[50];
+        break;
+      default:
+        color = Colors.red[50];
+    }
+    return color;
   }
 
   /*
   *  获取app的主题颜色
   */
   static Color getThemeSwatchColor({String color: "red"}) {
-    return themeSwatchColorMap[color];
+    return themeSwatchColorMap[
+        SPUtil.getString(Constants.KET_THEME_COLOR) == null
+            ? "red"
+            : SPUtil.getString(Constants.KET_THEME_COLOR)];
   }
 
   /*
