@@ -12,6 +12,10 @@
 
 ### 3、[Flutter自定义带搜索框的AppBar](https://www.jianshu.com/p/03f5db68567b)
 
+### 4、[Flutter与原生Android双向交互](https://www.jianshu.com/p/c19e2c12da2d)
+
+### 5、[关于Flutter沉浸式状态栏](https://www.jianshu.com/p/0a74b134705b)
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
