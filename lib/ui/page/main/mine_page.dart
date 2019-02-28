@@ -2,15 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
-import 'package:flutter_nb/ui/widget/popupwidow_widget.dart';
+import 'package:flutter_nb/ui/widget/popupwindow_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
-import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
-import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 
@@ -45,7 +42,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
                 SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT),
                 content: '萍水相逢，尽是他乡之客',
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
-              PopupWidowUtil.showPhotoChosen(context, onCallBack: (image) {
+              PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 setState(() {
                   imageChild = image;
                 });
@@ -63,18 +60,15 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
             MoreWidgets.defaultListViewItem(Icons.face, '表情',
                 textColor: Colors.black),
             MoreWidgets.defaultListViewItem(Icons.settings, '设置',
-                textColor: Colors.black, isDivider: false, onItemClick: (res) {
-              NotificationUtil.build().showChat(
-                  '聊天消息',
-                  '后来也怕了，我也不想租了。不过说实话，那地方住的很舒服，很安静，很大。',
-                  Constants.MESSAGE_TYPE_CHAT);
-//              NotificationUtil.build().showSystem('系统消息',
-//                  '您收到一个好友添加邀请，请求添加您为好友！', Constants.MESSAGE_TYPE_SYSTEM);
-            }),
+                textColor: Colors.black,
+                isDivider: false,
+                onItemClick: (res) {}),
             MoreWidgets.buildDivider(),
             MoreWidgets.defaultListViewItem(Icons.exit_to_app, '退出',
                 textColor: Colors.black, isDivider: false, onItemClick: (res) {
-              _logOut();
+              DialogUtil.showBaseDialog(context, '确定退出登录吗？', rightClick: (res) {
+                _logOut();
+              });
             }),
             MoreWidgets.buildDivider(),
           ],
@@ -93,7 +87,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
               size: 22,
             )),
         onTap: () {
-          PopupWidowUtil.showPhotoChosen(context);
+          PopupWindowUtil.showPhotoChosen(context);
         });
     actions.add(widget);
     return actions;

@@ -3,7 +3,7 @@ import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/image_util.dart';
 
-class PopupWidowUtil {
+class PopupWindowUtil {
   /*
   * 选择相机相册
   */

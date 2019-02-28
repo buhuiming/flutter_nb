@@ -7,6 +7,7 @@ import 'package:flutter_nb/ui/page/main/friends_page.dart';
 import 'package:flutter_nb/ui/page/main/message_page.dart';
 import 'package:flutter_nb/ui/page/main/mine_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
+import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_nb/utils/object_util.dart';
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    DeviceUtil.setBarStatus(true);
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

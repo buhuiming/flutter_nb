@@ -39,6 +39,9 @@ class ObjectUtil {
     return themeSwatchColorMap[color];
   }
 
+  /*
+  * 退出登录调用
+  */
   static void doExit(BuildContext context) {
     NotificationUtil.build().cancelAll();
     MessageDataBase.get().close();
