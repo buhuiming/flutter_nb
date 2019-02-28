@@ -1,4 +1,4 @@
-# flutter_nb
+# flutter_nb ([Demo.apk](https://github.com/buhuiming/flutter_nb/blob/master/apk/app-release.apk))
 
 一个集成环信IM的Flutter项目。
 
