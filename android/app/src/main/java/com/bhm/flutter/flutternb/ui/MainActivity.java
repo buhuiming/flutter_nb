@@ -16,6 +16,4 @@ public class MainActivity extends FlutterActivity {
     GeneratedPluginRegistrant.registerWith(this);
     FlutterPlugins.registerWith(this);
   }
-
-
 }

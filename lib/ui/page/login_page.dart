@@ -72,8 +72,8 @@ class _LoginState extends State<Login> {
               SizedBox(height: 76.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                   focusNode: firstTextFieldNode,
@@ -104,8 +104,8 @@ class _LoginState extends State<Login> {
               SizedBox(height: 12.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                     focusNode: secondTextFieldNode,

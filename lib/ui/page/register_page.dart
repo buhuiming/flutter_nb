@@ -15,7 +15,12 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     DeviceUtil.setBarStatus(true);
-    return new Register();
+    return new MaterialApp(
+        theme: ThemeData(
+            primaryColor: ObjectUtil.getThemeColor(),
+            platform: TargetPlatform.iOS),
+        home: new Register(),
+       );
   }
 }
 
@@ -62,8 +67,8 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 60.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                   focusNode: firstTextFieldNode,
@@ -94,8 +99,8 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 12.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                     focusNode: secondTextFieldNode,
@@ -128,8 +133,8 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 12.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                     focusNode: thirdTextFieldNode,
@@ -162,8 +167,8 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 12.0),
               new Material(
                 borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.blue[100],
-                color: Colors.blue[100],
+                shadowColor: ObjectUtil.getThemeLightColor(),
+                color: ObjectUtil.getThemeLightColor(),
                 elevation: 5.0,
                 child: new TextField(
                   focusNode: aTextFieldNode,

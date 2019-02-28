@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
             primaryColor: ObjectUtil.getThemeColor(),
-            accentColor: ObjectUtil.getThemeSwatchColor(color: 'lightBlue'),
+            accentColor: ObjectUtil.getThemeSwatchColor(),
             indicatorColor: ObjectUtil.getThemeColor()),
         home: new SplashPage(),
         routes: {

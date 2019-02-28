@@ -8,7 +8,7 @@ class DeviceUtil {
   * 以下两行设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，
   * 覆盖状态栏，写在渲染之前MaterialApp组件会覆盖掉这个值。
   */
-  static setBarStatus(bool isDarkIcon, {Color color: Colors.white}) {
+  static setBarStatus(bool isDarkIcon, {Color color: Colors.transparent}) async{
     if (Platform.isAndroid) {
       if (isDarkIcon) {
         SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(

@@ -28,14 +28,21 @@ class ObjectUtil {
   /*
   *  获取app的AppBar、ToolBar颜色
   */
-  static Color getThemeColor({String color: "white"}) {
+  static Color getThemeColor({String color: "red"}) {
     return themeColorMap[color];
+  }
+
+  /*
+  *  生成与app主题相近的亮颜色
+  */
+  static Color getThemeLightColor() {
+    return Colors.red[100];
   }
 
   /*
   *  获取app的主题颜色
   */
-  static Color getThemeSwatchColor({String color: "blue"}) {
+  static Color getThemeSwatchColor({String color: "red"}) {
     return themeSwatchColorMap[color];
   }
 

@@ -98,11 +98,11 @@ class _SplashPageState extends State<SplashPage> {
                 height: 36.0,
                 child: RaisedButton(
                     textColor: Colors.white,
-                    color: Colors.blue,
+                    color: ObjectUtil.getThemeColor(),
                     shape: new StadiumBorder(
                         side: new BorderSide(
                       style: BorderStyle.solid,
-                      color: Colors.blue,
+                      color: ObjectUtil.getThemeColor(),
                     )),
                     child: Text('立即体验'),
                     onPressed: () {

@@ -109,6 +109,7 @@ Map<String, Color> themeSwatchColorMap = {
   'yellow': Colors.yellow,
   'amber': Colors.amber,
   'orange': Colors.orange,
+  'red': Colors.red,
   'deepOrange': Colors.deepOrange,
   'brown': Colors.brown,
   'blueGrey': Colors.blueGrey,

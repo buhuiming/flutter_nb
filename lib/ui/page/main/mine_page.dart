@@ -95,10 +95,11 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
 
   Widget _getHeadPortrait() {
     if (null != imageChild) {
-      return Image.file(imageChild, width: 62, height: 62);
+      return Image.file(imageChild, width: 62, height: 62, fit: BoxFit.fill);
     }
     return Image.asset(
         FileUtil.getImagePath('logo', dir: 'splash', format: 'png'),
+        fit: BoxFit.fill,
         width: 62,
         height: 62);
   }

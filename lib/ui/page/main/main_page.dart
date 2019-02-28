@@ -88,8 +88,11 @@ class _MyHomePageState extends BaseState<MyHomePage>
   /*
    * 根据image路径获取图片
    */
-  Image getTabImage(path) {
-    return new Image.asset(path, width: 22.0, height: 22.0);
+  Image getTabImage(path, {bool isSelect = false}) {
+    return isSelect
+        ? Image.asset(path,
+            width: 22.0, height: 22.0, color: ObjectUtil.getThemeSwatchColor())
+        : Image.asset(path, width: 22.0, height: 22.0);
   }
 
   void initData() {
@@ -101,25 +104,29 @@ class _MyHomePageState extends BaseState<MyHomePage>
         getTabImage(
             FileUtil.getImagePath('message', dir: 'main_page', format: 'png')),
         getTabImage(
-            FileUtil.getImagePath('message_c', dir: 'main_page', format: 'png'))
+            FileUtil.getImagePath('message_c', dir: 'main_page', format: 'png'),
+            isSelect: true)
       ],
       [
         getTabImage(
             FileUtil.getImagePath('friends', dir: 'main_page', format: 'png')),
         getTabImage(
-            FileUtil.getImagePath('friends_c', dir: 'main_page', format: 'png'))
+            FileUtil.getImagePath('friends_c', dir: 'main_page', format: 'png'),
+            isSelect: true)
       ],
       [
         getTabImage(
             FileUtil.getImagePath('more', dir: 'main_page', format: 'png')),
         getTabImage(
-            FileUtil.getImagePath('more_c', dir: 'main_page', format: 'png'))
+            FileUtil.getImagePath('more_c', dir: 'main_page', format: 'png'),
+            isSelect: true)
       ],
       [
         getTabImage(
             FileUtil.getImagePath('mine', dir: 'main_page', format: 'png')),
         getTabImage(
-            FileUtil.getImagePath('mine_c', dir: 'main_page', format: 'png'))
+            FileUtil.getImagePath('mine_c', dir: 'main_page', format: 'png'),
+            isSelect: true)
       ]
     ];
     /*
