@@ -116,4 +116,6 @@ Map<String, Color> themeSwatchColorMap = {
   'deepOrange': Colors.deepOrange,
   'brown': Colors.brown,
   'blueGrey': Colors.blueGrey,
+  'white': Colors.red, //白色不是MaterialColor
+  'black': Colors.blue, //黑色不是MaterialColor
 };

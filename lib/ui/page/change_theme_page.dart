@@ -43,8 +43,8 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
             child: GridView.count(
                 crossAxisCount: 5,
                 padding: EdgeInsets.all(10.0),
-                children: themeSwatchColorMap.keys.map((String key) {
-                  Color value = themeSwatchColorMap[key];
+                children: themeColorMap.keys.map((String key) {
+                  Color value = themeColorMap[key];
                   return new InkWell(
                     onTap: () {
                       SPUtil.putString(Constants.KET_THEME_COLOR, key);
