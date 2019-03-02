@@ -23,7 +23,7 @@ dependencies:
   synchronized: ^2.0.2+1 #异步相关
   rxdart: ^0.20.0 #Rx
   cached_network_image: ^0.6.0+1 #网络图片
-  fluttertoast: ^2.2.4 #提示
+  fluttertoast: ^3.0.1 #提示
   sqflite: ^1.1.1 #数据库
   flutter_local_notifications: ^0.5.2 #通知栏
   image_picker: ^0.5.0+3 #相机相册
