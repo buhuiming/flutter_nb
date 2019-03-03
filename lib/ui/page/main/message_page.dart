@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
+import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
@@ -79,7 +81,14 @@ class Message extends MessageState<MessagePage>
     res = MoreWidgets.messageListViewItem(entity.imageUrl, entity.titleName,
         content: entity.content,
         time: TimelineUtil.format(int.parse(entity.time)),
-        unread: entity.isUnreadCount);
+        unread: entity.isUnreadCount, onItemClick: (res) {
+      if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => SystemMessagePage()));
+      }
+    });
     return res;
   }
 

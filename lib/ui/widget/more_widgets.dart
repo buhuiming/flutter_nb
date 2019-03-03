@@ -90,11 +90,11 @@ class MoreWidgets {
     return InkWell(
         onTap: () {
           if (null != onItemClick) {
-            onItemClick(null);
+            onItemClick(text);
           }
         },
         onLongPress: () {
-          onItemLongClick(null);
+          onItemLongClick(text);
         },
         child: Container(
             padding: EdgeInsets.only(left: 16.0, right: 16, top: 5, bottom: 0),
@@ -441,6 +441,98 @@ class MoreWidgets {
                   : SizedBox(
                       height: 14,
                     )
+            ])));
+  }
+
+  /*
+  *  生成系统消息列表-ListView的item
+  */
+  static Widget systemMessageListViewItem(
+    String title,
+    String content,
+    String time, {
+    String note = '',
+  }) {
+    return InkWell(
+        onTap: () {},
+        onLongPress: () {},
+        child: Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 0),
+            child: Column(children: <Widget>[
+              //1列n行
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          title,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 16.0, color: ColorT.text_dark),
+                        ),
+                        SizedBox(
+                          height: 3.0,
+                        ),
+                        Text(
+                          content,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 14.0, color: ColorT.text_gray),
+                        ),
+                        SizedBox(
+                          height: (note == null || note == '') ? 0 : 3.0,
+                        ),
+                        (note == null || note == '')
+                            ? SizedBox(
+                                width: 0,
+                                height: 0,
+                              )
+                            : InkWell(
+                                onTap: () {},
+                                child: Text(note,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontStyle: FontStyle.italic,
+                                      decoration: TextDecoration.underline,
+                                      color: ObjectUtil.getThemeColor(),
+                                    ))),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    height: 40,
+                    alignment: Alignment.topRight,
+                    child: Text(
+                      time,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13.0, color: ColorT.text_gray),
+                    ),
+                  )
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 0.0, top: 13),
+                child: Divider(
+                  height: 1.5,
+                  color: Colors.red,
+                ),
+              )
             ])));
   }
 }
