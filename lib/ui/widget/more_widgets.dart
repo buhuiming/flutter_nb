@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/object_util.dart';
@@ -451,6 +452,12 @@ class MoreWidgets {
     String title,
     String content,
     String time, {
+    bool showStatusBar = false,
+    int status = 0, //0:显示拒绝和同意，1：显示已同意/已拒绝
+    String statusText = '已同意',
+    OnItemClick left,
+    OnItemClick right,
+    BuildContext context,
     String note = '',
   }) {
     return InkWell(
@@ -488,15 +495,18 @@ class MoreWidgets {
                               fontSize: 14.0, color: ColorT.text_gray),
                         ),
                         SizedBox(
-                          height: (note == null || note == '') ? 0 : 3.0,
+                          height: ObjectUtil.isEmpty(note) ? 0 : 3.0,
                         ),
-                        (note == null || note == '')
+                        ObjectUtil.isEmpty(note)
                             ? SizedBox(
                                 width: 0,
                                 height: 0,
                               )
                             : InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  DialogUtil.showBaseDialog(context, note,
+                                      title: '', left: '', right: '');
+                                },
                                 child: Text(note,
                                     maxLines: 1,
                                     softWrap: true,
@@ -526,13 +536,110 @@ class MoreWidgets {
                   )
                 ],
               ),
+              SizedBox(
+                height: showStatusBar ? 10.0 : 0,
+              ),
+              showStatusBar
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Expanded(flex: 8, child: Text('')),
+                        Expanded(
+                            flex: 4,
+                            child: status != 0
+                                ? SizedBox(
+                                    width: 0,
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      if (null != left) {
+                                        left(0);
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                      decoration: new BoxDecoration(
+                                          color:
+                                              ObjectUtil.getThemeLightColor(),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(4.0)),
+                                          border: new Border.all(
+                                              width: 0.5,
+                                              color:
+                                                  ObjectUtil.getThemeColor())),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '拒绝',
+                                        maxLines: 1,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            letterSpacing: 3,
+                                            fontSize: 16.0,
+                                            color: ObjectUtil.getThemeColor()),
+                                      ),
+                                    ),
+                                  )),
+                        Expanded(flex: 1, child: Text('')),
+                        Expanded(
+                            flex: 4,
+                            child: InkWell(
+                              onTap: () {
+                                if (null != left) {
+                                  left(1);
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                decoration: new BoxDecoration(
+                                    color: ObjectUtil.getThemeLightColor(),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4.0)),
+                                    border: new Border.all(
+                                        width: 0.5,
+                                        color: ObjectUtil.getThemeColor())),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  status != 0 ? statusText : '同意',
+                                  maxLines: 1,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      letterSpacing: 3,
+                                      fontSize: 16.0,
+                                      color: ObjectUtil.getThemeColor()),
+                                ),
+                              ),
+                            )),
+                      ],
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
               Container(
                 padding: EdgeInsets.only(left: 0.0, top: 13),
                 child: Divider(
                   height: 1.5,
-                  color: Colors.red,
                 ),
               )
             ])));
+  }
+
+  static Widget buildNoDataPage() {
+    return new Align(
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: () {},
+        child: Text('没有数据',
+            maxLines: 1,
+            style: new TextStyle(
+                fontSize: 17.0,
+                color: Colors.black54,
+                letterSpacing: 0.6,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.normal,
+                decoration: TextDecoration.none)),
+      ),
+    );
   }
 }

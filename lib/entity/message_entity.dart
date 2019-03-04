@@ -19,6 +19,7 @@ class MessageEntity {
   static const String IS_REMIND = "is_remind"; //是否提醒 0不提醒,1提醒
   static const String IS_UNREAD_COUNT = "is_unread_count"; //未读数
   static const String NOTE = "note"; //备注
+  static const String STATUS = "status"; //状态
 
   String type,
       imageUrl,
@@ -28,6 +29,7 @@ class MessageEntity {
       contentType,
       contentUrl,
       time,
+      status,
       note;
   int id;
   int isUnread, messageOwner, isRemind, isUnreadCount;
@@ -39,6 +41,7 @@ class MessageEntity {
       @required this.content,
       this.contentType = Constants.CONTENT_TYPE_SYSTEM,
       this.contentUrl = '',
+      this.status = '',
       @required this.time,
       this.note = '',
       this.isUnread = 0,
@@ -64,6 +67,7 @@ class MessageEntity {
           messageOwner: map[MESSAGE_OWNER],
           isRemind: map[IS_REMIND],
           note: map[NOTE],
+          status: map[STATUS],
         );
 
   // Currently not used
@@ -81,6 +85,7 @@ class MessageEntity {
       MESSAGE_OWNER: messageOwner,
       IS_REMIND: isRemind,
       NOTE: note,
+      STATUS: status,
     };
   }
 }

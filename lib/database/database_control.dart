@@ -32,6 +32,7 @@ class DataBaseControl {
               entity.messageOwner = 1;
               entity.isUnread = 0;
               entity.isRemind = 1;
+              entity.status = 'untreated'; //未处理，refused已拒绝，agreed已同意
               entity.titleName = '系统消息';
               entity.content = '您收到一个好友添加邀请，${entity.senderAccount}请求添加您为好友！';
               entity.time =
@@ -45,8 +46,7 @@ class DataBaseControl {
                     .then((onValue) {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName,
-                      isUnreadCount: 1);
+                      senderAccount: entity.titleName, isUnreadCount: 1);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {

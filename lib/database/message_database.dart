@@ -63,6 +63,7 @@ class MessageDataBase {
           "${MessageEntity.CONTENT_URL} TEXT,"
           "${MessageEntity.TIME} TEXT,"
           "${MessageEntity.NOTE} TEXT,"
+          "${MessageEntity.STATUS} TEXT,"
           "${MessageEntity.MESSAGE_OWNER} INTEGER,"
           "${MessageEntity.IS_REMIND} INTEGER"
           ")");
@@ -137,8 +138,8 @@ class MessageDataBase {
     var db = await _getDb();
     await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE})'
-        ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.STATUS})'
+        ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           entity.type,
           entity.imageUrl,
@@ -151,7 +152,8 @@ class MessageDataBase {
           entity.time,
           entity.messageOwner,
           entity.isRemind,
-          entity.note
+          entity.note,
+          entity.status
         ]);
   }
 

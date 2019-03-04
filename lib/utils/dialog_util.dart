@@ -48,35 +48,50 @@ class DialogUtil {
                 shape: RoundedRectangleBorder(
                     side: BorderSide.none,
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                title: new Text(title),
+                title: ObjectUtil.isEmpty(title)
+                    ? SizedBox(
+                        width: 0,
+                        height: 10,
+                      )
+                    : new Text(title),
                 titlePadding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                 contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                 content: new Text(content),
                 actions: <Widget>[
-                  new FlatButton(
-                    child: new Text(
-                      left,
-                      style: TextStyle(color: ColorT.app_main),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      if (null != leftClick) {
-                        leftClick(null);
-                      }
-                    },
-                  ),
-                  new FlatButton(
-                    child: new Text(
-                      right,
-                      style: TextStyle(color: ObjectUtil.getThemeColor()),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      if (null != rightClick) {
-                        rightClick(null);
-                      }
-                    },
-                  )
+                  ObjectUtil.isEmpty(left)
+                      ? SizedBox(
+                          width: 0,
+                          height: 15,
+                        )
+                      : FlatButton(
+                          child: new Text(
+                            left,
+                            style: TextStyle(color: ColorT.app_main),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            if (null != leftClick) {
+                              leftClick(null);
+                            }
+                          },
+                        ),
+                  ObjectUtil.isEmpty(right)
+                      ? SizedBox(
+                          width: 0,
+                          height: 15,
+                        )
+                      : FlatButton(
+                          child: new Text(
+                            right,
+                            style: TextStyle(color: ObjectUtil.getThemeColor()),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            if (null != rightClick) {
+                              rightClick(null);
+                            }
+                          },
+                        )
                 ]));
   }
 }

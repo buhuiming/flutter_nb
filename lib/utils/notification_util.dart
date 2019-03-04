@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_nb/database/database_control.dart';
 
 /*
 * 通知栏
@@ -41,6 +42,9 @@ class NotificationUtil {
   */
   Future onSelectNotification(String payload) async {
     print(payload);
+    if (DataBaseControl.payload_contact_invited == payload) {
+
+    }
   }
 
   Future showSystem(String title, String content, String payload) async {
@@ -95,11 +99,14 @@ class NotificationUtil {
 
     AndroidNotificationDetails firstNotificationAndroidSpecifics =
         new AndroidNotificationDetails(
-            groupChannelId, groupChannelName, groupChannelDescription,
-            importance: Importance.Max,
-            priority: Priority.High,
-            groupKey: groupKey,
-            icon: icon, );
+      groupChannelId,
+      groupChannelName,
+      groupChannelDescription,
+      importance: Importance.Max,
+      priority: Priority.High,
+      groupKey: groupKey,
+      icon: icon,
+    );
     NotificationDetails firstNotificationPlatformSpecifics =
         new NotificationDetails(firstNotificationAndroidSpecifics, null);
     return await flutterLocalNotificationsPlugin.show(
