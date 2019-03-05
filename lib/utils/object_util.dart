@@ -118,7 +118,7 @@ class ObjectUtil {
   * 退出登录调用
   */
   static void doExit(BuildContext context) {
-    NotificationUtil.build().cancelAll();
+    NotificationUtil.instance().cancelAll();
     MessageDataBase.get().close();
     InteractNative.closeStream();
     SPUtil.putBool(Constants.KEY_LOGIN, false);

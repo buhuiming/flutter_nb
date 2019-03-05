@@ -6,6 +6,7 @@ import 'package:flutter_nb/ui/page/notification_settings_page.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 
 /*
@@ -55,11 +56,11 @@ class _SettingState extends ThemeState<Setting> {
               }),
               MoreWidgets.defaultListViewItem(null, '新消息提醒',
                   textColor: Colors.black, onItemClick: (res) {
-                    Navigator.push(
-                        context,
-                        new CupertinoPageRoute<void>(
-                            builder: (ctx) => NotificationSettings()));
-                  }),
+                Navigator.push(
+                    context,
+                    new CupertinoPageRoute<void>(
+                        builder: (ctx) => NotificationSettings()));
+              }),
             ],
           )),
           appBar: MoreWidgets.buildAppBar(
@@ -74,5 +75,15 @@ class _SettingState extends ThemeState<Setting> {
                 }),
           ),
         ));
+  }
+
+  @override
+  void notify(int type) {
+    // TODO: implement notify
+    setState(() {
+      if (type == InteractNative.RESET_THEME_COLOR) {
+        init();
+      }
+    });
   }
 }

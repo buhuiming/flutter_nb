@@ -21,7 +21,7 @@ abstract class MessageState<T extends StatefulWidget> extends BaseState<T> {
     super.onEvent(event);
     Map result = event;
     if (result.containsKey('json')) {
-      DataBaseControl.decodeData(result.values.elementAt(0),
+      DataBaseControl.decodeData(result.values.elementAt(0), context: context,
           callBack: (type, unReadCount, entity) {
         entity.isUnreadCount = unReadCount;
         notify(type, entity);

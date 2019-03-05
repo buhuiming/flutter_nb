@@ -586,7 +586,7 @@ class MoreWidgets {
                             child: InkWell(
                               onTap: () {
                                 if (null != left) {
-                                  left(1);
+                                  right(1);
                                 }
                               },
                               child: Container(

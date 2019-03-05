@@ -203,4 +203,13 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   _backPress() {
     InteractNative.goNativeWithValue(InteractNative.methodNames['backPress']);
   }
+
+  @override
+  void notify(int type) {
+    setState(() {
+      if (type == InteractNative.RESET_THEME_COLOR) {
+        init();
+      }
+    });
+  }
 }

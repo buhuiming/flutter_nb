@@ -15,11 +15,11 @@ abstract class ThemeState<T extends StatefulWidget> extends BaseState<T> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _init();
+    init();
     _addListener(); //添加监听
   }
 
-  _init() {
+  init() {
     primaryColor = ObjectUtil.getThemeColor();
     primarySwatch = ObjectUtil.getThemeSwatchColor();
     themeLightColor = ObjectUtil.getThemeLightColor();
@@ -28,11 +28,11 @@ abstract class ThemeState<T extends StatefulWidget> extends BaseState<T> {
   _addListener() {
     InteractNative.initAppEvent();
     InteractNative.getAppEventStream().listen((value) {
-      setState(() {
-        if (value == InteractNative.RESET_THEME_COLOR) {
-          _init();
-        }
-      });
+      notify(value);
     });
   }
+
+  @protected
+  void notify(int type);
+
 }

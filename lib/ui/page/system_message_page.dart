@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/database/database_control.dart';
+import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/object_util.dart';
+import 'package:flutter_nb/utils/timeline_util.dart';
 
 /*
 * 系统消息列表
@@ -28,6 +32,7 @@ class SystemMessage extends StatefulWidget {
 class SystemMessageState extends MessageState<SystemMessage> {
   Operation _operation = new Operation();
   int itemCount = 0;
+  List<MessageEntity> _list;
 
   @override
   void initState() {
@@ -36,7 +41,16 @@ class SystemMessageState extends MessageState<SystemMessage> {
     _getData();
   }
 
-  _getData() {}
+  _getData() {
+    MessageDataBase.get()
+        .getMessageEntityInType(Constants.MESSAGE_TYPE_SYSTEM)
+        .then((list) {
+      setState(() {
+        itemCount = list.length;
+        _list = list;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +98,27 @@ class SystemMessageState extends MessageState<SystemMessage> {
   }
 
   Widget _itemWidget(BuildContext context, int index) {
+    if (null == _list) {
+      return Text('');
+    } else if (_list.length <= index) {
+      return Text('');
+    }
+    MessageEntity entity = _list.elementAt(index);
+    if (entity == null) {
+      return Text('');
+    }
+    String title;
+    String content;
+    String note;
+    int status = -1;
+    bool showStatusBar;
+    if (entity.contentType == DataBaseControl.payload_contact_invited) {
+      title = '好友邀请';
+      content = '用户${entity.senderAccount}请求添加您为好友';
+      showStatusBar = true;
+      note = '消息验证：${entity.note}';
+      status = 0;
+    }
     return new Dismissible(
       //如果Dismissible是一个列表项 它必须有一个key 用来区别其他项
       key: new Key(''),
@@ -100,11 +135,29 @@ class SystemMessageState extends MessageState<SystemMessage> {
         ),
       ),
       child: MoreWidgets.systemMessageListViewItem(
-          "好友邀请", "用户15077501999请求添加您为好友", "10:20",
+          title, content, TimelineUtil.format(int.parse(entity.time)),
           context: context,
-          showStatusBar: true,
-          note: '验证消息：加个好友呗，达到哈酒侃大山恐龙当家奥斯卡来得及奥斯卡的煎熬是考虑到静安寺恐龙当家阿拉丁'),
+          showStatusBar: showStatusBar,
+          note: note,
+          status: status,
+          left: (res) {
+            if(status == 0){
+              _friendsRefused(entity.senderAccount);
+            }
+          },
+          right: (res) {
+            if(status == 0){
+              _friendsAgree(entity.senderAccount);
+            }
+          }),
     );
+  }
+
+  void _friendsAgree(String user){
+
+  }
+  void _friendsRefused(String user){
+
   }
 
   Future _deleteAll() async {

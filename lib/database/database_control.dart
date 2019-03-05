@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
@@ -17,7 +18,8 @@ class DataBaseControl {
   /*
   *  解析数据
   */
-  static void decodeData(Object o, {OnUpdateCallback callBack}) {
+  static void decodeData(Object o,
+      {OnUpdateCallback callBack, @required BuildContext context}) {
     if (o is String) {
       MessageEntity entity = MessageEntity.fromMap(json.decode(o.toString()));
       String payload;
@@ -59,7 +61,8 @@ class DataBaseControl {
           }
           if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != false &&
               SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false) {
-            NotificationUtil.build()
+            NotificationUtil.instance()
+                .build(context)
                 .showSystem(entity.titleName, entity.content, payload);
           }
           break;

@@ -73,4 +73,14 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
           ),
         ));
   }
+
+  @override
+  void notify(int type) {
+    // TODO: implement notify
+    setState(() {
+      if (type == InteractNative.RESET_THEME_COLOR) {
+        init();
+      }
+    });
+  }
 }

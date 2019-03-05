@@ -38,7 +38,7 @@ class Message extends MessageState<MessagePage>
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    NotificationUtil.build().cancelMessage();
+    NotificationUtil.instance().cancelMessage();
     _getData();
     _startRefresh();
   }
