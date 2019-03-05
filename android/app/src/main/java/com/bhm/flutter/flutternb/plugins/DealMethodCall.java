@@ -34,6 +34,7 @@ class DealMethodCall {
             put("autoLogin", "autoLogin");//自动登录
             put("backPress", "backPress");//物理返回键触发，主要是让应用返回桌面，而不是关闭应用
             put("addFriends", "addFriends");//添加好友
+            put("refusedFriends", "refusedFriends");//拒绝好友添加邀请
         }
     };
 
@@ -43,7 +44,7 @@ class DealMethodCall {
      * @param result result
      */
     static void onMethodCall(FlutterActivity activity, MethodCall methodCall, final MethodChannel.Result result){
-        if(methodNames.get("register").equals(methodCall.method)){//注册账号
+        if(Objects.equals(methodNames.get("register"), methodCall.method)){//注册账号
             EMClientUtils.register(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     Objects.requireNonNull(methodCall.argument("password")).toString(),
                     new CallBack<Boolean>() {
@@ -53,7 +54,7 @@ class DealMethodCall {
                             return false;
                         }
                     });
-        }else if(methodNames.get("login").equals(methodCall.method)){//登录
+        }else if(Objects.equals(methodNames.get("login"), methodCall.method)){//登录
             EMClientUtils.login(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     Objects.requireNonNull(methodCall.argument("password")).toString(),
                     new CallBack<Boolean>() {
@@ -63,7 +64,7 @@ class DealMethodCall {
                             return false;
                         }
                     });
-        }else if(methodNames.get("logout").equals(methodCall.method)){//退出登录
+        }else if(Objects.equals(methodNames.get("logout"), methodCall.method)){//退出登录
             EMClientUtils.logout(new CallBack<Boolean>() {
                 @Override
                 public Boolean call(Object o) {
@@ -71,10 +72,10 @@ class DealMethodCall {
                     return false;
                 }
             });
-        }else if(methodNames.get("autoLogin").equals(methodCall.method)){//自动登录
+        }else if(Objects.equals(methodNames.get("autoLogin"), methodCall.method)){//自动登录
             EMClient.getInstance().groupManager().loadAllGroups();
             EMClient.getInstance().chatManager().loadAllConversations();
-        }else if(methodNames.get("backPress").equals(methodCall.method)){//返回键返回桌面
+        }else if(Objects.equals(methodNames.get("backPress"), methodCall.method)){//返回键返回桌面
             try {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
@@ -83,9 +84,18 @@ class DealMethodCall {
             }catch (Exception e){
                 activity.finish();
             }
-        }else if(methodNames.get("addFriends").equals(methodCall.method)){//添加好友
+        }else if(Objects.equals(methodNames.get("addFriends"), methodCall.method)){//添加好友
             EMClientUtils.addFriends(Objects.requireNonNull(methodCall.argument("toAddUsername")).toString(),
                     Objects.requireNonNull(methodCall.argument("reason")).toString(),
+                    new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
+        }else if(Objects.equals(methodNames.get("refusedFriends"), methodCall.method)){//拒绝好友添加邀请
+            EMClientUtils.refusedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
                         public Boolean call(Object o) {

@@ -9,6 +9,7 @@ import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
 
@@ -39,8 +40,16 @@ class Message extends MessageState<MessagePage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     NotificationUtil.instance().cancelMessage();
+    _addListener();
     _getData();
     _startRefresh();
+  }
+
+  _addListener() {
+    InteractNative.initAppEvent();
+    InteractNative.getAppEventStream().listen((value) {
+      notify(value.toString(), null);
+    });
   }
 
   @override
@@ -51,13 +60,22 @@ class Message extends MessageState<MessagePage>
   Widget layout(BuildContext context) {
     return new Scaffold(
         appBar: MoreWidgets.buildAppBar(context, '消息'),
-        body: !isShowNoPage
-            ? ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return _itemWidget(index);
-                },
-                itemCount: list.length)
-            : MoreWidgets.buildNoDataPage());
+        body: new Stack(
+          children: <Widget>[
+            new Offstage(
+              offstage: isShowNoPage,
+              child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return _itemWidget(index);
+                  },
+                  itemCount: list.length),
+            ),
+            new Offstage(
+              offstage: !isShowNoPage,
+              child: MoreWidgets.buildNoDataPage(), //显示loading，则禁掉返回按钮和右滑关闭
+            )
+          ],
+        ));
   }
 
   Widget _itemWidget(int index) {
@@ -80,6 +98,8 @@ class Message extends MessageState<MessagePage>
   _getData() {
     MessageDataBase.get().getMessageTypeEntity().then((listTypeEntity) {
       if (listTypeEntity.length > 0) {
+        list.clear();
+        map.clear();
         listTypeEntity.forEach((typeEntity) {
           String type = typeEntity.senderAccount;
           if (type == '系统消息') {
@@ -89,7 +109,7 @@ class Message extends MessageState<MessagePage>
             if (null != listEntity && listEntity.length > 0) {
               MessageEntity messageEntity =
                   listEntity.elementAt(listEntity.length - 1);
-              messageEntity.isUnreadCount = listTypeEntity.length;
+              messageEntity.isUnreadCount = typeEntity.isUnreadCount;
               if (type == Constants.MESSAGE_TYPE_SYSTEM) {
                 if (list.contains(messageEntity.titleName)) {
                   //如果已经存在
@@ -100,13 +120,17 @@ class Message extends MessageState<MessagePage>
                 map[messageEntity.titleName] = messageEntity;
               }
             }
-            isShowNoPage = list.length <= 0;
-            setState(() {});
+            setState(() {
+              isShowNoPage = list.length <= 0;
+            });
           });
         });
       } else {
-        isShowNoPage = list.length <= 0;
-        setState(() {});
+        setState(() {
+          list.clear();
+          map.clear();
+          isShowNoPage = true;
+        });
       }
     });
   }
@@ -123,8 +147,19 @@ class Message extends MessageState<MessagePage>
         list.insert(0, entity.titleName);
         map[entity.titleName] = entity;
       }
-      isShowNoPage = list.length <= 0;
-      setState(() {});
+      setState(() {
+        isShowNoPage = list.length <= 0;
+      });
+    } else {
+      if (type == InteractNative.SYSTEM_MESSAGE_HAS_READ.toString()) {
+        if (null != map && map.length > 0 && list.length > 0) {
+          MessageEntity entity = map[list.elementAt(0).toString()];
+          entity.isUnreadCount = 0;
+        }
+      } else if (type == InteractNative.SYSTEM_MESSAGE_DELETE_ALL.toString() ||
+          type == InteractNative.SYSTEM_MESSAGE_DELETE.toString()) {
+        _getData();
+      }
     }
   }
 

@@ -206,10 +206,10 @@ class _MyHomePageState extends ThemeState<MyHomePage>
 
   @override
   void notify(int type) {
-    setState(() {
-      if (type == InteractNative.RESET_THEME_COLOR) {
+    if (type == InteractNative.RESET_THEME_COLOR) {
+      setState(() {
         init();
-      }
-    });
+      });
+    }
   }
 }

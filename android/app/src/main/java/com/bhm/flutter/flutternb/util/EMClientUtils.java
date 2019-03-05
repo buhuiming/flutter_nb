@@ -105,4 +105,25 @@ public class EMClientUtils {
                     }
                 });
     }
+
+    /** 拒绝好友添加邀请
+     * @param username 帐号
+     * @param callBack
+     */
+    public static void refusedFriends(final String username,final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().contactManager().declineInvitation(username);//同步方法
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
 }

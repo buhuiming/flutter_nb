@@ -9,9 +9,9 @@ import 'package:flutter_nb/ui/page/system_message_page.dart';
 */
 class NotificationUtil {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  new FlutterLocalNotificationsPlugin();
+      new FlutterLocalNotificationsPlugin();
   AndroidInitializationSettings initializationSettingsAndroid =
-  new AndroidInitializationSettings('app_icon');
+      new AndroidInitializationSettings('app_icon');
 
   static NotificationUtil _notificationUtil = new NotificationUtil._internal();
 
@@ -35,8 +35,8 @@ class NotificationUtil {
 
   void _init() {
     IOSInitializationSettings initializationSettingsIOS =
-    new IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocationLocation);
+        new IOSInitializationSettings(
+            onDidReceiveLocalNotification: onDidReceiveLocationLocation);
     InitializationSettings initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -58,7 +58,8 @@ class NotificationUtil {
       throw ('context is null, before use {showSystem,showChat,showOthers},'
           ' you should call the method of build(NotificationUtil).');
     }
-    if (DataBaseControl.payload_contact_invited == payload) {
+    if (DataBaseControl.payload_contact_invited == payload ||
+        DataBaseControl.payload_contact_request == payload) {
       Navigator.push(_context,
           new CupertinoPageRoute<void>(builder: (ctx) => SystemMessagePage()));
     }
@@ -115,7 +116,7 @@ class NotificationUtil {
     }
 
     AndroidNotificationDetails firstNotificationAndroidSpecifics =
-    new AndroidNotificationDetails(
+        new AndroidNotificationDetails(
       groupChannelId,
       groupChannelName,
       groupChannelDescription,
@@ -125,7 +126,7 @@ class NotificationUtil {
       icon: icon,
     );
     NotificationDetails firstNotificationPlatformSpecifics =
-    new NotificationDetails(firstNotificationAndroidSpecifics, null);
+        new NotificationDetails(firstNotificationAndroidSpecifics, null);
     return await flutterLocalNotificationsPlugin.show(
         id, title, content, firstNotificationPlatformSpecifics,
         payload: payload);

@@ -95,9 +95,9 @@ class MessageDataBase {
         'where ${MessageTypeEntity.SENDER_ACCOUNT} = "$senderAccount"');
     List<MessageTypeEntity> res = [];
     for (Map<String, dynamic> item in result) {
-      res.add(new MessageTypeEntity.fromMap(item));
+      res.add(new MessageTypeEntity.fromMap(item)); //数组只有一个，因为每个类型只有一条数据
     }
-    return res.length > 0 ? res.length : 0;
+    return res.length > 0 ? res.elementAt(0).isUnreadCount : 0;
   }
 
   /*
@@ -119,12 +119,23 @@ class MessageDataBase {
   }
 
   Future insertMessageTypeEntity(MessageTypeEntity entity) {
-    return updateMessageTypeEntity(entity);
+    getMessageTypeEntity().then((list) {
+      bool isExit = false;
+      for (MessageTypeEntity item in list) {
+        if (item.senderAccount == entity.senderAccount) {
+          isExit = true;
+        }
+      }
+      if (!isExit) {
+        return _updateMessageTypeEntity(entity);
+      }
+    });
+    return null;
   }
 
-  Future updateMessageTypeEntity(MessageTypeEntity entity) async {
+  Future _updateMessageTypeEntity(MessageTypeEntity entity) async {
     var db = await _getDb();
-    await db.rawInsert(
+    await db.rawUpdate(
         'INSERT OR REPLACE INTO '
         '${DataBaseConfig.MESSAGE_TABLE}(${MessageTypeEntity.SENDER_ACCOUNT},${MessageTypeEntity.IS_UNREAD_COUNT})'
         ' VALUES(?,?)',
@@ -132,6 +143,12 @@ class MessageDataBase {
           entity.senderAccount,
           entity.isUnreadCount,
         ]);
+  }
+
+  Future updateAllMessageTypeEntity() async {
+    var db = await _getDb();
+    await db.rawUpdate(
+        'UPDATE ${DataBaseConfig.MESSAGE_TABLE} SET ${MessageTypeEntity.IS_UNREAD_COUNT} = 0');
   }
 
   Future updateMessageEntity(String senderAccount, MessageEntity entity) async {
@@ -163,7 +180,8 @@ class MessageDataBase {
       await db.delete(DataBaseConfig.MESSAGE_TABLE);
     } else {
       await db.delete(DataBaseConfig.MESSAGE_TABLE,
-          where: "${MessageTypeEntity.DB_ID} = ?", whereArgs: [entity.id]);
+          where: "${MessageTypeEntity.SENDER_ACCOUNT} = ?",
+          whereArgs: [entity.senderAccount]);
     }
   }
 

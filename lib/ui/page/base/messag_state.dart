@@ -14,7 +14,6 @@ abstract class MessageState<T extends StatefulWidget> extends BaseState<T> {
     super.initState();
   }
 
-  @protected
   void notify(String type, MessageEntity entity);
 
   void onEvent(Object event) {

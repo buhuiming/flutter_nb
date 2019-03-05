@@ -14,6 +14,7 @@ import 'package:flutter_nb/utils/sp_util.dart';
 */
 class DataBaseControl {
   static const String payload_contact_invited = 'onContactInvited';
+  static const String payload_contact_request = 'onFriendRequestDeclined';
 
   /*
   *  解析数据
@@ -37,6 +38,39 @@ class DataBaseControl {
               entity.status = 'untreated'; //未处理，refused已拒绝，agreed已同意
               entity.titleName = '系统消息';
               entity.content = '您收到一个好友添加邀请，${entity.senderAccount}请求添加您为好友！';
+              entity.time =
+                  new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
+              MessageDataBase.get()
+                  .insertMessageEntity(Constants.MESSAGE_TYPE_SYSTEM, entity)
+                  .then((onValue) {
+                int unReadCount = 0; //先查询出未读数，再加1
+                MessageDataBase.get()
+                    .getOneMessageUnreadCount(entity.titleName)
+                    .then((onValue) {
+                  unReadCount = onValue + 1;
+                  MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
+                      senderAccount: entity.titleName, isUnreadCount: 1);
+                  MessageDataBase.get()
+                      .insertMessageTypeEntity(messageTypeEntity);
+                  if (null != callBack) {
+                    callBack(
+                        Constants.MESSAGE_TYPE_SYSTEM, unReadCount, entity);
+                  }
+                });
+              }); //保存数据库
+              break;
+
+            case payload_contact_request: //收到好友邀请
+              payload = payload_contact_request;
+              entity.imageUrl = FileUtil.getImagePath('system_message',
+                  dir: 'icon', format: 'png');
+              entity.contentUrl = '';
+              entity.messageOwner = 1;
+              entity.isUnread = 0;
+              entity.isRemind = 1;
+              entity.status = 'refused'; //未处理，refused已拒绝，agreed已同意
+              entity.titleName = '系统消息';
+              entity.content = '用户${entity.senderAccount}拒绝您的好友添加邀请！';
               entity.time =
                   new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
               MessageDataBase.get()

@@ -15,6 +15,9 @@ class InteractNative {
   static BehaviorSubject<int> _appEvent = BehaviorSubject<int>(); //APP内部通信对象
 
   static const int RESET_THEME_COLOR = 1;
+  static const int SYSTEM_MESSAGE_HAS_READ = 2;
+  static const int SYSTEM_MESSAGE_DELETE_ALL = 3;
+  static const int SYSTEM_MESSAGE_DELETE = 4;
   /*
    * 方法名称，必须与flutter注册的一致
    */
@@ -25,6 +28,7 @@ class InteractNative {
     'autoLogin': 'autoLogin', //自动登录
     'backPress': 'backPress', //物理返回键触发，主要是让应用返回桌面，而不是关闭应用
     'addFriends': 'addFriends', //添加好友
+    'refusedFriends': 'refusedFriends', //拒绝好友添加邀请
   };
 
   /*
