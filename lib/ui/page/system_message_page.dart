@@ -39,12 +39,14 @@ class SystemMessageState extends MessageState<SystemMessage>
   List<MessageEntity> _list;
   AppLifecycleState currentState = AppLifecycleState.resumed;
   Timer _refreshTimer;
+  bool _dis;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _dis = false;
     _getData();
     _startRefresh();
   }
@@ -55,6 +57,7 @@ class SystemMessageState extends MessageState<SystemMessage>
     if (null != _refreshTimer) {
       _refreshTimer.cancel();
     }
+    _dis = true;
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
@@ -95,10 +98,10 @@ class SystemMessageState extends MessageState<SystemMessage>
         _list = list;
       });
     });
-    MessageDataBase.get().updateAllMessageTypeEntity().then((res) {
+    MessageDataBase.get().updateAllMessageTypeEntity('系统消息').then((res) {
       //标记所有系统消息为已读
-      InteractNative.getAppEventSink()
-          .add(InteractNative.SYSTEM_MESSAGE_HAS_READ);
+      InteractNative.getMessageEventSink()
+          .add(getDefaultData(InteractNative.SYSTEM_MESSAGE_HAS_READ));
     });
   }
 
@@ -200,15 +203,15 @@ class SystemMessageState extends MessageState<SystemMessage>
                 .then((value) {
               setState(() {
                 itemCount = 0;
-                InteractNative.getAppEventSink()
-                    .add(InteractNative.SYSTEM_MESSAGE_DELETE_ALL);
+                InteractNative.getMessageEventSink().add(
+                    getDefaultData(InteractNative.SYSTEM_MESSAGE_DELETE_ALL));
               });
             });
           } else {
             setState(() {
               itemCount = _list.length;
-              InteractNative.getAppEventSink()
-                  .add(InteractNative.SYSTEM_MESSAGE_DELETE);
+              InteractNative.getMessageEventSink()
+                  .add(getDefaultData(InteractNative.SYSTEM_MESSAGE_DELETE));
             });
           }
         });
@@ -280,19 +283,39 @@ class SystemMessageState extends MessageState<SystemMessage>
           .then((res) {
         setState(() {
           itemCount = 0;
-          InteractNative.getAppEventSink()
-              .add(InteractNative.SYSTEM_MESSAGE_DELETE_ALL);
+          InteractNative.getMessageEventSink()
+              .add(getDefaultData(InteractNative.SYSTEM_MESSAGE_DELETE_ALL));
         });
       });
     });
   }
 
+  MessageEntity getDefaultData(String type) {
+    return new MessageEntity(
+        type: type,
+        senderAccount: null,
+        titleName: null,
+        content: null,
+        time: null);
+  }
+
   @override
-  void notify(String type, MessageEntity entity) {
-    // TODO: implement notify
+  void updateData(MessageEntity entity) {
+    if (_dis) {
+      return;
+    }
+    // TODO: implement updateData
     if (null != entity) {
-      if (type == Constants.MESSAGE_TYPE_SYSTEM) {
-        _getData();
+      if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+        MessageDataBase.get()
+            .getMessageEntityInType(Constants.MESSAGE_TYPE_SYSTEM)
+            .then((list) {
+          MessageDataBase.get().updateAllMessageTypeEntity('系统消息');
+          setState(() {
+            itemCount = list.length;
+            _list = list;
+          });
+        });
       }
     }
   }

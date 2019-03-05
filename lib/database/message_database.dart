@@ -127,7 +127,11 @@ class MessageDataBase {
         }
       }
       if (!isExit) {
-        return _updateMessageTypeEntity(entity);
+        _updateMessageTypeEntity(entity);
+      } else {
+        deleteMessageTypeEntity(entity: entity).then((res) {
+          _updateMessageTypeEntity(entity);
+        });
       }
     });
     return null;
@@ -145,10 +149,10 @@ class MessageDataBase {
         ]);
   }
 
-  Future updateAllMessageTypeEntity() async {
+  Future updateAllMessageTypeEntity(String sender) async {
     var db = await _getDb();
     await db.rawUpdate(
-        'UPDATE ${DataBaseConfig.MESSAGE_TABLE} SET ${MessageTypeEntity.IS_UNREAD_COUNT} = 0');
+        'UPDATE ${DataBaseConfig.MESSAGE_TABLE} SET ${MessageTypeEntity.IS_UNREAD_COUNT} = 0 WHERE ${MessageTypeEntity.SENDER_ACCOUNT} = "$sender"');
   }
 
   Future updateMessageEntity(String senderAccount, MessageEntity entity) async {
@@ -179,9 +183,8 @@ class MessageDataBase {
     if (entity == null) {
       await db.delete(DataBaseConfig.MESSAGE_TABLE);
     } else {
-      await db.delete(DataBaseConfig.MESSAGE_TABLE,
-          where: "${MessageTypeEntity.SENDER_ACCOUNT} = ?",
-          whereArgs: [entity.senderAccount]);
+      await db.rawDelete(
+          'DELETE FROM ${DataBaseConfig.MESSAGE_TABLE} WHERE ${MessageTypeEntity.SENDER_ACCOUNT} = "${entity.senderAccount}"');
     }
   }
 

@@ -40,16 +40,8 @@ class Message extends MessageState<MessagePage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     NotificationUtil.instance().cancelMessage();
-    _addListener();
     _getData();
     _startRefresh();
-  }
-
-  _addListener() {
-    InteractNative.initAppEvent();
-    InteractNative.getAppEventStream().listen((value) {
-      notify(value.toString(), null);
-    });
   }
 
   @override
@@ -135,34 +127,6 @@ class Message extends MessageState<MessagePage>
     });
   }
 
-  @override
-  void notify(String type, MessageEntity entity) {
-    if (null != entity) {
-      if (type == Constants.MESSAGE_TYPE_SYSTEM) {
-        if (list.contains(entity.titleName)) {
-          //如果已经存在
-          list.remove(entity.titleName);
-          map.remove(entity.titleName);
-        }
-        list.insert(0, entity.titleName);
-        map[entity.titleName] = entity;
-      }
-      setState(() {
-        isShowNoPage = list.length <= 0;
-      });
-    } else {
-      if (type == InteractNative.SYSTEM_MESSAGE_HAS_READ.toString()) {
-        if (null != map && map.length > 0 && list.length > 0) {
-          MessageEntity entity = map[list.elementAt(0).toString()];
-          entity.isUnreadCount = 0;
-        }
-      } else if (type == InteractNative.SYSTEM_MESSAGE_DELETE_ALL.toString() ||
-          type == InteractNative.SYSTEM_MESSAGE_DELETE.toString()) {
-        _getData();
-      }
-    }
-  }
-
   /*
   * 定时刷新
   */
@@ -203,4 +167,31 @@ class Message extends MessageState<MessagePage>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+  @override
+  void updateData(MessageEntity entity) {
+    // TODO: implement updateData
+    if (null != entity) {
+      if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+        if (list.contains(entity.titleName)) {
+          //如果已经存在
+          list.remove(entity.titleName);
+          map.remove(entity.titleName);
+        }
+        list.insert(0, entity.titleName);
+        map[entity.titleName] = entity;
+        setState(() {
+          isShowNoPage = list.length <= 0;
+        });
+      } else if (entity.type == InteractNative.SYSTEM_MESSAGE_HAS_READ) {
+        if (null != map && map.length > 0 && list.length > 0) {
+          MessageEntity entity = map[list.elementAt(0).toString()];
+          entity.isUnreadCount = 0;
+        }
+      } else if (entity.type == InteractNative.SYSTEM_MESSAGE_DELETE_ALL ||
+          entity.type == InteractNative.SYSTEM_MESSAGE_DELETE) {
+        _getData();
+      }
+    }
+  }
 }

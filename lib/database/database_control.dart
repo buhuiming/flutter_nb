@@ -49,7 +49,7 @@ class DataBaseControl {
                     .then((onValue) {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName, isUnreadCount: 1);
+                      senderAccount: entity.titleName, isUnreadCount: unReadCount);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {
