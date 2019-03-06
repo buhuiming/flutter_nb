@@ -14,10 +14,33 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.bhm.flutter.flutternb.interfaces.CallBack;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Utils {
+
+    private static final List<CallBack> callBacks = new ArrayList<>();
+
+    public static void addAppCallBack(CallBack callBack){
+        if(callBack != null && !callBacks.contains(callBack)){
+            callBacks.add(callBack);
+        }
+    }
+
+    public static void removeAppCallBack(CallBack callBack){
+        if(callBack != null){
+            callBacks.remove(callBack);
+        }
+    }
+
+    public static void setCallBack(Object o){
+        for(CallBack callBack : callBacks){
+            callBack.call(o);
+        }
+    }
 
     public static String getAppName(Context context, int pID) {
         String processName = "";

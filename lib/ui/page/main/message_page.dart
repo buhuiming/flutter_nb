@@ -12,6 +12,7 @@ import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MessagePage extends StatefulWidget {
   MessagePage({Key key, this.operation, this.rootContext}) : super(key: key);
@@ -39,7 +40,9 @@ class Message extends MessageState<MessagePage>
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    NotificationUtil.instance().cancelMessage();
+    Observable.just(1).delay(new Duration(milliseconds: 1200)).listen((_) {
+      NotificationUtil.instance().cancelMessage();
+    });
     _getData();
     _startRefresh();
   }

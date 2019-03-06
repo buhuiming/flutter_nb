@@ -3,9 +3,11 @@ package com.bhm.flutter.flutternb.plugins;
 import android.content.Intent;
 
 import com.bhm.flutter.flutternb.interfaces.CallBack;
+import com.bhm.flutter.flutternb.listeners.CallBackListener;
 import com.bhm.flutter.flutternb.listeners.ConnectionListener;
 import com.bhm.flutter.flutternb.listeners.ContactListener;
 import com.bhm.flutter.flutternb.util.EMClientUtils;
+import com.bhm.flutter.flutternb.util.Utils;
 import com.hyphenate.chat.EMClient;
 
 import java.util.HashMap;
@@ -116,6 +118,8 @@ class DealMethodCall {
         EMClient.getInstance().addConnectionListener(new ConnectionListener(activity, eventSink));
         //注册一个监听好友状态的listener
         EMClient.getInstance().contactManager().setContactListener(new ContactListener(eventSink));
+        //注册一个原生APP状态回调的listener
+        Utils.addAppCallBack(new CallBackListener(eventSink));
     }
 
     /**原生调用flutter方法的回调

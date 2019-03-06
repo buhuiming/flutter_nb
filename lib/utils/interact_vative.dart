@@ -73,7 +73,7 @@ class InteractNative {
   * 自定义通信
   */
   static BehaviorSubject<MessageEntity> initMessageEvent() {
-    if (null == _messageEvent) {
+    if (null == _messageEvent || _messageEvent.isClosed) {
       _messageEvent = BehaviorSubject<MessageEntity>();
     }
     return _messageEvent;
@@ -107,9 +107,6 @@ class InteractNative {
   *  退出登录时，需要关闭
   */
   static void closeStream() {
-    if (null != streamSubscription) {
-      streamSubscription.cancel();
-    }
     if (null != _appEvent) {
       _appEvent.close();
     }

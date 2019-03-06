@@ -16,4 +16,10 @@ public class MainActivity extends FlutterActivity {
     GeneratedPluginRegistrant.registerWith(this);
     FlutterPlugins.registerWith(this);
   }
+
+  @Override
+  protected void onDestroy() {
+    Utils.setCallBack(null);
+    super.onDestroy();
+  }
 }

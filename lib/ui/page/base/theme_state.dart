@@ -2,11 +2,10 @@
 *  State基类，更新页面用
 */
 import 'package:flutter/material.dart';
-import 'package:flutter_nb/ui/page/base/base_state.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 
-abstract class ThemeState<T extends StatefulWidget> extends BaseState<T> {
+abstract class ThemeState<T extends StatefulWidget> extends State<T> {
   Color primaryColor;
   MaterialColor primarySwatch;
   Color themeLightColor;
