@@ -94,7 +94,7 @@ class Message extends MessageState<MessagePage>
         map.clear();
         listTypeEntity.forEach((typeEntity) {
           String type = typeEntity.senderAccount;
-          if (type == '系统消息') {
+          if (type == Constants.MESSAGE_TYPE_SYSTEM_ZH) {
             type = Constants.MESSAGE_TYPE_SYSTEM;
           }
           MessageDataBase.get().getMessageEntityInType(type).then((listEntity) {
@@ -185,8 +185,7 @@ class Message extends MessageState<MessagePage>
         });
       } else if (entity.type == InteractNative.SYSTEM_MESSAGE_HAS_READ) {
         if (null != map && map.length > 0 && list.length > 0) {
-          MessageEntity entity = map[list.elementAt(0).toString()];
-          entity.isUnreadCount = 0;
+          map[Constants.MESSAGE_TYPE_SYSTEM_ZH].isUnreadCount = 0;
         }
       } else if (entity.type == InteractNative.SYSTEM_MESSAGE_DELETE_ALL ||
           entity.type == InteractNative.SYSTEM_MESSAGE_DELETE) {

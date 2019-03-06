@@ -36,7 +36,7 @@ class DataBaseControl {
               entity.isUnread = 0;
               entity.isRemind = 1;
               entity.status = 'untreated'; //未处理，refused已拒绝，agreed已同意
-              entity.titleName = '系统消息';
+              entity.titleName = Constants.MESSAGE_TYPE_SYSTEM_ZH;
               entity.content = '您收到一个好友添加邀请，${entity.senderAccount}请求添加您为好友！';
               entity.time =
                   new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
@@ -69,7 +69,7 @@ class DataBaseControl {
               entity.isUnread = 0;
               entity.isRemind = 1;
               entity.status = 'refused'; //未处理，refused已拒绝，agreed已同意
-              entity.titleName = '系统消息';
+              entity.titleName = Constants.MESSAGE_TYPE_SYSTEM_ZH;
               entity.content = '用户${entity.senderAccount}拒绝您的好友添加邀请！';
               entity.time =
                   new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳

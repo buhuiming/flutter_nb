@@ -98,7 +98,7 @@ class SystemMessageState extends MessageState<SystemMessage>
         _list = list;
       });
     });
-    MessageDataBase.get().updateAllMessageTypeEntity('系统消息').then((res) {
+    MessageDataBase.get().updateAllMessageTypeEntity(Constants.MESSAGE_TYPE_SYSTEM_ZH).then((res) {
       //标记所有系统消息为已读
       InteractNative.getMessageEventSink()
           .add(getDefaultData(InteractNative.SYSTEM_MESSAGE_HAS_READ));
@@ -120,7 +120,7 @@ class SystemMessageState extends MessageState<SystemMessage>
             : MoreWidgets.buildNoDataPage(),
         appBar: MoreWidgets.buildAppBar(
           context,
-          '系统消息',
+          Constants.MESSAGE_TYPE_SYSTEM_ZH,
           centerTitle: true,
           elevation: 2.0,
           leading: IconButton(
@@ -199,7 +199,7 @@ class SystemMessageState extends MessageState<SystemMessage>
           if (_list.length == 0) {
             MessageDataBase.get()
                 .deleteMessageTypeEntity(
-                    entity: MessageTypeEntity(senderAccount: '系统消息'))
+                    entity: MessageTypeEntity(senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
                 .then((value) {
               setState(() {
                 itemCount = 0;
@@ -276,7 +276,7 @@ class SystemMessageState extends MessageState<SystemMessage>
   Future _deleteAll() async {
     MessageDataBase.get()
         .deleteMessageTypeEntity(
-            entity: MessageTypeEntity(senderAccount: '系统消息'))
+            entity: MessageTypeEntity(senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
         .then((value) {
       MessageDataBase.get()
           .deleteMessageEntity(Constants.MESSAGE_TYPE_SYSTEM)
@@ -307,15 +307,7 @@ class SystemMessageState extends MessageState<SystemMessage>
     // TODO: implement updateData
     if (null != entity) {
       if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
-        MessageDataBase.get()
-            .getMessageEntityInType(Constants.MESSAGE_TYPE_SYSTEM)
-            .then((list) {
-          MessageDataBase.get().updateAllMessageTypeEntity('系统消息');
-          setState(() {
-            itemCount = list.length;
-            _list = list;
-          });
-        });
+        _getData();
       }
     }
   }

@@ -8,6 +8,7 @@ class Constants {
   static const String FUNCTION_SEARCH_FRIENDS =
       "function_Search_friends"; //搜索功能-查找朋友
 
+  static const String MESSAGE_TYPE_SYSTEM_ZH = "系统消息"; //系统消息
   static const String MESSAGE_TYPE_SYSTEM = "system"; //消息类型：系统消息
   static const String MESSAGE_TYPE_CHAT = "chat"; //消息类型：聊天消息
   static const String MESSAGE_TYPE_OTHERS = "others"; //消息类型：其他消息
