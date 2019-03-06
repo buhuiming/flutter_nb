@@ -87,8 +87,8 @@ class Message extends MessageState<MessagePage>
     return res;
   }
 
-  _getData() {
-    MessageDataBase.get().getMessageTypeEntity().then((listTypeEntity) {
+  _getData() async {
+    MessageDataBase.get().getMessageTypeEntity().then((listTypeEntity) async {
       if (listTypeEntity.length > 0) {
         list.clear();
         map.clear();
@@ -97,7 +97,9 @@ class Message extends MessageState<MessagePage>
           if (type == Constants.MESSAGE_TYPE_SYSTEM_ZH) {
             type = Constants.MESSAGE_TYPE_SYSTEM;
           }
-          MessageDataBase.get().getMessageEntityInType(type).then((listEntity) {
+          MessageDataBase.get()
+              .getMessageEntityInType(type)
+              .then((listEntity) async {
             if (null != listEntity && listEntity.length > 0) {
               MessageEntity messageEntity =
                   listEntity.elementAt(listEntity.length - 1);

@@ -98,7 +98,9 @@ class SystemMessageState extends MessageState<SystemMessage>
         _list = list;
       });
     });
-    MessageDataBase.get().updateAllMessageTypeEntity(Constants.MESSAGE_TYPE_SYSTEM_ZH).then((res) {
+    MessageDataBase.get()
+        .updateAllMessageTypeEntity(Constants.MESSAGE_TYPE_SYSTEM_ZH)
+        .then((res) {
       //标记所有系统消息为已读
       InteractNative.getMessageEventSink()
           .add(getDefaultData(InteractNative.SYSTEM_MESSAGE_HAS_READ));
@@ -189,7 +191,7 @@ class SystemMessageState extends MessageState<SystemMessage>
     }
     return new Dismissible(
       //如果Dismissible是一个列表项 它必须有一个key 用来区别其他项
-      key: new Key(''),
+      key: new Key(_list.elementAt(index).id.toString()),
       //在child被取消时调用
       onDismissed: (direction) {
         MessageDataBase.get()
@@ -199,7 +201,8 @@ class SystemMessageState extends MessageState<SystemMessage>
           if (_list.length == 0) {
             MessageDataBase.get()
                 .deleteMessageTypeEntity(
-                    entity: MessageTypeEntity(senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
+                    entity: MessageTypeEntity(
+                        senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
                 .then((value) {
               setState(() {
                 itemCount = 0;
@@ -276,7 +279,8 @@ class SystemMessageState extends MessageState<SystemMessage>
   Future _deleteAll() async {
     MessageDataBase.get()
         .deleteMessageTypeEntity(
-            entity: MessageTypeEntity(senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
+            entity: MessageTypeEntity(
+                senderAccount: Constants.MESSAGE_TYPE_SYSTEM_ZH))
         .then((value) {
       MessageDataBase.get()
           .deleteMessageEntity(Constants.MESSAGE_TYPE_SYSTEM)
