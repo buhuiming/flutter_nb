@@ -122,6 +122,7 @@ class ObjectUtil {
     MessageDataBase.get().close();
     InteractNative.closeStream();
     SPUtil.putBool(Constants.KEY_LOGIN, false);
-    Navigator.of(context).pushReplacementNamed('/LoginPage');
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
   }
 }
