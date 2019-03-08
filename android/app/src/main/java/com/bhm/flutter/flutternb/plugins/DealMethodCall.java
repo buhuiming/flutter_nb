@@ -37,6 +37,7 @@ class DealMethodCall {
             put("backPress", "backPress");//物理返回键触发，主要是让应用返回桌面，而不是关闭应用
             put("addFriends", "addFriends");//添加好友
             put("refusedFriends", "refusedFriends");//拒绝好友添加邀请
+            put("acceptedFriends", "acceptedFriends");//同意好友添加邀请
         }
     };
 
@@ -98,6 +99,15 @@ class DealMethodCall {
                     });
         }else if(Objects.equals(methodNames.get("refusedFriends"), methodCall.method)){//拒绝好友添加邀请
             EMClientUtils.refusedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
+                    new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
+        }else if(Objects.equals(methodNames.get("acceptedFriends"), methodCall.method)){//同意好友添加邀请
+            EMClientUtils.acceptedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
                         public Boolean call(Object o) {

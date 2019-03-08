@@ -52,7 +52,7 @@ class DataProxy {
         ObjectUtil.doExit(_context);
       } else if (res.containsValue('disconnected_to_service')) {
         //连接不到聊天服务器
-        DialogUtil.buildToast('连接不到聊天服务器');
+//        DialogUtil.buildToast('连接不到聊天服务器');
       } else if (res.containsValue('no_net')) {
         //当前网络不可用，请检查网络设置
         DialogUtil.buildToast('当前网络不可用，请检查网络设置');

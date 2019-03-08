@@ -13,8 +13,13 @@ import 'package:flutter_nb/utils/sp_util.dart';
 * 数据库处理类
 */
 class DataBaseControl {
-  static const String payload_contact_invited = 'onContactInvited';
-  static const String payload_contact_request = 'onFriendRequestDeclined';
+  static const String payload_contact_invited = 'onContactInvited'; //添加好友邀请
+  static const String payload_contact_request =
+      'onFriendRequestDeclined'; //邀请被拒绝
+  static const String payload_contact_accepted =
+      'onFriendRequestAccepted'; //邀请已同意
+  static const String payload_contact_contactAdded =
+      'onContactAdded'; //同意通过，返回添加的好友
 
   /*
   *  解析数据
@@ -24,10 +29,12 @@ class DataBaseControl {
     if (o is String) {
       MessageEntity entity = MessageEntity.fromMap(json.decode(o.toString()));
       String payload;
+      bool isShowNotification = false;
       switch (entity.type) {
         case Constants.MESSAGE_TYPE_SYSTEM: //系统消息
           switch (entity.contentType) {
             case payload_contact_invited: //收到好友邀请
+              isShowNotification = true;
               payload = payload_contact_invited;
               entity.imageUrl = FileUtil.getImagePath('system_message',
                   dir: 'icon', format: 'png');
@@ -49,7 +56,8 @@ class DataBaseControl {
                     .then((onValue) {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName, isUnreadCount: unReadCount);
+                      senderAccount: entity.titleName,
+                      isUnreadCount: unReadCount);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {
@@ -60,7 +68,8 @@ class DataBaseControl {
               }); //保存数据库
               break;
 
-            case payload_contact_request: //收到好友邀请
+            case payload_contact_request: //收到好友拒绝
+              isShowNotification = true;
               payload = payload_contact_request;
               entity.imageUrl = FileUtil.getImagePath('system_message',
                   dir: 'icon', format: 'png');
@@ -92,9 +101,75 @@ class DataBaseControl {
                 });
               }); //保存数据库
               break;
+            case payload_contact_accepted: //收到好友同意
+              isShowNotification = true;
+              payload = payload_contact_accepted;
+              entity.imageUrl = FileUtil.getImagePath('system_message',
+                  dir: 'icon', format: 'png');
+              entity.contentUrl = '';
+              entity.messageOwner = 1;
+              entity.isUnread = 0;
+              entity.isRemind = 1;
+              entity.status = 'agreed'; //未处理，refused已拒绝，agreed已同意
+              entity.titleName = Constants.MESSAGE_TYPE_SYSTEM_ZH;
+              entity.content = '用户${entity.senderAccount}同意您的好友添加邀请！';
+              entity.time =
+                  new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
+              MessageDataBase.get()
+                  .insertMessageEntity(Constants.MESSAGE_TYPE_SYSTEM, entity)
+                  .then((onValue) {
+                int unReadCount = 0; //先查询出未读数，再加1
+                MessageDataBase.get()
+                    .getOneMessageUnreadCount(entity.titleName)
+                    .then((onValue) {
+                  unReadCount = onValue + 1;
+                  MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
+                      senderAccount: entity.titleName, isUnreadCount: 1);
+                  MessageDataBase.get()
+                      .insertMessageTypeEntity(messageTypeEntity);
+                  if (null != callBack) {
+                    callBack(
+                        Constants.MESSAGE_TYPE_SYSTEM, unReadCount, entity);
+                  }
+                });
+              }); //保存数据库
+              break;
+            case payload_contact_contactAdded: //好友同意后，返回好友信息
+              isShowNotification = false;//不需要弹通知栏
+              payload = payload_contact_contactAdded;
+              entity.imageUrl = FileUtil.getImagePath('img_headportrait',
+                  dir: 'icon', format: 'png');
+              entity.contentUrl = '';
+              entity.messageOwner = 1;
+              entity.isUnread = 0;
+              entity.isRemind = 1;
+              entity.titleName = entity.senderAccount;
+              entity.content = '你们已经是好友了，开始聊天吧！';
+              entity.time =
+                  new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
+              MessageDataBase.get()
+                  .insertMessageEntity(entity.titleName, entity)
+                  .then((onValue) async{
+                int unReadCount = 0; //先查询出未读数，再加1
+                MessageDataBase.get()
+                    .getOneMessageUnreadCount(entity.titleName)
+                    .then((onValue) async{
+                  unReadCount = onValue + 1;
+                  MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
+                      senderAccount: entity.titleName, isUnreadCount: 1);
+                  MessageDataBase.get()
+                      .insertMessageTypeEntity(messageTypeEntity);
+                  if (null != callBack) {
+                    callBack(
+                        Constants.MESSAGE_TYPE_SYSTEM, unReadCount, entity);
+                  }
+                });
+              });
+              break;
           }
           if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != false &&
-              SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false) {
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false &&
+              isShowNotification) {
             NotificationUtil.instance()
                 .build(context)
                 .showSystem(entity.titleName, entity.content, payload);

@@ -168,26 +168,28 @@ class SystemMessageState extends MessageState<SystemMessage>
     String statusText;
     int status = -1;
     bool showStatusBar;
+    if (entity.status == 'untreated') {
+      status = 0;
+    } else if (entity.status == 'refused') {
+      status = 1;
+      statusText = '已拒绝';
+    } else if (entity.status == 'agreed') {
+      status = 1;
+      statusText = '已同意';
+    }
     if (entity.contentType == DataBaseControl.payload_contact_invited) {
       title = '好友邀请';
       content = '用户${entity.senderAccount}请求添加您为好友';
       showStatusBar = true;
       note = '消息验证：${entity.note}';
-      if (entity.status == 'untreated') {
-        status = 0;
-      } else if (entity.status == 'refused') {
-        status = 1;
-        statusText = '已拒绝';
-      } else if (entity.status == 'agreed') {
-        status = 1;
-        statusText = '已同意';
-      }
     } else if (entity.contentType == DataBaseControl.payload_contact_request) {
       title = '添加邀请被拒绝';
       content = '用户${entity.senderAccount}拒绝您的好友添加邀请！';
       showStatusBar = true;
-      status = 1;
-      statusText = '已拒绝';
+    }else if (entity.contentType == DataBaseControl.payload_contact_accepted) {
+      title = '添加邀请已同意';
+      content = '用户${entity.senderAccount}同意您的好友添加邀请！';
+      showStatusBar = true;
     }
     return new Dismissible(
       //如果Dismissible是一个列表项 它必须有一个key 用来区别其他项
@@ -241,13 +243,39 @@ class SystemMessageState extends MessageState<SystemMessage>
         }
       }, right: (res) {
         if (status == 0) {
-          _friendsAgree(entity.senderAccount);
+          _friendsAgree(entity, index);
         }
       }),
     );
   }
 
-  void _friendsAgree(String user) {}
+  void _friendsAgree(MessageEntity user, int index) {
+    _operation.setShowLoading(true);
+    Map<String, String> map = {"username": user.senderAccount};
+    InteractNative.goNativeWithValue(
+        InteractNative.methodNames['acceptedFriends'], map)
+        .then((success) {
+      _operation.setShowLoading(false);
+      if (success == true) {
+        user.status = 'agreed';
+        MessageDataBase.get()
+            .deleteMessageEntity(Constants.MESSAGE_TYPE_SYSTEM, entity: user)
+            .then((res) {
+          MessageDataBase.get()
+              .updateMessageEntity(Constants.MESSAGE_TYPE_SYSTEM, user)
+              .then((res) {
+            setState(() {
+              _list.insert(index, user);
+            });
+          });
+        });
+      } else if (success is String) {
+        DialogUtil.buildToast(success);
+      } else {
+        DialogUtil.buildToast('请求失败');
+      }
+    });
+  }
   void _friendsRefused(MessageEntity user, int index) {
     _operation.setShowLoading(true);
     Map<String, String> map = {"username": user.senderAccount};

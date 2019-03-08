@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/entity/message_entity.dart';
+import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/page/base/search_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
@@ -21,7 +23,8 @@ class FriendsPage extends StatefulWidget {
   }
 }
 
-class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
+class Friends extends MessageState<FriendsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -48,8 +51,7 @@ class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
               Navigator.push(
                   context,
                   new CupertinoPageRoute<void>(
-                      builder: (ctx) =>
-                          SearchPage('')));
+                      builder: (ctx) => SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('group_chat', '群聊'),
           ),
@@ -58,8 +60,7 @@ class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
               Navigator.push(
                   context,
                   new CupertinoPageRoute<void>(
-                      builder: (ctx) =>
-                          SearchPage('')));
+                      builder: (ctx) => SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('collection', '收藏'),
           ),
@@ -68,8 +69,7 @@ class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
               Navigator.push(
                   context,
                   new CupertinoPageRoute<void>(
-                      builder: (ctx) =>
-                          SearchPage('')));
+                      builder: (ctx) => SearchPage('')));
             },
             child: MoreWidgets.buildListViewItem('official_accounts', '公众号'),
           ),
@@ -81,4 +81,10 @@ class Friends extends State<FriendsPage> with AutomaticKeepAliveClientMixin{
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+  @override
+  void updateData(MessageEntity entity) {
+    // TODO: implement updateData
+    print('我的朋友添加啦。。。。。');
+  }
 }

@@ -32,6 +32,7 @@ class InteractNative {
     'backPress': 'backPress', //物理返回键触发，主要是让应用返回桌面，而不是关闭应用
     'addFriends': 'addFriends', //添加好友
     'refusedFriends': 'refusedFriends', //拒绝好友添加邀请
+    'acceptedFriends': 'acceptedFriends', //同意好友添加邀请
   };
 
   /*

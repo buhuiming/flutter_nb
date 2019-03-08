@@ -14,8 +14,6 @@ class MessageDataBase {
 
   Database db;
 
-  bool didInit = false;
-
   static MessageDataBase get() {
     return _messageDataBase;
   }
@@ -23,17 +21,16 @@ class MessageDataBase {
   MessageDataBase._internal();
 
   //Use this method to access the database, because initialization of the database (it has to go through the method channel)
-  Future<Database> _getDb(
-      {String senderAccount = Constants.MESSAGE_TYPE_SYSTEM}) async {
-    if (!didInit) await _init(senderAccount);
+  Future<Database> _getDb(String senderAccount) async {
+    await _init(senderAccount);
     return db;
   }
 
-  Future init(String senderAccount) async {
-    return await _init(senderAccount);
-  }
-
   Future _init(String senderAccount) async {
+    if (senderAccount == Constants.MESSAGE_TYPE_SYSTEM_ZH ||
+        senderAccount.isEmpty) {
+      senderAccount = Constants.MESSAGE_TYPE_SYSTEM;
+    }
     // Get a location using path_provider
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(
@@ -68,14 +65,13 @@ class MessageDataBase {
           "${MessageEntity.IS_REMIND} INTEGER"
           ")");
     });
-    didInit = true;
   }
 
   /*
   *  查询消息列表的类别
   */
   Future<List<MessageTypeEntity>> getMessageTypeEntity() async {
-    var db = await _getDb();
+    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
     var result =
         await db.rawQuery('SELECT * FROM ${DataBaseConfig.MESSAGE_TABLE}');
     List<MessageTypeEntity> res = [];
@@ -89,7 +85,7 @@ class MessageDataBase {
   *  查询消息类别的未读数
   */
   Future<int> getOneMessageUnreadCount(String senderAccount) async {
-    var db = await _getDb();
+    var db = await _getDb(senderAccount);
     var result = await db.rawQuery(
         'SELECT ${MessageTypeEntity.IS_UNREAD_COUNT} FROM ${DataBaseConfig.MESSAGE_TABLE} '
         'where ${MessageTypeEntity.SENDER_ACCOUNT} = "$senderAccount"');
@@ -105,7 +101,7 @@ class MessageDataBase {
   */
   Future<List<MessageEntity>> getMessageEntityInType(
       String senderAccount) async {
-    var db = await _getDb();
+    var db = await _getDb(senderAccount);
     var result = await db.rawQuery('SELECT * FROM nb_$senderAccount');
     List<MessageEntity> books = [];
     for (Map<String, dynamic> item in result) {
@@ -138,7 +134,7 @@ class MessageDataBase {
   }
 
   Future _updateMessageTypeEntity(MessageTypeEntity entity) async {
-    var db = await _getDb();
+    var db = await _getDb(entity.senderAccount);
     await db.rawUpdate(
         'INSERT OR REPLACE INTO '
         '${DataBaseConfig.MESSAGE_TABLE}(${MessageTypeEntity.SENDER_ACCOUNT},${MessageTypeEntity.IS_UNREAD_COUNT})'
@@ -150,13 +146,13 @@ class MessageDataBase {
   }
 
   Future updateAllMessageTypeEntity(String sender) async {
-    var db = await _getDb();
+    var db = await _getDb(sender);
     await db.rawUpdate(
         'UPDATE ${DataBaseConfig.MESSAGE_TABLE} SET ${MessageTypeEntity.IS_UNREAD_COUNT} = 0 WHERE ${MessageTypeEntity.SENDER_ACCOUNT} = "$sender"');
   }
 
   Future updateMessageEntity(String senderAccount, MessageEntity entity) async {
-    var db = await _getDb();
+    var db = await _getDb(senderAccount);
     await db.rawInsert(
         'INSERT OR REPLACE INTO '
         'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.STATUS})'
@@ -179,7 +175,7 @@ class MessageDataBase {
   }
 
   Future deleteMessageTypeEntity({MessageTypeEntity entity}) async {
-    var db = await _getDb();
+    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
     if (entity == null) {
       await db.delete(DataBaseConfig.MESSAGE_TABLE);
     } else {
@@ -190,7 +186,7 @@ class MessageDataBase {
 
   Future deleteMessageEntity(String senderAccount,
       {MessageEntity entity}) async {
-    var db = await _getDb();
+    var db = await _getDb(senderAccount);
     if (entity == null) {
       await db.delete('nb_$senderAccount');
     } else {
@@ -200,9 +196,8 @@ class MessageDataBase {
   }
 
   Future close() async {
-    var db = await _getDb();
+    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
     db.close();
-    didInit = false;
     return db = null;
   }
 }
