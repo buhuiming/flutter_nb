@@ -58,7 +58,6 @@ class DataProxy {
         DialogUtil.buildToast('当前网络不可用，请检查网络设置');
       } else if (res.containsValue('onDestroy')) {
         //APP执行onDestroy
-        ObjectUtil.doExit(_context);
         unConnect();
       }
     } else if (res.containsKey('json')) {

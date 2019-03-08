@@ -144,7 +144,7 @@ class DataBaseControl {
               entity.isUnread = 0;
               entity.isRemind = 1;
               entity.titleName = entity.senderAccount;
-              entity.content = '你们已经是好友了，开始聊天吧！';
+              entity.content = '我们已经是好友了，开始聊天吧！';
               entity.time =
                   new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
               MessageDataBase.get()

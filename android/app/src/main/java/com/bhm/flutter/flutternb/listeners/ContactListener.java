@@ -20,7 +20,7 @@ public class ContactListener implements EMContactListener {
     public void onContactAdded(String username) {
         //增加联系人时回调此方法
         mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("system", "onContactAdded", username))));
+                toJson(new ContactEntity("chat", "onContactAdded", username))));
     }
 
     @Override

@@ -12,25 +12,13 @@ class MessageDataBase {
   static final MessageDataBase _messageDataBase =
       new MessageDataBase._internal();
 
-  Database db;
-
   static MessageDataBase get() {
     return _messageDataBase;
   }
 
   MessageDataBase._internal();
 
-  //Use this method to access the database, because initialization of the database (it has to go through the method channel)
-  Future<Database> _getDb(String senderAccount) async {
-    await _init(senderAccount);
-    return db;
-  }
-
-  Future _init(String senderAccount) async {
-    if (senderAccount == Constants.MESSAGE_TYPE_SYSTEM_ZH ||
-        senderAccount.isEmpty) {
-      senderAccount = Constants.MESSAGE_TYPE_SYSTEM;
-    }
+  Future<Database> _init() async {
     // Get a location using path_provider
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(
@@ -38,7 +26,7 @@ class MessageDataBase {
         SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT) +
             '_' +
             DataBaseConfig.DATABASE_NAME);
-    db = await openDatabase(path, version: DataBaseConfig.VERSION_CODE,
+    return await openDatabase(path, version: DataBaseConfig.VERSION_CODE,
         onCreate: (Database db, int version) async {
       // When creating the db, create the table，数据库名：登录帐号_nb_db
       //创建2个表，一个存放消息类型（表名固定），一个存放某个类型的所有消息（表名为发送方帐号）
@@ -48,7 +36,8 @@ class MessageDataBase {
           "${MessageTypeEntity.IS_UNREAD_COUNT} INTEGER,"
           "${MessageTypeEntity.SENDER_ACCOUNT} TEXT"
           ")");
-      await db.execute("CREATE TABLE IF NOT EXISTS nb_$senderAccount ("
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS nb_${Constants.MESSAGE_TYPE_SYSTEM} ("
           "${MessageEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
           "${MessageEntity.TYPE} TEXT,"
           "${MessageEntity.IMAGE_URL} TEXT,"
@@ -67,11 +56,30 @@ class MessageDataBase {
     });
   }
 
+  Future _createTypeTable(Database db, String senderAccount) async {
+    await db.execute("CREATE TABLE IF NOT EXISTS nb_$senderAccount ("
+        "${MessageEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "${MessageEntity.TYPE} TEXT,"
+        "${MessageEntity.IMAGE_URL} TEXT,"
+        "${MessageEntity.IS_UNREAD} INTEGER,"
+        "${MessageEntity.SENDER_ACCOUNT} TEXT,"
+        "${MessageEntity.TITLE_NAME} TEXT,"
+        "${MessageEntity.CONTENT} TEXT,"
+        "${MessageEntity.CONTENT_TYPE} TEXT,"
+        "${MessageEntity.CONTENT_URL} TEXT,"
+        "${MessageEntity.TIME} TEXT,"
+        "${MessageEntity.NOTE} TEXT,"
+        "${MessageEntity.STATUS} TEXT,"
+        "${MessageEntity.MESSAGE_OWNER} INTEGER,"
+        "${MessageEntity.IS_REMIND} INTEGER"
+        ")");
+  }
+
   /*
   *  查询消息列表的类别
   */
   Future<List<MessageTypeEntity>> getMessageTypeEntity() async {
-    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
+    var db = await _init();
     var result =
         await db.rawQuery('SELECT * FROM ${DataBaseConfig.MESSAGE_TABLE}');
     List<MessageTypeEntity> res = [];
@@ -85,7 +93,7 @@ class MessageDataBase {
   *  查询消息类别的未读数
   */
   Future<int> getOneMessageUnreadCount(String senderAccount) async {
-    var db = await _getDb(senderAccount);
+    var db = await _init();
     var result = await db.rawQuery(
         'SELECT ${MessageTypeEntity.IS_UNREAD_COUNT} FROM ${DataBaseConfig.MESSAGE_TABLE} '
         'where ${MessageTypeEntity.SENDER_ACCOUNT} = "$senderAccount"');
@@ -101,7 +109,8 @@ class MessageDataBase {
   */
   Future<List<MessageEntity>> getMessageEntityInType(
       String senderAccount) async {
-    var db = await _getDb(senderAccount);
+    var db = await _init();
+    await _createTypeTable(db, senderAccount);
     var result = await db.rawQuery('SELECT * FROM nb_$senderAccount');
     List<MessageEntity> books = [];
     for (Map<String, dynamic> item in result) {
@@ -134,7 +143,7 @@ class MessageDataBase {
   }
 
   Future _updateMessageTypeEntity(MessageTypeEntity entity) async {
-    var db = await _getDb(entity.senderAccount);
+    var db = await _init();
     await db.rawUpdate(
         'INSERT OR REPLACE INTO '
         '${DataBaseConfig.MESSAGE_TABLE}(${MessageTypeEntity.SENDER_ACCOUNT},${MessageTypeEntity.IS_UNREAD_COUNT})'
@@ -146,36 +155,38 @@ class MessageDataBase {
   }
 
   Future updateAllMessageTypeEntity(String sender) async {
-    var db = await _getDb(sender);
+    var db = await _init();
     await db.rawUpdate(
         'UPDATE ${DataBaseConfig.MESSAGE_TABLE} SET ${MessageTypeEntity.IS_UNREAD_COUNT} = 0 WHERE ${MessageTypeEntity.SENDER_ACCOUNT} = "$sender"');
   }
 
   Future updateMessageEntity(String senderAccount, MessageEntity entity) async {
-    var db = await _getDb(senderAccount);
-    await db.rawInsert(
-        'INSERT OR REPLACE INTO '
-        'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.STATUS})'
-        ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          entity.type,
-          entity.imageUrl,
-          entity.isUnread,
-          entity.senderAccount,
-          entity.titleName,
-          entity.content,
-          entity.contentType,
-          entity.contentUrl,
-          entity.time,
-          entity.messageOwner,
-          entity.isRemind,
-          entity.note,
-          entity.status
-        ]);
+    var db = await _init();
+    _createTypeTable(db, entity.senderAccount).then((res) async {
+      await db.rawInsert(
+          'INSERT OR REPLACE INTO '
+          'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.STATUS})'
+          ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            entity.type,
+            entity.imageUrl,
+            entity.isUnread,
+            entity.senderAccount,
+            entity.titleName,
+            entity.content,
+            entity.contentType,
+            entity.contentUrl,
+            entity.time,
+            entity.messageOwner,
+            entity.isRemind,
+            entity.note,
+            entity.status
+          ]);
+    });
   }
 
   Future deleteMessageTypeEntity({MessageTypeEntity entity}) async {
-    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
+    var db = await _init();
     if (entity == null) {
       await db.delete(DataBaseConfig.MESSAGE_TABLE);
     } else {
@@ -186,17 +197,19 @@ class MessageDataBase {
 
   Future deleteMessageEntity(String senderAccount,
       {MessageEntity entity}) async {
-    var db = await _getDb(senderAccount);
-    if (entity == null) {
-      await db.delete('nb_$senderAccount');
-    } else {
-      await db.delete('nb_$senderAccount',
-          where: "${MessageEntity.DB_ID} = ?", whereArgs: [entity.id]);
-    }
+    var db = await _init();
+    _createTypeTable(db, entity.senderAccount).then((res) async {
+      if (entity == null) {
+        await db.delete('nb_$senderAccount');
+      } else {
+        await db.delete('nb_$senderAccount',
+            where: "${MessageEntity.DB_ID} = ?", whereArgs: [entity.id]);
+      }
+    });
   }
 
   Future close() async {
-    var db = await _getDb(Constants.MESSAGE_TYPE_SYSTEM);
+    var db = await _init();
     db.close();
     return db = null;
   }
