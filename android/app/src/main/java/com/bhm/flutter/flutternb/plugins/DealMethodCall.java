@@ -38,6 +38,7 @@ class DealMethodCall {
             put("addFriends", "addFriends");//添加好友
             put("refusedFriends", "refusedFriends");//拒绝好友添加邀请
             put("acceptedFriends", "acceptedFriends");//同意好友添加邀请
+            put("getAllContacts", "getAllContacts");//获取好友列表
         }
     };
 
@@ -109,6 +110,14 @@ class DealMethodCall {
         }else if(Objects.equals(methodNames.get("acceptedFriends"), methodCall.method)){//同意好友添加邀请
             EMClientUtils.acceptedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
+        }else if(Objects.equals(methodNames.get("getAllContacts"), methodCall.method)){//获取好友列表
+            EMClientUtils.getAllContactsFromServer(new CallBack<Boolean>() {
                         @Override
                         public Boolean call(Object o) {
                             result.success(o);

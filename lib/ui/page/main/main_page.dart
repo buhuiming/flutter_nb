@@ -7,10 +7,13 @@ import 'package:flutter_nb/ui/page/main/found_page.dart';
 import 'package:flutter_nb/ui/page/main/friends_page.dart';
 import 'package:flutter_nb/ui/page/main/message_page.dart';
 import 'package:flutter_nb/ui/page/main/mine_page.dart';
+import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
+import 'package:flutter_nb/utils/data_proxy.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
+import 'package:flutter_nb/utils/notification_util.dart';
 
 /*
 *  主页
@@ -91,6 +94,9 @@ class _MyHomePageState extends ThemeState<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    //NotificationUtil中的context是Login的，此处要替换全局
+    NotificationUtil.instance().build(context);
+    DataProxy.build().setContext(context);
     return MaterialApp(
         theme: ThemeData(
             primaryColor: primaryColor,

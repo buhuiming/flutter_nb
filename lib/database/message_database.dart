@@ -198,7 +198,7 @@ class MessageDataBase {
   Future deleteMessageEntity(String senderAccount,
       {MessageEntity entity}) async {
     var db = await _init();
-    _createTypeTable(db, entity.senderAccount).then((res) async {
+    _createTypeTable(db, senderAccount).then((res) async {
       if (entity == null) {
         await db.delete('nb_$senderAccount');
       } else {

@@ -17,6 +17,10 @@ class DataProxy {
 
   DataProxy._init();
 
+  void setContext(BuildContext context){
+    _context = context;
+  }
+
   /*
   * 启动与原生的交互
   */

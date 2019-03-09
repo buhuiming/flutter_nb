@@ -1,7 +1,5 @@
 package com.bhm.flutter.flutternb.listeners;
 
-import android.util.Log;
-
 import com.bhm.flutter.flutternb.util.CallBackData;
 import com.google.gson.Gson;
 import com.hyphenate.EMContactListener;
@@ -35,7 +33,6 @@ public class ContactListener implements EMContactListener {
         //收到好友邀请
         mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
                 toJson(new ContactEntity("system", "onContactInvited", username, reason))));
-        Log.d("----------", "当前时间：" + System.currentTimeMillis());
     }
 
     @Override

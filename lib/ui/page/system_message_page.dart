@@ -110,46 +110,51 @@ class SystemMessageState extends MessageState<SystemMessage>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return LoadingScaffold(
-      operation: _operation,
-      child: Scaffold(
-        body: itemCount > 0
-            ? ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return _itemWidget(context, index);
-                },
-                itemCount: itemCount)
-            : MoreWidgets.buildNoDataPage(),
-        appBar: MoreWidgets.buildAppBar(
-          context,
-          Constants.MESSAGE_TYPE_SYSTEM_ZH,
-          centerTitle: true,
-          elevation: 2.0,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          actions: <Widget>[
-            itemCount > 0
-                ? InkWell(
-                    child: Container(
-                        padding: EdgeInsets.only(right: 15, left: 15),
-                        child: Icon(
-                          Icons.delete,
-                          size: 22,
-                        )),
-                    onTap: () {
-                      DialogUtil.showBaseDialog(context, '确认全部删除？',
-                          rightClick: (res) {
-                        _deleteAll();
-                      });
-                    })
-                : Text(''),
-          ],
-        ),
-      ),
-    );
+    return MaterialApp(
+        theme: ThemeData(
+            primaryColor: ObjectUtil.getThemeColor(),
+            primarySwatch: ObjectUtil.getThemeSwatchColor(),
+            platform: TargetPlatform.iOS),
+        home: LoadingScaffold(
+          operation: _operation,
+          child: Scaffold(
+            body: itemCount > 0
+                ? ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return _itemWidget(context, index);
+                    },
+                    itemCount: itemCount)
+                : MoreWidgets.buildNoDataPage(),
+            appBar: MoreWidgets.buildAppBar(
+              context,
+              Constants.MESSAGE_TYPE_SYSTEM_ZH,
+              centerTitle: true,
+              elevation: 2.0,
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              actions: <Widget>[
+                itemCount > 0
+                    ? InkWell(
+                        child: Container(
+                            padding: EdgeInsets.only(right: 15, left: 15),
+                            child: Icon(
+                              Icons.delete,
+                              size: 22,
+                            )),
+                        onTap: () {
+                          DialogUtil.showBaseDialog(context, '确认全部删除？',
+                              rightClick: (res) {
+                            _deleteAll();
+                          });
+                        })
+                    : Text(''),
+              ],
+            ),
+          ),
+        ));
   }
 
   Widget _itemWidget(BuildContext context, int index) {
@@ -186,7 +191,7 @@ class SystemMessageState extends MessageState<SystemMessage>
       title = '添加邀请被拒绝';
       content = '用户${entity.senderAccount}拒绝您的好友添加邀请！';
       showStatusBar = true;
-    }else if (entity.contentType == DataBaseControl.payload_contact_accepted) {
+    } else if (entity.contentType == DataBaseControl.payload_contact_accepted) {
       title = '添加邀请已同意';
       content = '用户${entity.senderAccount}同意您的好友添加邀请！';
       showStatusBar = true;
@@ -253,7 +258,7 @@ class SystemMessageState extends MessageState<SystemMessage>
     _operation.setShowLoading(true);
     Map<String, String> map = {"username": user.senderAccount};
     InteractNative.goNativeWithValue(
-        InteractNative.methodNames['acceptedFriends'], map)
+            InteractNative.methodNames['acceptedFriends'], map)
         .then((success) {
       _operation.setShowLoading(false);
       if (success == true) {
@@ -276,6 +281,7 @@ class SystemMessageState extends MessageState<SystemMessage>
       }
     });
   }
+
   void _friendsRefused(MessageEntity user, int index) {
     _operation.setShowLoading(true);
     Map<String, String> map = {"username": user.senderAccount};

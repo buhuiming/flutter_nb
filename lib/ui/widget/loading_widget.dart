@@ -43,14 +43,12 @@ class LoadingState extends State<LoadingScaffold> {
       widget.operation._notifier.value = true;
     }
     listener = () {
-      setState(() {
-        _hideKeyBord();
-      });
+      _hideKeyBord();
     };
     widget.operation._notifier.addListener(listener);
   }
 
-  void _hideKeyBord(){
+  void _hideKeyBord() {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
@@ -85,15 +83,15 @@ class LoadingState extends State<LoadingScaffold> {
   Widget _WillPopScopeWidget() {
     return new WillPopScope(
         onWillPop: () {
-          if(null != widget.backPressCallback){
+          if (null != widget.backPressCallback) {
             widget.backPressCallback(widget.backPressType);
           }
           if (widget.backPressType == BackPressType.SBLOCK) {
-            _onWillPop();//阻止返回
-          }else if (widget.backPressType == BackPressType.CLOSE_CURRENT) {
-            widget.operation.setShowLoading(false);//关闭当前页
-          }else if (widget.backPressType == BackPressType.CLOSE_PARENT) {
-            Navigator.pop(context);//关闭当前页及当前页的父页
+            _onWillPop(); //阻止返回
+          } else if (widget.backPressType == BackPressType.CLOSE_CURRENT) {
+            widget.operation.setShowLoading(false); //关闭当前页
+          } else if (widget.backPressType == BackPressType.CLOSE_PARENT) {
+            Navigator.pop(context); //关闭当前页及当前页的父页
           }
         },
         child: _loadingWidget());
@@ -145,8 +143,6 @@ enum BackPressType {
   CLOSE_CURRENT, //关闭当前页
   CLOSE_PARENT //关闭当前页及当前页的父页
 }
-
-
 
 class Operation {
   ValueNotifier<bool> _notifier;

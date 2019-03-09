@@ -107,15 +107,13 @@ class Message extends MessageState<MessagePage>
               MessageEntity messageEntity =
                   listEntity.elementAt(listEntity.length - 1);
               messageEntity.isUnreadCount = typeEntity.isUnreadCount;
-              if (type == Constants.MESSAGE_TYPE_SYSTEM) {
-                if (list.contains(messageEntity.titleName)) {
-                  //如果已经存在
-                  list.remove(messageEntity.titleName);
-                  map.remove(messageEntity.titleName);
-                }
-                list.insert(0, messageEntity.titleName);
-                map[messageEntity.titleName] = messageEntity;
+              if (list.contains(messageEntity.titleName)) {
+                //如果已经存在
+                list.remove(messageEntity.titleName);
+                map.remove(messageEntity.titleName);
               }
+              list.insert(0, messageEntity.titleName);
+              map[messageEntity.titleName] = messageEntity;
             }
             setState(() {
               isShowNoPage = list.length <= 0;
@@ -177,7 +175,8 @@ class Message extends MessageState<MessagePage>
   void updateData(MessageEntity entity) {
     // TODO: implement updateData
     if (null != entity) {
-      if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+      if (entity.type == Constants.MESSAGE_TYPE_SYSTEM ||
+          entity.type == Constants.MESSAGE_TYPE_CHAT) {
         if (list.contains(entity.titleName)) {
           //如果已经存在
           list.remove(entity.titleName);

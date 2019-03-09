@@ -67,7 +67,6 @@ class DataBaseControl {
                 });
               }); //保存数据库
               break;
-
             case payload_contact_request: //收到好友拒绝
               isShowNotification = true;
               payload = payload_contact_request;
@@ -134,6 +133,10 @@ class DataBaseControl {
                 });
               }); //保存数据库
               break;
+          }
+          break;
+        case Constants.MESSAGE_TYPE_CHAT://聊天消息
+          switch (entity.contentType) {
             case payload_contact_contactAdded: //好友同意后，返回好友信息
               isShowNotification = false;//不需要弹通知栏
               payload = payload_contact_contactAdded;
@@ -167,14 +170,14 @@ class DataBaseControl {
               });
               break;
           }
-          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != false &&
-              SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false &&
-              isShowNotification) {
-            NotificationUtil.instance()
-                .build(context)
-                .showSystem(entity.titleName, entity.content, payload);
-          }
           break;
+      }
+      if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != false &&
+          SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false &&
+          isShowNotification) {
+        NotificationUtil.instance()
+            .build(context)
+            .showSystem(entity.titleName, entity.content, payload);
       }
     }
   }

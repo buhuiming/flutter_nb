@@ -33,6 +33,7 @@ class InteractNative {
     'addFriends': 'addFriends', //添加好友
     'refusedFriends': 'refusedFriends', //拒绝好友添加邀请
     'acceptedFriends': 'acceptedFriends', //同意好友添加邀请
+    'getAllContacts': 'getAllContacts', //获取好友列表
   };
 
   /*

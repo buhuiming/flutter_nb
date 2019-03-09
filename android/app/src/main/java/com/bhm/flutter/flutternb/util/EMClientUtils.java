@@ -1,8 +1,12 @@
 package com.bhm.flutter.flutternb.util;
 
+import android.annotation.SuppressLint;
+
 import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -12,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
  * 调用环信IM统一工具类
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressLint("CheckResult")
 public class EMClientUtils {
 
     /** 注册账号
@@ -139,6 +144,26 @@ public class EMClientUtils {
                     public void accept(CallBack<Boolean> callBack1) throws Exception {
                         EMClient.getInstance().contactManager().acceptInvitation(username);//同步方法
                         callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 获取好友列表
+     * @param callBack
+     */
+    public static void getAllContactsFromServer(final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        List<String> userNames = EMClient.getInstance().contactManager().getAllContactsFromServer();//同步方法
+                        callBack.call(userNames);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
