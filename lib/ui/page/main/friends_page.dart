@@ -38,11 +38,15 @@ class Friends extends MessageState<FriendsPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    _setDefault();
+    _getFriends();
+  }
+
+  _setDefault(){
     list.add('新的朋友');
     list.add('群聊');
     list.add('收藏');
     list.add('公众号');
-    _getFriends();
   }
 
   _getFriends() {
@@ -120,9 +124,12 @@ class Friends extends MessageState<FriendsPage>
     // TODO: implement updateData
     if (entity != null &&
         entity.type == Constants.MESSAGE_TYPE_CHAT &&
-        entity.contentType == DataBaseControl.payload_contact_contactAdded) {
-      //如果收到的推送消息是聊天消息，并且属于好友增加，则属性好友列表
+        (entity.contentType == DataBaseControl.payload_contact_contactAdded ||
+            entity.contentType ==
+                DataBaseControl.payload_contact_contactDeleted)) {
+      //如果收到的推送消息是聊天消息，并且属于好友增加、好友删除，则属性好友列表
       print('获取朋友列表');
+      list.remove(entity.senderAccount);
       _getFriends();
     }
   }

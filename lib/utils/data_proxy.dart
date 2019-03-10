@@ -17,7 +17,7 @@ class DataProxy {
 
   DataProxy._init();
 
-  void setContext(BuildContext context){
+  void setContext(BuildContext context) {
     _context = context;
   }
 
@@ -68,6 +68,7 @@ class DataProxy {
       DataBaseControl.decodeData(res.values.elementAt(0), context: _context,
           callBack: (type, unReadCount, entity) {
         entity.isUnreadCount = unReadCount;
+        //触发点MessageState
         InteractNative.getMessageEventSink().add(entity);
       }); //解析数据保存数据库
     }

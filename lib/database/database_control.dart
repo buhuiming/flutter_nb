@@ -20,6 +20,8 @@ class DataBaseControl {
       'onFriendRequestAccepted'; //邀请已同意
   static const String payload_contact_contactAdded =
       'onContactAdded'; //同意通过，返回添加的好友
+  static const String payload_contact_contactDeleted =
+      'onContactDeleted'; //删除好友
 
   /*
   *  解析数据
@@ -135,10 +137,10 @@ class DataBaseControl {
               break;
           }
           break;
-        case Constants.MESSAGE_TYPE_CHAT://聊天消息
+        case Constants.MESSAGE_TYPE_CHAT: //聊天消息
           switch (entity.contentType) {
             case payload_contact_contactAdded: //好友同意后，返回好友信息
-              isShowNotification = false;//不需要弹通知栏
+              isShowNotification = false; //不需要弹通知栏
               payload = payload_contact_contactAdded;
               entity.imageUrl = FileUtil.getImagePath('img_headportrait',
                   dir: 'icon', format: 'png');
@@ -152,11 +154,11 @@ class DataBaseControl {
                   new DateTime.now().millisecondsSinceEpoch.toString(); //微秒时间戳
               MessageDataBase.get()
                   .insertMessageEntity(entity.titleName, entity)
-                  .then((onValue) async{
+                  .then((onValue) async {
                 int unReadCount = 0; //先查询出未读数，再加1
                 MessageDataBase.get()
                     .getOneMessageUnreadCount(entity.titleName)
-                    .then((onValue) async{
+                    .then((onValue) async {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
                       senderAccount: entity.titleName, isUnreadCount: 1);
@@ -165,6 +167,23 @@ class DataBaseControl {
                   if (null != callBack) {
                     callBack(
                         Constants.MESSAGE_TYPE_SYSTEM, unReadCount, entity);
+                  }
+                });
+              });
+              break;
+            case payload_contact_contactDeleted: //删除好友，刷新列表
+              isShowNotification = false; //不需要弹通知栏
+              entity.titleName = entity.senderAccount;
+              MessageDataBase.get()
+                  .deleteMessageTypeEntity(
+                      entity: MessageTypeEntity(
+                          senderAccount: entity.senderAccount))
+                  .then((res) {
+                MessageDataBase.get()
+                    .deleteMessageEntity(entity.senderAccount)
+                    .then((result) {
+                  if (null != callBack) {
+                    callBack(Constants.MESSAGE_TYPE_SYSTEM, 0, entity);
                   }
                 });
               });

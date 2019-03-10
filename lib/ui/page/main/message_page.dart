@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/database/database_control.dart';
 import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
@@ -177,16 +178,26 @@ class Message extends MessageState<MessagePage>
     if (null != entity) {
       if (entity.type == Constants.MESSAGE_TYPE_SYSTEM ||
           entity.type == Constants.MESSAGE_TYPE_CHAT) {
-        if (list.contains(entity.titleName)) {
-          //如果已经存在
+        if (entity.contentType ==
+            DataBaseControl.payload_contact_contactDeleted) {
+          //好友删除
           list.remove(entity.titleName);
           map.remove(entity.titleName);
+          setState(() {
+            isShowNoPage = list.length <= 0;
+          });
+        } else {
+          if (list.contains(entity.titleName)) {
+            //如果已经存在
+            list.remove(entity.titleName);
+            map.remove(entity.titleName);
+          }
+          list.insert(0, entity.titleName);
+          map[entity.titleName] = entity;
+          setState(() {
+            isShowNoPage = list.length <= 0;
+          });
         }
-        list.insert(0, entity.titleName);
-        map[entity.titleName] = entity;
-        setState(() {
-          isShowNoPage = list.length <= 0;
-        });
       } else if (entity.type == InteractNative.SYSTEM_MESSAGE_HAS_READ) {
         if (null != map && map.length > 0 && list.length > 0) {
           map[Constants.MESSAGE_TYPE_SYSTEM_ZH].isUnreadCount = 0;

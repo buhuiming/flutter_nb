@@ -25,7 +25,7 @@ public class ContactListener implements EMContactListener {
     public void onContactDeleted(String username) {
         //被删除时回调此方法
         mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("system", "onContactDeleted", username))));
+                toJson(new ContactEntity("chat", "onContactDeleted", username))));
     }
 
     @Override
