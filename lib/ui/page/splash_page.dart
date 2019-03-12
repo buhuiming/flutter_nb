@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/utils/data_proxy.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
@@ -25,10 +26,10 @@ class _SplashPageState extends State<SplashPage> {
   int _status = 0; //0启动页，1广告页，2引导页
   TimerUtil _timerUtil;
   List<String> _guideList = [
-    FileUtil.getImagePath('guide1', dir:'splash'),
-    FileUtil.getImagePath('guide2', dir:'splash'),
-    FileUtil.getImagePath('guide3', dir:'splash'),
-    FileUtil.getImagePath('guide4', dir:'splash')
+    FileUtil.getImagePath('guide1', dir: 'splash'),
+    FileUtil.getImagePath('guide2', dir: 'splash'),
+    FileUtil.getImagePath('guide3', dir: 'splash'),
+    FileUtil.getImagePath('guide4', dir: 'splash')
   ];
   List<Widget> _guideWidgetList = new List();
 
@@ -46,9 +47,9 @@ class _SplashPageState extends State<SplashPage> {
 
   void _checkPage() {
     Observable.just(1).delay(new Duration(milliseconds: 1000)).listen((_) {
-      if(SPUtil.getBool(Constants.KEY_LOGIN) != true){
+      if (SPUtil.getBool(Constants.KEY_LOGIN) != true) {
         isLogin = false;
-      }else{
+      } else {
         isLogin = true;
       }
       if (SPUtil.getBool(Constants.KEY_GUIDE) != true &&
@@ -102,9 +103,9 @@ class _SplashPageState extends State<SplashPage> {
                     color: ObjectUtil.getThemeColor(),
                     shape: new StadiumBorder(
                         side: new BorderSide(
-                      style: BorderStyle.solid,
-                      color: ObjectUtil.getThemeColor(),
-                    )),
+                          style: BorderStyle.solid,
+                          color: ObjectUtil.getThemeColor(),
+                        )),
                     child: Text('立即体验'),
                     onPressed: () {
                       SPUtil.putBool(Constants.KEY_GUIDE, true);
@@ -131,7 +132,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Widget _buildSplashBg() {
     return new Image.asset(
-      FileUtil.getImagePath('splash_bg', dir:'splash'),
+      FileUtil.getImagePath('splash_bg', dir: 'splash'),
       width: double.infinity,
       fit: BoxFit.fill,
       height: double.infinity,
@@ -163,15 +164,21 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   _goNext() {
-    if(isLogin){
+    if (isLogin) {
       _autoLogin();
-      Navigator.of(context).pushReplacementNamed('/MainPage');
-    }else {
-      Navigator.of(context).pushReplacementNamed('/LoginPage');
+      Navigator.pushAndRemoveUntil(context,
+          new MaterialPageRoute(builder: (BuildContext context) {
+            return MainPage(isShowLogin: false);
+          }), (Route<dynamic> route) => false);
+    } else {
+      Navigator.pushAndRemoveUntil(context,
+          new MaterialPageRoute(builder: (BuildContext context) {
+            return MainPage(isShowLogin: true);
+          }), (Route<dynamic> route) => false);
     }
   }
 
-  _autoLogin(){
+  _autoLogin() {
     InteractNative.goNativeWithValue(InteractNative.methodNames['autoLogin']);
   }
 
@@ -190,14 +197,14 @@ class _SplashPageState extends State<SplashPage> {
               child: ObjectUtil.isEmpty(_guideWidgetList)
                   ? new Container()
                   : new Swiper(
-                      autoStart: false,
-                      circular: false,
-                      indicator: CircleSwiperIndicator(
-                          radius: 4.0,
-                          padding: EdgeInsets.only(bottom: 30.0),
-                          itemColor: Colors.red,
-                          itemActiveColor: Colors.white),
-                      children: _guideWidgetList)),
+                  autoStart: false,
+                  circular: false,
+                  indicator: CircleSwiperIndicator(
+                      radius: 4.0,
+                      padding: EdgeInsets.only(bottom: 30.0),
+                      itemColor: Colors.red,
+                      itemActiveColor: Colors.white),
+                  children: _guideWidgetList)),
           _buildAdWidget(),
           new Offstage(
             offstage: !(_status == 1),
@@ -216,7 +223,7 @@ class _SplashPageState extends State<SplashPage> {
                       color: Color(0x66000000),
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       border:
-                          new Border.all(width: 0.33, color: ColorT.divider)),
+                      new Border.all(width: 0.33, color: ColorT.divider)),
                 ),
               ),
             ),

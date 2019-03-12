@@ -44,9 +44,6 @@ class _LoginState extends State<Login> {
             primarySwatch: ObjectUtil.getThemeSwatchColor(),
             primaryColor: ObjectUtil.getThemeColor(color: 'white'),
             platform: TargetPlatform.iOS),
-        routes: {
-          '/MainPage': (ctx) => MainPage(),
-        },
         home: new LoadingScaffold(
           //使用有Loading的widget
           operation: operation,
@@ -213,7 +210,9 @@ class _LoginState extends State<Login> {
         DialogUtil.buildToast('登录成功');
         SPUtil.putBool(Constants.KEY_LOGIN, true);
         SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
-        Navigator.of(context).pushReplacementNamed('/MainPage');
+//        Navigator.of(context).pushReplacementNamed('/MainPage');
+        InteractNative.getAppEventSink()
+            .add(InteractNative.CHANGE_PAGE_TO_MAIN);
       } else if (success is String) {
         DialogUtil.buildToast(success);
       } else {

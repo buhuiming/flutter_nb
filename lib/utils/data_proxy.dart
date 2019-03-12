@@ -67,10 +67,10 @@ class DataProxy {
     } else if (res.containsKey('json')) {
       DataBaseControl.decodeData(res.values.elementAt(0), context: _context,
           callBack: (type, unReadCount, entity) {
-        entity.isUnreadCount = unReadCount;
-        //触发点MessageState
-        InteractNative.getMessageEventSink().add(entity);
-      }); //解析数据保存数据库
+            entity.isUnreadCount = unReadCount;
+            //触发点MessageState
+            InteractNative.getMessageEventSink().add(entity);
+          }); //解析数据保存数据库
     }
   }
 

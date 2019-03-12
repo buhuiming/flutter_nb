@@ -119,10 +119,11 @@ class ObjectUtil {
   */
   static void doExit(BuildContext context) {
     NotificationUtil.instance().cancelAll();
-    MessageDataBase.get().close();
-    InteractNative.closeStream();
     SPUtil.putBool(Constants.KEY_LOGIN, false);
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
+    InteractNative.getAppEventSink()
+        .add(InteractNative.CHANGE_PAGE_TO_LOGIN);
+    MessageDataBase.get().close();
+//    Navigator.of(context)
+//        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
   }
 }

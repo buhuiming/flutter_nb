@@ -18,6 +18,8 @@ class InteractNative {
       BehaviorSubject<MessageEntity>(); //APP内部通信对象
 
   static const int RESET_THEME_COLOR = 1;
+  static const int CHANGE_PAGE_TO_MAIN = 2;
+  static const int CHANGE_PAGE_TO_LOGIN = 3;
   static const String SYSTEM_MESSAGE_HAS_READ = 'system_message_has_read';
   static const String SYSTEM_MESSAGE_DELETE_ALL = 'system_message_delete_all';
   static const String SYSTEM_MESSAGE_DELETE = 'system_message_delete';
@@ -65,7 +67,7 @@ class InteractNative {
   * 自定义通信
   */
   static BehaviorSubject<int> initAppEvent() {
-    if (null == _appEvent) {
+    if (null == _appEvent || _appEvent.isClosed) {
       _appEvent = BehaviorSubject<int>();
     }
     return _appEvent;
@@ -108,12 +110,14 @@ class InteractNative {
   /*
   *  退出登录时，需要关闭
   */
-  static void closeStream() {
-    if (null != _appEvent) {
-      _appEvent.close();
-    }
+  static void closeMessageStream() {
     if (null != _messageEvent) {
       _messageEvent.close();
+    }
+  }
+  static void closeAppStream() {
+    if (null != _appEvent) {
+      _appEvent.close();
     }
   }
 }

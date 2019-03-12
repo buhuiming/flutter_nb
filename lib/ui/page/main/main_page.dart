@@ -9,6 +9,7 @@ import 'package:flutter_nb/ui/page/main/message_page.dart';
 import 'package:flutter_nb/ui/page/main/mine_page.dart';
 import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
+import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/data_proxy.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
@@ -19,15 +20,20 @@ import 'package:flutter_nb/utils/notification_util.dart';
 *  主页
 */
 class MainPage extends StatelessWidget {
+  bool isShowLogin;
+
+  MainPage({Key key, this.isShowLogin}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     DeviceUtil.setBarStatus(true);
-    return MyHomePage();
+    return MyHomePage(isShowLogin: isShowLogin);
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  bool isShowLogin;
+  MyHomePage({Key key, this.isShowLogin}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -45,7 +51,8 @@ class _MyHomePageState extends ThemeState<MyHomePage>
     with SingleTickerProviderStateMixin {
   Operation operation = new Operation();
   var _pageController = new PageController(initialPage: 0);
-
+  bool _isShowLogin;
+  bool _buildMain = false;
   int _tabIndex = 0;
   var appBarTitles = ['消息', '朋友', '发现', '我的'];
   /*
@@ -82,6 +89,8 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    _isShowLogin = widget.isShowLogin;
+    _buildMain = !widget.isShowLogin;
     initData();
   }
 
@@ -102,99 +111,115 @@ class _MyHomePageState extends ThemeState<MyHomePage>
             primaryColor: primaryColor,
             primarySwatch: primarySwatch,
             platform: TargetPlatform.iOS),
-        routes: {
-          '/LoginPage': (ctx) => LoginPage(),
-        },
-        home: new LoadingScaffold(
-            //使用有Loading的widget
-            operation: operation,
-            isShowLoadingAtNow: false,
-            child: new WillPopScope(
-              onWillPop: () {
-                _backPress(); //物理返回键，返回到桌面
-              },
-              child: Scaffold(
-                  body: new PageView.builder(
-                    onPageChanged: _pageChange,
-                    controller: _pageController,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _pageList[index];
-                    },
-                    itemCount: 4,
-                  ),
-                  bottomNavigationBar: new BottomNavigationBar(
-                    items: <BottomNavigationBarItem>[
-                      new BottomNavigationBarItem(
-                          icon: _tabIndex == 0
-                              ? Image.asset(
-                                  FileUtil.getImagePath('message',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0,
-                                  color: primarySwatch)
-                              : Image.asset(
-                                  FileUtil.getImagePath('message',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0),
-                          title: getTabTitle(0)),
-                      new BottomNavigationBarItem(
-                          icon: _tabIndex == 1
-                              ? Image.asset(
-                                  FileUtil.getImagePath('friends',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0,
-                                  color: primarySwatch)
-                              : Image.asset(
-                                  FileUtil.getImagePath('friends',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0),
-                          title: getTabTitle(1)),
-                      new BottomNavigationBarItem(
-                          icon: _tabIndex == 2
-                              ? Image.asset(
-                                  FileUtil.getImagePath('more',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0,
-                                  color: primarySwatch)
-                              : Image.asset(
-                                  FileUtil.getImagePath('more',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0),
-                          title: getTabTitle(2)),
-                      new BottomNavigationBarItem(
-                          icon: _tabIndex == 3
-                              ? Image.asset(
-                                  FileUtil.getImagePath('mine',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0,
-                                  color: primarySwatch)
-                              : Image.asset(
-                                  FileUtil.getImagePath('mine',
-                                      dir: 'main_page', format: 'png'),
-                                  width: 22.0,
-                                  height: 22.0),
-                          title: getTabTitle(3)),
-                    ],
-                    type: BottomNavigationBarType.fixed,
-                    //默认选中首页
-                    currentIndex: _tabIndex,
-                    iconSize: 22.0,
-                    //点击事件
-                    onTap: (index) {
+        home: Stack(children: <Widget>[
+          //为什么登录页面要改成和主页放到一起？因为登录成功时，环信IM即刻推送未登录时收到的消息，而
+          //此时主页还未初始化，会导致主页消息不能刷新。
+          Offstage(offstage: !_isShowLogin, child: LoginPage()),
+          Offstage(
+              offstage: _isShowLogin,
+              child: _buildMain != true
+                  ? Scaffold(
+                      body: MoreWidgets.buildNoDataPage(),
+                    )
+                  : new LoadingScaffold(
+                      //使用有Loading的widget
+                      operation: operation,
+                      isShowLoadingAtNow: false,
+                      child: new WillPopScope(
+                        onWillPop: () {
+                          _backPress(); //物理返回键，返回到桌面
+                        },
+                        child: Scaffold(
+                            body: new PageView.builder(
+                              onPageChanged: _pageChange,
+                              controller: _pageController,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _pageList[index];
+                              },
+                              itemCount: 4,
+                            ),
+                            bottomNavigationBar: new BottomNavigationBar(
+                              items: <BottomNavigationBarItem>[
+                                new BottomNavigationBarItem(
+                                    icon: _tabIndex == 0
+                                        ? Image.asset(
+                                            FileUtil.getImagePath('message',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0,
+                                            color: primarySwatch)
+                                        : Image.asset(
+                                            FileUtil.getImagePath('message',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0),
+                                    title: getTabTitle(0)),
+                                new BottomNavigationBarItem(
+                                    icon: _tabIndex == 1
+                                        ? Image.asset(
+                                            FileUtil.getImagePath('friends',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0,
+                                            color: primarySwatch)
+                                        : Image.asset(
+                                            FileUtil.getImagePath('friends',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0),
+                                    title: getTabTitle(1)),
+                                new BottomNavigationBarItem(
+                                    icon: _tabIndex == 2
+                                        ? Image.asset(
+                                            FileUtil.getImagePath('more',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0,
+                                            color: primarySwatch)
+                                        : Image.asset(
+                                            FileUtil.getImagePath('more',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0),
+                                    title: getTabTitle(2)),
+                                new BottomNavigationBarItem(
+                                    icon: _tabIndex == 3
+                                        ? Image.asset(
+                                            FileUtil.getImagePath('mine',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0,
+                                            color: primarySwatch)
+                                        : Image.asset(
+                                            FileUtil.getImagePath('mine',
+                                                dir: 'main_page',
+                                                format: 'png'),
+                                            width: 22.0,
+                                            height: 22.0),
+                                    title: getTabTitle(3)),
+                              ],
+                              type: BottomNavigationBarType.fixed,
+                              //默认选中首页
+                              currentIndex: _tabIndex,
+                              iconSize: 22.0,
+                              //点击事件
+                              onTap: (index) {
 //                      _pageController.animateToPage(index,
 //                          duration: const Duration(milliseconds: 120),
 //                          curve: Curves.ease);
-                      //以上方式，动画过度太明显
-                      _pageController.jumpToPage(index);
-                    },
-                  )),
-            )));
+                                //以上方式，动画过度太明显
+                                _pageController.jumpToPage(index);
+                              },
+                            )),
+                      )))
+        ]));
   }
 
   void _pageChange(int index) {
@@ -215,6 +240,17 @@ class _MyHomePageState extends ThemeState<MyHomePage>
     if (type == InteractNative.RESET_THEME_COLOR) {
       setState(() {
         init();
+      });
+    } else if (type == InteractNative.CHANGE_PAGE_TO_MAIN) {
+      //登录成功后，由登录页面切换到主页
+      setState(() {
+        _isShowLogin = false;
+        _buildMain = true;
+      });
+    } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
+      //退出登录后，由主页切换到登录页面
+      setState(() {
+        _isShowLogin = true;
       });
     }
   }
