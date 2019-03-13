@@ -642,4 +642,47 @@ class MoreWidgets {
       ),
     );
   }
+
+  /*
+  * 消息列表，item长按弹出popupWindow
+  */
+  static Future buildMessagePop(BuildContext context,
+      GlobalKey<ScaffoldState> key, {OnItemClick onItemClick}) {
+    return showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(100.0, 200.0, 100.0, 100.0),
+        items: <PopupMenuItem<String>>[
+          new PopupMenuItem<String>(
+            value: 'one',
+            child: Text('标记未读',
+                style: new TextStyle(fontSize: 16.0, color: ColorT.app_main)),
+          ),
+          new PopupMenuItem<String>(
+            value: 'two',
+            child: Text('顶置消息',
+                style: new TextStyle(fontSize: 16.0, color: ColorT.app_main)),
+          ),
+          new PopupMenuItem<String>(
+            value: 'three',
+            child: Text('删除消息',
+                maxLines: 1,
+                style: new TextStyle(
+                    fontSize: 16.0, color: ObjectUtil.getThemeSwatchColor())),
+          ),
+        ]).then((res) {
+      switch (res) {
+        case 'one':
+          DialogUtil.buildSnakeBarByKey('标记未读功能未实现', key);
+          break;
+        case 'two':
+          DialogUtil.buildSnakeBarByKey('顶置消息功能未实现', key);
+          break;
+        case 'three':
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+          break;
+      }
+    });
+  }
 }

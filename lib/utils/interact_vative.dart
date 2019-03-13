@@ -13,7 +13,7 @@ class InteractNative {
 
   static StreamSubscription streamSubscription;
 
-  static BehaviorSubject<int> _appEvent = BehaviorSubject<int>(); //APP内部通信对象
+  static BehaviorSubject<Object> _appEvent = BehaviorSubject<Object>(); //APP内部通信对象
   static BehaviorSubject<MessageEntity> _messageEvent =
       BehaviorSubject<MessageEntity>(); //APP内部通信对象
 
@@ -66,9 +66,9 @@ class InteractNative {
   /*
   * 自定义通信
   */
-  static BehaviorSubject<int> initAppEvent() {
+  static BehaviorSubject<Object> initAppEvent() {
     if (null == _appEvent || _appEvent.isClosed) {
-      _appEvent = BehaviorSubject<int>();
+      _appEvent = BehaviorSubject<Object>();
     }
     return _appEvent;
   }
@@ -90,13 +90,13 @@ class InteractNative {
   }
 
   /*发送*/
-  static Sink<int> getAppEventSink() {
+  static Sink<Object> getAppEventSink() {
     initAppEvent();
     return _appEvent.sink;
   }
 
   /*接收*/
-  static Stream<int> getAppEventStream() {
+  static Stream<Object> getAppEventStream() {
     initAppEvent();
     return _appEvent.stream;
   }

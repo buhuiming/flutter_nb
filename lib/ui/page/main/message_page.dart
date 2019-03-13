@@ -35,6 +35,7 @@ class Message extends MessageState<MessagePage>
   bool isShowNoPage = false;
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
+  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class Message extends MessageState<MessagePage>
 
   Widget layout(BuildContext context) {
     return new Scaffold(
+        key: _key,
         appBar: MoreWidgets.buildAppBar(context, '消息'),
         body: new Stack(
           children: <Widget>[
@@ -87,8 +89,28 @@ class Message extends MessageState<MessagePage>
             new CupertinoPageRoute<void>(
                 builder: (ctx) => SystemMessagePage()));
       }
+    }, onItemLongClick: (res) {
+      MoreWidgets.buildMessagePop(context, _key, onItemClick: (res) {
+        _deleteAll(entity);
+      });
     });
     return res;
+  }
+
+  Future _deleteAll(MessageEntity entity) async {
+    String table = entity.senderAccount;
+    String name = entity.senderAccount;
+    if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+      table = Constants.MESSAGE_TYPE_SYSTEM;
+      name = Constants.MESSAGE_TYPE_SYSTEM_ZH;
+    }
+    MessageDataBase.get()
+        .deleteMessageTypeEntity(entity: MessageTypeEntity(senderAccount: name))
+        .then((value) {
+      MessageDataBase.get().deleteMessageEntity(table).then((res) {
+        _getData();
+      });
+    });
   }
 
   _getData() async {

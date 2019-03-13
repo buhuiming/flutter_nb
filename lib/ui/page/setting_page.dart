@@ -78,7 +78,7 @@ class _SettingState extends ThemeState<Setting> {
   }
 
   @override
-  void notify(int type) {
+  void notify(Object type) {
     // TODO: implement notify
     setState(() {
       if (type == InteractNative.RESET_THEME_COLOR) {

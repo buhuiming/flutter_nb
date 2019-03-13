@@ -32,6 +32,6 @@ abstract class ThemeState<T extends StatefulWidget> extends State<T> {
   }
 
   @protected
-  void notify(int type);
+  void notify(Object o);
 
 }

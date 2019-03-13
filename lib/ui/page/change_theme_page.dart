@@ -75,10 +75,10 @@ class _ChangeThemeState extends ThemeState<ChangeTheme> {
   }
 
   @override
-  void notify(int type) {
+  void notify(Object o) {
     // TODO: implement notify
     setState(() {
-      if (type == InteractNative.RESET_THEME_COLOR) {
+      if (o == InteractNative.RESET_THEME_COLOR) {
         init();
       }
     });
