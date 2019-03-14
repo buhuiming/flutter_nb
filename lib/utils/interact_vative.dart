@@ -36,6 +36,10 @@ class InteractNative {
     'refusedFriends': 'refusedFriends', //拒绝好友添加邀请
     'acceptedFriends': 'acceptedFriends', //同意好友添加邀请
     'getAllContacts': 'getAllContacts', //获取好友列表
+    'addUserToBlackList': 'addUserToBlackList', //拉入黑名单
+    'getBlackListUsernames': 'getBlackListUsernames', //黑名单列表
+    'removeUserFromBlackList': 'removeUserFromBlackList', //移出黑名单
+    'deleteContact': 'deleteContact', //删除好友
   };
 
   /*

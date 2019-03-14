@@ -172,4 +172,89 @@ public class EMClientUtils {
                     }
                 });
     }
+
+    /** 拉入黑名单
+     * @param username 好友帐号
+     * @param isNeed 如果为true，则把用户加入到黑名单后双方发消息时对方都收不到；false，则我能给黑名单的中用户发消息，但是对方发给我时我是收不到的
+     * @param callBack
+     */
+    public static void addUserToBlackList(final String username, final boolean isNeed, final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().contactManager().addUserToBlackList(username, isNeed);
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 黑名单列表
+     * @param callBack
+     */
+    public static void getBlackListUsernames(final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+//                        List<String> userNames = EMClient.getInstance().contactManager().getBlackListUsernames();
+                        List<String> userNames = EMClient.getInstance().contactManager().getBlackListFromServer();
+                        callBack.call(userNames);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 移出黑名单
+     * @param username
+     * @param callBack
+     */
+    public static void removeUserFromBlackList(final String username, final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().contactManager().removeUserFromBlackList(username);
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 删除好友
+     * @param username
+     * @param callBack
+     */
+    public static void deleteContact(final String username, final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().contactManager().deleteContact(username);
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
 }

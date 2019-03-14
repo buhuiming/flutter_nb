@@ -10,6 +10,7 @@ import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/timeline_util.dart';
@@ -36,6 +37,7 @@ class Message extends MessageState<MessagePage>
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+  var _popString = List<String>();
 
   @override
   void initState() {
@@ -45,6 +47,9 @@ class Message extends MessageState<MessagePage>
     Observable.just(1).delay(new Duration(milliseconds: 1200)).listen((_) {
       NotificationUtil.instance().cancelMessage();
     });
+    _popString.add('标记未读');
+    _popString.add('顶置消息');
+    _popString.add('删除消息');
     _getData();
     _startRefresh();
   }
@@ -90,8 +95,21 @@ class Message extends MessageState<MessagePage>
                 builder: (ctx) => SystemMessagePage()));
       }
     }, onItemLongClick: (res) {
-      MoreWidgets.buildMessagePop(context, _key, onItemClick: (res) {
-        _deleteAll(entity);
+      MoreWidgets.buildMessagePop(context, _popString, onItemClick: (res) {
+        switch (res) {
+          case 'one':
+            DialogUtil.buildSnakeBarByKey('标记未读功能未实现', _key);
+            break;
+          case 'two':
+            DialogUtil.buildSnakeBarByKey('顶置消息功能未实现', _key);
+            break;
+          case 'three':
+            DialogUtil.showBaseDialog(context, '删除后将清空该聊天的消息记录',
+                right: '删除', left: '再想想', rightClick: (res) {
+              _deleteAll(entity);
+            });
+            break;
+        }
       });
     });
     return res;

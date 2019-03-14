@@ -39,6 +39,10 @@ class DealMethodCall {
             put("refusedFriends", "refusedFriends");//拒绝好友添加邀请
             put("acceptedFriends", "acceptedFriends");//同意好友添加邀请
             put("getAllContacts", "getAllContacts");//获取好友列表
+            put("addUserToBlackList", "addUserToBlackList");//拉入黑名单
+            put("getBlackListUsernames", "getBlackListUsernames");//黑名单列表
+            put("removeUserFromBlackList", "removeUserFromBlackList");//移出黑名单
+            put("deleteContact", "deleteContact");//删除好友
         }
     };
 
@@ -118,6 +122,42 @@ class DealMethodCall {
                     });
         }else if(Objects.equals(methodNames.get("getAllContacts"), methodCall.method)){//获取好友列表
             EMClientUtils.getAllContactsFromServer(new CallBack<Boolean>() {
+                @Override
+                public Boolean call(Object o) {
+                    result.success(o);
+                    return false;
+                }
+            });
+        }else if(Objects.equals(methodNames.get("addUserToBlackList"), methodCall.method)){//拉入黑名单
+            boolean isNeed = Objects.requireNonNull(methodCall.argument("username")).toString().equals("0");
+            EMClientUtils.addUserToBlackList(Objects.requireNonNull(methodCall.argument("username")).toString(),
+                    isNeed, new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
+        }else if(Objects.equals(methodNames.get("getBlackListUsernames"), methodCall.method)){//黑名单列表
+            EMClientUtils.getBlackListUsernames(new CallBack<Boolean>() {
+                @Override
+                public Boolean call(Object o) {
+                    result.success(o);
+                    return false;
+                }
+            });
+        }else if(Objects.equals(methodNames.get("removeUserFromBlackList"), methodCall.method)){//移出黑名单
+            EMClientUtils.removeUserFromBlackList(Objects.requireNonNull(methodCall.argument("username")).toString(),
+                    new CallBack<Boolean>() {
+                        @Override
+                        public Boolean call(Object o) {
+                            result.success(o);
+                            return false;
+                        }
+                    });
+        }else if(Objects.equals(methodNames.get("deleteContact"), methodCall.method)){//删除好友
+            EMClientUtils.deleteContact(Objects.requireNonNull(methodCall.argument("username")).toString(),
+                    new CallBack<Boolean>() {
                         @Override
                         public Boolean call(Object o) {
                             result.success(o);
