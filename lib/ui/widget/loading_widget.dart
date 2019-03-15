@@ -43,7 +43,9 @@ class LoadingState extends State<LoadingScaffold> {
       widget.operation._notifier.value = true;
     }
     listener = () {
-      _hideKeyBord();
+      setState(() {
+        _hideKeyBord();
+      });
     };
     widget.operation._notifier.addListener(listener);
   }

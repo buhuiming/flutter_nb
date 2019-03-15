@@ -20,7 +20,7 @@ import 'package:flutter_nb/utils/notification_util.dart';
 *  主页
 */
 class MainPage extends StatelessWidget {
-  bool isShowLogin;
+  final bool isShowLogin;
 
   MainPage({Key key, this.isShowLogin}) : super(key: key);
 
@@ -32,7 +32,7 @@ class MainPage extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  bool isShowLogin;
+  final bool isShowLogin;
   MyHomePage({Key key, this.isShowLogin}) : super(key: key);
 
   @override
@@ -49,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 */
 class _MyHomePageState extends ThemeState<MyHomePage>
     with SingleTickerProviderStateMixin {
-  Operation operation = new Operation();
+  final Operation operation = new Operation();
   var _pageController = new PageController(initialPage: 0);
   bool _isShowLogin;
   bool _buildMain = false;
@@ -114,7 +114,8 @@ class _MyHomePageState extends ThemeState<MyHomePage>
         home: Stack(children: <Widget>[
           //为什么登录页面要改成和主页放到一起？因为登录成功时，环信IM即刻推送未登录时收到的消息，而
           //此时主页还未初始化，会导致主页消息不能刷新。
-          Offstage(offstage: !_isShowLogin, child: LoginPage()),
+          Offstage(
+              offstage: !_isShowLogin, child: LoginPage()),
           Offstage(
               offstage: _isShowLogin,
               child: _buildMain != true
