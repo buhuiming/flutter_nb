@@ -1,4 +1,6 @@
 class Constants {
+  static const String GITHUB_URL = 'https://github.com/buhuiming';
+  static const String JIANSHU_URL = 'https://www.jianshu.com/u/99bbcff7c8a1';
   static const String KEY_GUIDE = 'key_guide'; //false: show guide page;
   static const String KEY_LOGIN = 'key_login'; //false: show login page;
   static const String KEY_LOGIN_ACCOUNT = 'key_login_account';

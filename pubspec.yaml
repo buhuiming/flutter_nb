@@ -27,11 +27,17 @@ dependencies:
   sqflite: ^1.1.1 #数据库
   flutter_local_notifications: ^0.5.2 #通知栏
   image_picker: ^0.5.0+3 #相机相册
+  #webview_flutter: ^0.3.4 #WebView
 
   flukit:
       git:
         url: git://github.com/flutterchina/flukit.git
         path: package_src/
+  webview_flutter:
+      git:
+        url: git://github.com/Sky24n/plugins.git
+        ref: newDev
+        path: packages/webview_flutter/
 
 dev_dependencies:
   flutter_test:

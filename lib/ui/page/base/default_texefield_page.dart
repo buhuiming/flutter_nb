@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
-import 'package:flutter_nb/ui/widget/search_appbar.dart';
 import 'package:flutter_nb/utils/device_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/object_util.dart';
-import 'package:rxdart/rxdart.dart';
 
 /*
 *  常用输入框页面

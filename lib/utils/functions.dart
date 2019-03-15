@@ -13,6 +13,8 @@ typedef OnSubmitCallback = Future<void> Function(
 
 typedef OnItemClick = Future<void> Function(Object); //控件点击时触发
 
+typedef OnItemDoubleClick = Future<void> Function(Object); //控件点击时触发
+
 typedef OnItemLongClick = Future<void> Function(Object); //控件点击时触发
 
 typedef OnCallBack = Future<void> Function(Object);

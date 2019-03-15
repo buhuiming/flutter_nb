@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
+import 'package:flutter_nb/ui/page/base/web_view_page.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
 import 'package:flutter_nb/utils/data_proxy.dart';
 import 'package:flutter_nb/utils/file_util.dart';
@@ -103,9 +105,9 @@ class _SplashPageState extends State<SplashPage> {
                     color: ObjectUtil.getThemeColor(),
                     shape: new StadiumBorder(
                         side: new BorderSide(
-                          style: BorderStyle.solid,
-                          color: ObjectUtil.getThemeColor(),
-                        )),
+                      style: BorderStyle.solid,
+                      color: ObjectUtil.getThemeColor(),
+                    )),
                     child: Text('立即体验'),
                     onPressed: () {
                       SPUtil.putBool(Constants.KEY_GUIDE, true);
@@ -144,9 +146,14 @@ class _SplashPageState extends State<SplashPage> {
       offstage: !(_status == 1),
       child: new InkWell(
         onTap: () {
-//          _goNext();
-//          NavigatorUtil.pushWeb(context,
-//              title: _splashModel.title, url: _splashModel.url);
+          _goNext();
+          Navigator.push(
+              context,
+              new CupertinoPageRoute<void>(
+                  builder: (ctx) => new WebViewPage(
+                        title: 'Github',
+                        url: Constants.GITHUB_URL,
+                      )));
         },
         child: new Container(
           alignment: Alignment.center,
@@ -168,13 +175,13 @@ class _SplashPageState extends State<SplashPage> {
       _autoLogin();
       Navigator.pushAndRemoveUntil(context,
           new MaterialPageRoute(builder: (BuildContext context) {
-            return MainPage(isShowLogin: false);
-          }), (Route<dynamic> route) => false);
+        return MainPage(isShowLogin: false);
+      }), (Route<dynamic> route) => false);
     } else {
       Navigator.pushAndRemoveUntil(context,
           new MaterialPageRoute(builder: (BuildContext context) {
-            return MainPage(isShowLogin: true);
-          }), (Route<dynamic> route) => false);
+        return MainPage(isShowLogin: true);
+      }), (Route<dynamic> route) => false);
     }
   }
 
@@ -197,14 +204,14 @@ class _SplashPageState extends State<SplashPage> {
               child: ObjectUtil.isEmpty(_guideWidgetList)
                   ? new Container()
                   : new Swiper(
-                  autoStart: false,
-                  circular: false,
-                  indicator: CircleSwiperIndicator(
-                      radius: 4.0,
-                      padding: EdgeInsets.only(bottom: 30.0),
-                      itemColor: Colors.red,
-                      itemActiveColor: Colors.white),
-                  children: _guideWidgetList)),
+                      autoStart: false,
+                      circular: false,
+                      indicator: CircleSwiperIndicator(
+                          radius: 4.0,
+                          padding: EdgeInsets.only(bottom: 30.0),
+                          itemColor: Colors.red,
+                          itemActiveColor: Colors.white),
+                      children: _guideWidgetList)),
           _buildAdWidget(),
           new Offstage(
             offstage: !(_status == 1),
@@ -223,7 +230,7 @@ class _SplashPageState extends State<SplashPage> {
                       color: Color(0x66000000),
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       border:
-                      new Border.all(width: 0.33, color: ColorT.divider)),
+                          new Border.all(width: 0.33, color: ColorT.divider)),
                 ),
               ),
             ),
