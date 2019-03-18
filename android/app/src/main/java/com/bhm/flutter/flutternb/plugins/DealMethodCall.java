@@ -41,6 +41,7 @@ class DealMethodCall {
             put("getAllContacts", "getAllContacts");//获取好友列表
             put("addUserToBlackList", "addUserToBlackList");//拉入黑名单
             put("getBlackListUsernames", "getBlackListUsernames");//黑名单列表
+            put("getBlackListUsernamesFromDataBase", "getBlackListUsernamesFromDataBase");//黑名单列表(数据库)
             put("removeUserFromBlackList", "removeUserFromBlackList");//移出黑名单
             put("deleteContact", "deleteContact");//删除好友
         }
@@ -140,6 +141,14 @@ class DealMethodCall {
                     });
         }else if(Objects.equals(methodNames.get("getBlackListUsernames"), methodCall.method)){//黑名单列表
             EMClientUtils.getBlackListUsernames(new CallBack<Boolean>() {
+                @Override
+                public Boolean call(Object o) {
+                    result.success(o);
+                    return false;
+                }
+            });
+        }else if(Objects.equals(methodNames.get("getBlackListUsernamesFromDataBase"), methodCall.method)){//黑名单列表
+            EMClientUtils.getBlackListUsernamesFromDataBase(new CallBack<Boolean>() {
                 @Override
                 public Boolean call(Object o) {
                     result.success(o);

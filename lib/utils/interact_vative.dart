@@ -38,6 +38,7 @@ class InteractNative {
     'getAllContacts': 'getAllContacts', //获取好友列表
     'addUserToBlackList': 'addUserToBlackList', //拉入黑名单
     'getBlackListUsernames': 'getBlackListUsernames', //黑名单列表
+    'getBlackListUsernamesFromDataBase': 'getBlackListUsernamesFromDataBase', //黑名单列表(数据库)
     'removeUserFromBlackList': 'removeUserFromBlackList', //移出黑名单
     'deleteContact': 'deleteContact', //删除好友
   };

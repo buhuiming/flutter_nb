@@ -198,13 +198,32 @@ public class EMClientUtils {
     /** 黑名单列表
      * @param callBack
      */
+    public static void getBlackListUsernamesFromDataBase(final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        List<String> userNames = EMClient.getInstance().contactManager().getBlackListUsernames();
+                        callBack.call(userNames);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 黑名单列表
+     * @param callBack
+     */
     public static void getBlackListUsernames(final CallBack<Boolean> callBack){
         Observable.just(callBack)
                 .observeOn(Schedulers.io())
                 .subscribe(new Consumer<CallBack<Boolean>>() {
                     @Override
                     public void accept(CallBack<Boolean> callBack1) throws Exception {
-//                        List<String> userNames = EMClient.getInstance().contactManager().getBlackListUsernames();
                         List<String> userNames = EMClient.getInstance().contactManager().getBlackListFromServer();
                         callBack.call(userNames);
                     }
