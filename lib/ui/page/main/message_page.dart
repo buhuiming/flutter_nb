@@ -7,6 +7,7 @@ import 'package:flutter_nb/database/database_control.dart';
 import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
+import 'package:flutter_nb/ui/page/chat_page.dart';
 import 'package:flutter_nb/ui/page/system_message_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
@@ -89,10 +90,25 @@ class Message extends MessageState<MessagePage>
         time: TimelineUtil.format(int.parse(entity.time)),
         unread: entity.isUnreadCount, onItemClick: (res) {
       if (entity.type == Constants.MESSAGE_TYPE_SYSTEM) {
+        //系统消息，跳转系统消息列表
         Navigator.push(
             context,
             new CupertinoPageRoute<void>(
                 builder: (ctx) => SystemMessagePage()));
+      } else if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+        //聊天消息，跳转聊天对话页面
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => ChatPage(
+                      operation: widget.operation,
+                      title: entity.titleName,
+                      senderAccount: entity.senderAccount,
+                    )));
+      } else if (entity.type == Constants.MESSAGE_TYPE_GROUP_CHAT) {
+        //群聊消息，跳转群聊页面
+      } else if (entity.type == Constants.MESSAGE_TYPE_ROOM_CHAT) {
+        //聊天室消息，跳转聊天室
       }
     }, onItemLongClick: (res) {
       MoreWidgets.buildMessagePop(context, _popString, onItemClick: (res) {

@@ -679,4 +679,37 @@ class MoreWidgets {
       }
     });
   }
+
+  /*
+  * 右上角item长按弹出popupWindow
+  */
+  static Future buildDefaultMessagePop(BuildContext context, List<String> texts,
+      {OnItemClick onItemClick}) {
+    return showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(double.infinity, 76, 0, 0),
+        items: <PopupMenuItem<String>>[
+          new PopupMenuItem<String>(
+            value: 'one',
+            child: Text(texts[0],
+                style: new TextStyle(fontSize: 16.0, color: ColorT.app_main)),
+          ),
+          new PopupMenuItem<String>(
+            value: 'two',
+            child: Text(texts[1],
+                style: new TextStyle(fontSize: 16.0, color: ColorT.app_main)),
+          ),
+          new PopupMenuItem<String>(
+            value: 'three',
+            child: Text(texts[2],
+                maxLines: 1,
+                style: new TextStyle(
+                    fontSize: 16.0, color: ObjectUtil.getThemeSwatchColor())),
+          ),
+        ]).then((res) {
+      if (null != onItemClick) {
+        onItemClick(res);
+      }
+    });
+  }
 }

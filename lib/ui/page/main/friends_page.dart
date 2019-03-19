@@ -5,6 +5,7 @@ import 'package:flutter_nb/database/database_control.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/page/base/search_page.dart';
+import 'package:flutter_nb/ui/page/chat_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
@@ -138,7 +139,17 @@ class Friends extends MessageState<FriendsPage>
         );
       default:
         return InkWell(
-          onTap: () {},
+          onTap: () {
+            //聊天消息，跳转聊天对话页面
+            Navigator.push(
+                context,
+                new CupertinoPageRoute<void>(
+                    builder: (ctx) => ChatPage(
+                          operation: widget.operation,
+                          title: _list[index],
+                          senderAccount: _list[index],
+                        )));
+          },
           onLongPress: () {
             MoreWidgets.buildMessagePop(context, _popString,
                 onItemClick: (res) {
@@ -149,8 +160,8 @@ class Friends extends MessageState<FriendsPage>
                 case 'two':
                   DialogUtil.showBaseDialog(context, '确定删除好友吗？',
                       right: '删除', left: '再想想', rightClick: (res) {
-                        _deleteContact(_list[index]);
-                      });
+                    _deleteContact(_list[index]);
+                  });
                   break;
                 case 'three':
                   if (isBlackName) {
@@ -191,7 +202,7 @@ class Friends extends MessageState<FriendsPage>
         .then((success) {
       if (success == true) {
         _getFriends();
-      }else{
+      } else {
         DialogUtil.buildToast('加入黑名单失败');
       }
       widget.operation.setShowLoading(false);
@@ -207,7 +218,7 @@ class Friends extends MessageState<FriendsPage>
         .then((success) {
       if (success == true) {
         _getFriends();
-      }else{
+      } else {
         DialogUtil.buildToast('移出黑名单失败');
       }
       widget.operation.setShowLoading(false);
@@ -219,11 +230,11 @@ class Friends extends MessageState<FriendsPage>
     widget.operation.setShowLoading(true);
     Map<String, String> map = {"username": username};
     InteractNative.goNativeWithValue(
-        InteractNative.methodNames['deleteContact'], map)
+            InteractNative.methodNames['deleteContact'], map)
         .then((success) {
       if (success == true) {
         _getFriends();
-      }else{
+      } else {
         DialogUtil.buildToast('删除好友失败');
       }
       widget.operation.setShowLoading(false);
@@ -245,6 +256,8 @@ class Friends extends MessageState<FriendsPage>
       //如果收到的推送消息是聊天消息，并且属于好友增加、好友删除，则属性好友列表
       print('获取朋友列表');
       _list.remove(entity.senderAccount);
+      _getFriends();
+    } else if (entity != null && entity.type == 'updateBlackList') {
       _getFriends();
     }
   }

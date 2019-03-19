@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/database/message_database.dart';
+import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
@@ -125,5 +126,14 @@ class ObjectUtil {
     MessageDataBase.get().close();
 //    Navigator.of(context)
 //        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
+  }
+
+  static MessageEntity getDefaultData(String type) {
+    return new MessageEntity(
+        type: type,
+        senderAccount: null,
+        titleName: null,
+        content: null,
+        time: null);
   }
 }

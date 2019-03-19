@@ -13,6 +13,8 @@ class Constants {
   static const String MESSAGE_TYPE_SYSTEM_ZH = "系统消息"; //系统消息
   static const String MESSAGE_TYPE_SYSTEM = "system"; //消息类型：系统消息
   static const String MESSAGE_TYPE_CHAT = "chat"; //消息类型：聊天消息
+  static const String MESSAGE_TYPE_GROUP_CHAT = "chatGroup"; //消息类型：群聊消息
+  static const String MESSAGE_TYPE_ROOM_CHAT = "chatRoom"; //消息类型：聊天室消息
   static const String MESSAGE_TYPE_OTHERS = "others"; //消息类型：其他消息
   static const String CONTENT_TYPE_SYSTEM = "text"; //消息内容类型：文本
 
