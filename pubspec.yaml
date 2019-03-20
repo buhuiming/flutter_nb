@@ -28,6 +28,7 @@ dependencies:
   flutter_local_notifications: ^0.5.2 #通知栏
   image_picker: ^0.5.0+3 #相机相册
   #webview_flutter: ^0.3.4 #WebView
+  keyboard_visibility: ^0.5.2 #软键盘
 
   flukit:
       git:
