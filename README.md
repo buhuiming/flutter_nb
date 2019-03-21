@@ -4,6 +4,8 @@
 已完成功能：注册、登录、退出登录、自动登录、切换头像、切换主题、消息推送开关、搜索、添加好友、
            系统消息推送、系统消息列表、消息删除、数据库存储，通知栏提醒、加入黑名单、移出黑名单、
            删除好友等
+           
+## [急急急~ TextField上显示自定义表情，谁会？？？]()
 
 ## Getting Started（[效果图](https://github.com/buhuiming/flutter_nb/tree/master/screens/screen.md)）
 
