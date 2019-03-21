@@ -1,3 +1,4 @@
+import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
+import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
@@ -45,6 +47,9 @@ class ChatState extends MessageState<ChatPage> {
   var voiceBackground = ObjectUtil.getThemeLightColor();
   Color _headsetColor = ColorT.gray_99;
   Color _highlightColor = ColorT.gray_99;
+  List<Widget> _guideFaceList = new List();
+  List<Widget> _guideFigureList = new List();
+  bool _isFaceFirstList = true;
 
   @override
   void initState() {
@@ -90,166 +95,162 @@ class ChatState extends MessageState<ChatPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-        theme: ThemeData(
-            primaryColor: ObjectUtil.getThemeColor(),
-            primarySwatch: ObjectUtil.getThemeSwatchColor(),
-            platform: TargetPlatform.iOS),
-        home: Scaffold(
-            appBar: MoreWidgets.buildAppBar(
-              context,
-              _isBlackName ? widget.title + '(黑名单)' : widget.title,
-              centerTitle: true,
-              elevation: 2.0,
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              actions: <Widget>[
-                InkWell(
-                    child: Container(
-                        padding: EdgeInsets.only(right: 15, left: 15),
-                        child: Icon(
-                          Icons.more_horiz,
-                          size: 22,
-                        )),
-                    onTap: () {
-                      MoreWidgets.buildDefaultMessagePop(context, _popString,
-                          onItemClick: (res) {
-                        switch (res) {
-                          case 'one':
-                            DialogUtil.showBaseDialog(context, '即将删除该对话的全部聊天记录',
-                                right: '删除', left: '再想想', rightClick: (res) {});
-                            break;
-                          case 'two':
-                            DialogUtil.showBaseDialog(context, '确定删除好友吗？',
-                                right: '删除', left: '再想想', rightClick: (res) {
-                              _deleteContact(widget.senderAccount);
-                            });
-                            break;
-                          case 'three':
-                            if (_isBlackName) {
-                              DialogUtil.showBaseDialog(context, '确定把好友移出黑名单吗？',
-                                  right: '移出', left: '再想想', rightClick: (res) {
-                                _removeUserFromBlackList(widget.senderAccount);
-                              });
-                            } else {
-                              DialogUtil.showBaseDialog(context, '确定把好友加入黑名单吗？',
-                                  right: '赶紧', left: '再想想', rightClick: (res) {
-                                DialogUtil.showBaseDialog(
-                                    context, '即将将好友加入黑名单，是否需要支持发消息给TA？',
-                                    right: '需要',
-                                    left: '不需要',
-                                    title: '', rightClick: (res) {
-                                  _addToBlackList("1", widget.senderAccount);
-                                }, leftClick: (res) {
-                                  _addToBlackList("0", widget.senderAccount);
-                                });
-                              });
-                            }
-                            break;
+    return Scaffold(
+      appBar: MoreWidgets.buildAppBar(
+        context,
+        _isBlackName ? widget.title + '(黑名单)' : widget.title,
+        centerTitle: true,
+        elevation: 2.0,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        actions: <Widget>[
+          InkWell(
+              child: Container(
+                  padding: EdgeInsets.only(right: 15, left: 15),
+                  child: Icon(
+                    Icons.more_horiz,
+                    size: 22,
+                  )),
+              onTap: () {
+                MoreWidgets.buildDefaultMessagePop(context, _popString,
+                    onItemClick: (res) {
+                  switch (res) {
+                    case 'one':
+                      DialogUtil.showBaseDialog(context, '即将删除该对话的全部聊天记录',
+                          right: '删除', left: '再想想', rightClick: (res) {});
+                      break;
+                    case 'two':
+                      DialogUtil.showBaseDialog(context, '确定删除好友吗？',
+                          right: '删除', left: '再想想', rightClick: (res) {
+                        _deleteContact(widget.senderAccount);
+                      });
+                      break;
+                    case 'three':
+                      if (_isBlackName) {
+                        DialogUtil.showBaseDialog(context, '确定把好友移出黑名单吗？',
+                            right: '移出', left: '再想想', rightClick: (res) {
+                          _removeUserFromBlackList(widget.senderAccount);
+                        });
+                      } else {
+                        DialogUtil.showBaseDialog(context, '确定把好友加入黑名单吗？',
+                            right: '赶紧', left: '再想想', rightClick: (res) {
+                          DialogUtil.showBaseDialog(
+                              context, '即将将好友加入黑名单，是否需要支持发消息给TA？',
+                              right: '需要',
+                              left: '不需要',
+                              title: '', rightClick: (res) {
+                            _addToBlackList("1", widget.senderAccount);
+                          }, leftClick: (res) {
+                            _addToBlackList("0", widget.senderAccount);
+                          });
+                        });
+                      }
+                      break;
+                  }
+                });
+              })
+        ],
+      ),
+      body: new Column(children: <Widget>[
+        new Flexible(child: new ListView()),
+        new Divider(height: 1.0),
+        new Container(
+          decoration: new BoxDecoration(
+            color: Theme.of(context).cardColor,
+          ),
+          child: Container(
+            height: 54,
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                    icon: _isShowVoice
+                        ? Icon(Icons.keyboard)
+                        : Icon(Icons.play_circle_outline),
+                    iconSize: 32,
+                    onPressed: () {
+                      setState(() {
+                        if (_isShowVoice) {
+                          _isShowVoice = false;
+                        } else {
+                          _hideKeyBoard();
+                          _isShowVoice = true;
+                          _isShowFace = false;
+                          _isShowTools = false;
                         }
                       });
-                    })
+                    }),
+                new Flexible(child: _enterWidget()),
+                IconButton(
+                    icon: _isShowFace
+                        ? Icon(Icons.keyboard)
+                        : Icon(Icons.sentiment_very_satisfied),
+                    iconSize: 32,
+                    onPressed: () {
+                      setState(() {
+                        if (_isShowFace) {
+                          _isShowFace = false;
+                        } else {
+                          _hideKeyBoard();
+                          _isShowFace = true;
+                          _isShowVoice = false;
+                          _isShowTools = false;
+                        }
+                      });
+                    }),
+                _isShowSend
+                    ? InkWell(
+                        onTap: () {
+                          _sendTextMessage();
+                        },
+                        child: new Container(
+                          alignment: Alignment.center,
+                          width: 40,
+                          height: 32,
+                          margin: EdgeInsets.only(right: 8),
+                          child: new Text(
+                            '发送',
+                            style: new TextStyle(
+                                fontSize: 14.0, color: Colors.white),
+                          ),
+                          decoration: new BoxDecoration(
+                            color: ObjectUtil.getThemeSwatchColor(),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                        ),
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.add_circle_outline),
+                        iconSize: 32,
+                        onPressed: () {
+                          setState(() {
+                            if (_isShowTools) {
+                              _isShowTools = false;
+                            } else {
+                              _hideKeyBoard();
+                              _isShowTools = true;
+                              _isShowFace = false;
+                              _isShowVoice = false;
+                            }
+                          });
+                        }),
               ],
             ),
-            body: new Column(children: <Widget>[
-              new Flexible(child: new ListView()),
-              new Divider(height: 1.0),
-              new Container(
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                ),
-                child: Container(
-                  height: 54,
-                  child: Row(
-                    children: <Widget>[
-                      IconButton(
-                          icon: _isShowVoice
-                              ? Icon(Icons.keyboard)
-                              : Icon(Icons.play_circle_outline),
-                          iconSize: 32,
-                          onPressed: () {
-                            setState(() {
-                              if (_isShowVoice) {
-                                _isShowVoice = false;
-                              } else {
-                                _hideKeyBoard();
-                                _isShowVoice = true;
-                                _isShowFace = false;
-                                _isShowTools = false;
-                              }
-                            });
-                          }),
-                      new Flexible(child: _enterWidget()),
-                      IconButton(
-                          icon: _isShowFace
-                              ? Icon(Icons.keyboard)
-                              : Icon(Icons.sentiment_very_satisfied),
-                          iconSize: 32,
-                          onPressed: () {
-                            setState(() {
-                              if (_isShowFace) {
-                                _isShowFace = false;
-                              } else {
-                                _hideKeyBoard();
-                                _isShowFace = true;
-                                _isShowVoice = false;
-                                _isShowTools = false;
-                              }
-                            });
-                          }),
-                      _isShowSend
-                          ? InkWell(
-                              onTap: () {
-                                _sendMessage();
-                              },
-                              child: new Container(
-                                alignment: Alignment.center,
-                                width: 40,
-                                height: 32,
-                                margin: EdgeInsets.only(right: 8),
-                                child: new Text(
-                                  '发送',
-                                  style: new TextStyle(
-                                      fontSize: 14.0, color: Colors.white),
-                                ),
-                                decoration: new BoxDecoration(
-                                  color: ObjectUtil.getThemeSwatchColor(),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
-                                ),
-                              ),
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.add_circle_outline),
-                              iconSize: 32,
-                              onPressed: () {
-                                setState(() {
-                                  if (_isShowTools) {
-                                    _isShowTools = false;
-                                  } else {
-                                    _hideKeyBoard();
-                                    _isShowTools = true;
-                                    _isShowFace = false;
-                                    _isShowVoice = false;
-                                  }
-                                });
-                              }),
-                    ],
-                  ),
-                ),
-              ),
-              (_isShowTools || _isShowFace || _isShowVoice)
-                  ? Container(
-                      height: 200,
-                      child: _bottomWidget(),
-                    )
-                  : SizedBox(
-                      height: 0,
-                    )
-            ])));
+          ),
+        ),
+        (_isShowTools || _isShowFace || _isShowVoice)
+            ? Container(
+                height: 220,
+                child: _bottomWidget(),
+              )
+            : SizedBox(
+                height: 0,
+              )
+      ]),
+    );
   }
 
   _hideKeyBoard() {
@@ -259,9 +260,9 @@ class ChatState extends MessageState<ChatPage> {
   _bottomWidget() {
     Widget widget;
     if (_isShowTools) {
-      widget = _voiceWidget();
+      widget = _faceWidget();
     } else if (_isShowFace) {
-      widget = _voiceWidget();
+      widget = _faceWidget();
     } else if (_isShowVoice) {
       widget = _voiceWidget();
     }
@@ -292,11 +293,12 @@ class ChatState extends MessageState<ChatPage> {
                     });
                   },
                   onScaleEnd: (res) {
-                    if(_headsetColor == ObjectUtil.getThemeLightColor()){
+                    if (_headsetColor == ObjectUtil.getThemeLightColor()) {
                       DialogUtil.buildToast('试听功能暂未实现');
-                    }else if(_highlightColor == ObjectUtil.getThemeLightColor()){
+                    } else if (_highlightColor ==
+                        ObjectUtil.getThemeLightColor()) {
                       DialogUtil.buildToast('删除功能暂未实现');
-                    }else{
+                    } else {
                       DialogUtil.buildToast('发送语音');
                     }
                     setState(() {
@@ -308,14 +310,14 @@ class ChatState extends MessageState<ChatPage> {
                   },
                   onScaleUpdate: (res) {
                     print(res.toString());
-                    if (res.focalPoint.dy > 560 && res.focalPoint.dy < 590) {
+                    if (res.focalPoint.dy > 550 && res.focalPoint.dy < 620) {
                       if (res.focalPoint.dx > 10 && res.focalPoint.dx < 80) {
                         setState(() {
                           voiceText = '松开 试听';
                           _headsetColor = ObjectUtil.getThemeLightColor();
                         });
                       } else if (res.focalPoint.dx > 330 &&
-                          res.focalPoint.dx < 390) {
+                          res.focalPoint.dx < 400) {
                         setState(() {
                           voiceText = '松开 删除';
                           _highlightColor = ObjectUtil.getThemeLightColor();
@@ -358,6 +360,164 @@ class ChatState extends MessageState<ChatPage> {
     );
   }
 
+  _initFaceList() {
+    if (_guideFaceList.length > 0) {
+      _guideFaceList.clear();
+    }
+    if (_guideFigureList.length > 0) {
+      _guideFigureList.clear();
+    }
+    //添加表情图
+    List<String> _faceList = new List();
+    String faceDeletePath =
+        FileUtil.getImagePath('face_delete', dir: 'face', format: 'png');
+    String facePath;
+    for (int i = 0; i < 100; i++) {
+      if (i < 90) {
+        facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'gif');
+      } else {
+        facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'png');
+      }
+      _faceList.add(facePath);
+      if (i == 19 || i == 39 || i == 59 || i == 79 || i == 99) {
+        _faceList.add(faceDeletePath);
+        _guideFaceList.add(_gridView(7, _faceList));
+        _faceList.clear();
+      }
+    }
+    //添加斗图
+    List<String> _figureList = new List();
+    for (int i = 0; i < 96; i++) {
+      if (i == 70 || i == 74) {
+        String facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'png');
+        _figureList.add(facePath);
+      } else {
+        String facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'gif');
+        _figureList.add(facePath);
+      }
+      if (i == 9 ||
+          i == 19 ||
+          i == 29 ||
+          i == 39 ||
+          i == 49 ||
+          i == 59 ||
+          i == 69 ||
+          i == 79 ||
+          i == 89 ||
+          i == 95) {
+        _guideFigureList.add(_gridView(5, _figureList));
+        _figureList.clear();
+      }
+    }
+  }
+
+  _faceWidget() {
+    _initFaceList();
+    return Column(
+      children: <Widget>[
+        Flexible(
+            child: Stack(
+          children: <Widget>[
+            Offstage(
+              offstage: _isFaceFirstList,
+              child: Swiper(
+                  autoStart: false,
+                  circular: false,
+                  indicator: CircleSwiperIndicator(
+                      radius: 3.0,
+                      padding: EdgeInsets.only(top: 20.0),
+                      itemColor: ColorT.gray_99,
+                      itemActiveColor: ObjectUtil.getThemeSwatchColor()),
+                  children: _guideFigureList),
+            ),
+            Offstage(
+              offstage: !_isFaceFirstList,
+              child: Swiper(
+                  autoStart: false,
+                  circular: false,
+                  indicator: CircleSwiperIndicator(
+                      radius: 3.0,
+                      padding: EdgeInsets.only(top: 20.0),
+                      itemColor: ColorT.gray_99,
+                      itemActiveColor: ObjectUtil.getThemeSwatchColor()),
+                  children: _guideFaceList),
+            )
+          ],
+        )),
+        SizedBox(
+          height: 6,
+        ),
+        new Divider(height: 1.0),
+        Container(
+          height: 30,
+          child: Row(
+            children: <Widget>[
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.sentiment_very_satisfied,
+                          color: _isFaceFirstList
+                              ? ObjectUtil.getThemeSwatchColor()
+                              : _headsetColor,
+                          size: 24,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _isFaceFirstList = true;
+                          });
+                        },
+                      ))),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                      padding: EdgeInsets.only(left: 10),
+                      child: InkWell(
+                        child: Icon(
+                          Icons.favorite_border,
+                          color: _isFaceFirstList
+                              ? _headsetColor
+                              : ObjectUtil.getThemeSwatchColor(),
+                          size: 24,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _isFaceFirstList = false;
+                          });
+                        },
+                      ))),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  _gridView(int crossAxisCount, List<String> list) {
+    return GridView.count(
+        crossAxisCount: crossAxisCount,
+        padding: EdgeInsets.all(0.0),
+        children: list.map((String name) {
+          return new IconButton(
+              onPressed: () {
+                if (name.contains('face_delete')) {
+                  DialogUtil.buildToast('暂时不会把自定义表情显示在TextField，谁会的教我~');
+                } else {
+                  _sendFaceMessage();
+                }
+              },
+              icon: Image.asset(name,
+                  width: crossAxisCount == 5 ? 60 : 32,
+                  height: crossAxisCount == 5 ? 60 : 32));
+        }).toList());
+  }
+
   /*输入框*/
   _enterWidget() {
     return new Material(
@@ -389,7 +549,7 @@ class ChatState extends MessageState<ChatPage> {
             });
           },
           onEditingComplete: () {
-            _sendMessage();
+            _sendTextMessage();
           }),
     );
   }
@@ -446,11 +606,13 @@ class ChatState extends MessageState<ChatPage> {
     });
   }
 
-  _sendMessage() {
+  _sendTextMessage() {
     if (_controller.text.isEmpty) {
       return;
     }
   }
+
+  _sendFaceMessage() {}
 
   @override
   void updateData(MessageEntity entity) {
