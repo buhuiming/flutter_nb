@@ -712,4 +712,36 @@ class MoreWidgets {
       }
     });
   }
+
+  static Widget buildIcon(IconData icon, String text, {OnItemClick o}) {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 8,
+        ),
+        InkWell(
+            onTap: () {
+              if (null != o) {
+                o(null);
+              }
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Container(
+                width: 50,
+                height: 50,
+                color: ObjectUtil.getThemeLightColor(),
+                child: Icon(icon, size: 32),
+              ),
+            )),
+        SizedBox(
+          height: 6,
+        ),
+        Text(
+          text,
+          style: TextStyle(fontSize: 12),
+        ),
+      ],
+    );
+  }
 }

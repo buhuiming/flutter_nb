@@ -49,6 +49,7 @@ class ChatState extends MessageState<ChatPage> {
   Color _highlightColor = ColorT.gray_99;
   List<Widget> _guideFaceList = new List();
   List<Widget> _guideFigureList = new List();
+  List<Widget> _guideToolsList = new List();
   bool _isFaceFirstList = true;
 
   @override
@@ -260,7 +261,7 @@ class ChatState extends MessageState<ChatPage> {
   _bottomWidget() {
     Widget widget;
     if (_isShowTools) {
-      widget = _faceWidget();
+      widget = _toolsWidget();
     } else if (_isShowFace) {
       widget = _faceWidget();
     } else if (_isShowVoice) {
@@ -497,6 +498,37 @@ class ChatState extends MessageState<ChatPage> {
         )
       ],
     );
+  }
+
+  _toolsWidget() {
+    if (_guideToolsList.length > 0) {
+      _guideToolsList.clear();
+    }
+    List<Widget> _widgets = new List();
+    _widgets.add(MoreWidgets.buildIcon(Icons.insert_photo, '相册'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.videocam, '视频通话'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.location_on, '位置'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.view_agenda, '红包'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.swap_horiz, '转账'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.mic, '语音输入'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.favorite, '我的收藏'));
+    _guideToolsList.add(GridView.count(
+        crossAxisCount: 4, padding: EdgeInsets.all(0.0), children: _widgets));
+    List<Widget> _widgets1 = new List();
+    _widgets1.add(MoreWidgets.buildIcon(Icons.person, '名片'));
+    _widgets1.add(MoreWidgets.buildIcon(Icons.folder, '文件'));
+    _guideToolsList.add(GridView.count(
+        crossAxisCount: 4, padding: EdgeInsets.all(0.0), children: _widgets1));
+    return Swiper(
+        autoStart: false,
+        circular: false,
+        indicator: CircleSwiperIndicator(
+            radius: 3.0,
+            padding: EdgeInsets.only(top: 10.0, bottom: 20),
+            itemColor: ColorT.gray_99,
+            itemActiveColor: ObjectUtil.getThemeSwatchColor()),
+        children: _guideToolsList);
   }
 
   _gridView(int crossAxisCount, List<String> list) {
