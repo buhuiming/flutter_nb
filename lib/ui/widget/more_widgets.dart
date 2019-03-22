@@ -713,11 +713,14 @@ class MoreWidgets {
     });
   }
 
+  /*
+  *  聊天页面-工具栏item
+  */
   static Widget buildIcon(IconData icon, String text, {OnItemClick o}) {
     return Column(
       children: <Widget>[
         SizedBox(
-          height: 8,
+          height: 10,
         ),
         InkWell(
             onTap: () {
@@ -728,14 +731,14 @@ class MoreWidgets {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                width: 50,
-                height: 50,
+                width: 56,
+                height: 56,
                 color: ObjectUtil.getThemeLightColor(),
-                child: Icon(icon, size: 32),
+                child: Icon(icon, size: 30),
               ),
             )),
         SizedBox(
-          height: 6,
+          height: 5,
         ),
         Text(
           text,

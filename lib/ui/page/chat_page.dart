@@ -1,9 +1,11 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
+import 'package:flutter_nb/ui/widget/chat_item_widgets.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
@@ -51,6 +53,8 @@ class ChatState extends MessageState<ChatPage> {
   List<Widget> _guideFigureList = new List();
   List<Widget> _guideToolsList = new List();
   bool _isFaceFirstList = true;
+  List<MessageEntity> _messageList = new List();
+  final int _pageCount = 20; //加载的页数
 
   @override
   void initState() {
@@ -61,6 +65,36 @@ class ChatState extends MessageState<ChatPage> {
   }
 
   _initData() {
+    var current = new DateTime.now().millisecondsSinceEpoch;
+    for (int i = 0; i < _pageCount; i++) {
+      var time;
+      if (i == 0) {
+        //2016-03-22 11:11:25
+        time = 1458519025000.toString();
+      } else if (i == 1) {
+        //2016-03-21 10:10:25
+        time = 1458526225000.toString();
+      } else if (i == 2) {
+        //2016-03-22 11:11:25
+        time = 1458616285000.toString();
+      } else if (i == 3) {
+        time = (current - 60 * 60 * 1000).toString();
+      } else if (i == 4) {
+        time = (current - 59 * 60 * 1000).toString();
+      } else if (i == 5) {
+        time = (current - 58 * 60 * 1000).toString();
+      } else {
+        time = current.toString();
+      }
+      _messageList.add(MessageEntity(
+          type: 'text',
+          messageOwner: 1,
+          senderAccount: '15077501999',
+          titleName: '15077501999',
+          contentType: Constants.CONTENT_TYPE_SYSTEM,
+          content: i.toString() + '人生若安好--' + time,
+          time: time));
+    }
     _popString.add('清空记录');
     _popString.add('删除好友');
     _popString.add('加入黑名单');
@@ -93,165 +127,238 @@ class ChatState extends MessageState<ChatPage> {
     });
   }
 
+  _initFaceList() {
+    if (_guideFaceList.length > 0) {
+      _guideFaceList.clear();
+    }
+    if (_guideFigureList.length > 0) {
+      _guideFigureList.clear();
+    }
+    //添加表情图
+    List<String> _faceList = new List();
+    String faceDeletePath =
+        FileUtil.getImagePath('face_delete', dir: 'face', format: 'png');
+    String facePath;
+    for (int i = 0; i < 100; i++) {
+      if (i < 90) {
+        facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'gif');
+      } else {
+        facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'png');
+      }
+      _faceList.add(facePath);
+      if (i == 19 || i == 39 || i == 59 || i == 79 || i == 99) {
+        _faceList.add(faceDeletePath);
+        _guideFaceList.add(_gridView(7, _faceList));
+        _faceList.clear();
+      }
+    }
+    //添加斗图
+    List<String> _figureList = new List();
+    for (int i = 0; i < 96; i++) {
+      if (i == 70 || i == 74) {
+        String facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'png');
+        _figureList.add(facePath);
+      } else {
+        String facePath =
+            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'gif');
+        _figureList.add(facePath);
+      }
+      if (i == 9 ||
+          i == 19 ||
+          i == 29 ||
+          i == 39 ||
+          i == 49 ||
+          i == 59 ||
+          i == 69 ||
+          i == 79 ||
+          i == 89 ||
+          i == 95) {
+        _guideFigureList.add(_gridView(5, _figureList));
+        _figureList.clear();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: MoreWidgets.buildAppBar(
-        context,
-        _isBlackName ? widget.title + '(黑名单)' : widget.title,
-        centerTitle: true,
-        elevation: 2.0,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        actions: <Widget>[
-          InkWell(
-              child: Container(
-                  padding: EdgeInsets.only(right: 15, left: 15),
-                  child: Icon(
-                    Icons.more_horiz,
-                    size: 22,
-                  )),
-              onTap: () {
-                MoreWidgets.buildDefaultMessagePop(context, _popString,
-                    onItemClick: (res) {
-                  switch (res) {
-                    case 'one':
-                      DialogUtil.showBaseDialog(context, '即将删除该对话的全部聊天记录',
-                          right: '删除', left: '再想想', rightClick: (res) {});
-                      break;
-                    case 'two':
-                      DialogUtil.showBaseDialog(context, '确定删除好友吗？',
-                          right: '删除', left: '再想想', rightClick: (res) {
-                        _deleteContact(widget.senderAccount);
+      appBar: _appBar(),
+      body: _body(),
+    );
+  }
+
+  _appBar() {
+    return MoreWidgets.buildAppBar(
+      context,
+      _isBlackName ? widget.title + '(黑名单)' : widget.title,
+      centerTitle: true,
+      elevation: 2.0,
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+      actions: <Widget>[
+        InkWell(
+            child: Container(
+                padding: EdgeInsets.only(right: 15, left: 15),
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 22,
+                )),
+            onTap: () {
+              MoreWidgets.buildDefaultMessagePop(context, _popString,
+                  onItemClick: (res) {
+                switch (res) {
+                  case 'one':
+                    DialogUtil.showBaseDialog(context, '即将删除该对话的全部聊天记录',
+                        right: '删除', left: '再想想', rightClick: (res) {});
+                    break;
+                  case 'two':
+                    DialogUtil.showBaseDialog(context, '确定删除好友吗？',
+                        right: '删除', left: '再想想', rightClick: (res) {
+                      _deleteContact(widget.senderAccount);
+                    });
+                    break;
+                  case 'three':
+                    if (_isBlackName) {
+                      DialogUtil.showBaseDialog(context, '确定把好友移出黑名单吗？',
+                          right: '移出', left: '再想想', rightClick: (res) {
+                        _removeUserFromBlackList(widget.senderAccount);
                       });
-                      break;
-                    case 'three':
-                      if (_isBlackName) {
-                        DialogUtil.showBaseDialog(context, '确定把好友移出黑名单吗？',
-                            right: '移出', left: '再想想', rightClick: (res) {
-                          _removeUserFromBlackList(widget.senderAccount);
+                    } else {
+                      DialogUtil.showBaseDialog(context, '确定把好友加入黑名单吗？',
+                          right: '赶紧', left: '再想想', rightClick: (res) {
+                        DialogUtil.showBaseDialog(
+                            context, '即将将好友加入黑名单，是否需要支持发消息给TA？',
+                            right: '需要',
+                            left: '不需要',
+                            title: '', rightClick: (res) {
+                          _addToBlackList("1", widget.senderAccount);
+                        }, leftClick: (res) {
+                          _addToBlackList("0", widget.senderAccount);
                         });
+                      });
+                    }
+                    break;
+                }
+              });
+            })
+      ],
+    );
+  }
+
+  _body() {
+    return Column(children: <Widget>[
+      Flexible(
+          child: InkWell(
+        child: _messageListView(),
+        onTap: () {
+          setState(() {
+            _hideKeyBoard();
+            _isShowVoice = false;
+            _isShowFace = false;
+            _isShowTools = false;
+          });
+        },
+      )),
+      Divider(height: 1.0),
+      Container(
+        decoration: new BoxDecoration(
+          color: Theme.of(context).cardColor,
+        ),
+        child: Container(
+          height: 54,
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                  icon: _isShowVoice
+                      ? Icon(Icons.keyboard)
+                      : Icon(Icons.play_circle_outline),
+                  iconSize: 32,
+                  onPressed: () {
+                    setState(() {
+                      if (_isShowVoice) {
+                        _isShowVoice = false;
                       } else {
-                        DialogUtil.showBaseDialog(context, '确定把好友加入黑名单吗？',
-                            right: '赶紧', left: '再想想', rightClick: (res) {
-                          DialogUtil.showBaseDialog(
-                              context, '即将将好友加入黑名单，是否需要支持发消息给TA？',
-                              right: '需要',
-                              left: '不需要',
-                              title: '', rightClick: (res) {
-                            _addToBlackList("1", widget.senderAccount);
-                          }, leftClick: (res) {
-                            _addToBlackList("0", widget.senderAccount);
-                          });
-                        });
+                        _hideKeyBoard();
+                        _isShowVoice = true;
+                        _isShowFace = false;
+                        _isShowTools = false;
                       }
-                      break;
-                  }
-                });
-              })
-        ],
-      ),
-      body: new Column(children: <Widget>[
-        new Flexible(child: new ListView()),
-        new Divider(height: 1.0),
-        new Container(
-          decoration: new BoxDecoration(
-            color: Theme.of(context).cardColor,
-          ),
-          child: Container(
-            height: 54,
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                    icon: _isShowVoice
-                        ? Icon(Icons.keyboard)
-                        : Icon(Icons.play_circle_outline),
-                    iconSize: 32,
-                    onPressed: () {
-                      setState(() {
-                        if (_isShowVoice) {
-                          _isShowVoice = false;
-                        } else {
-                          _hideKeyBoard();
-                          _isShowVoice = true;
-                          _isShowFace = false;
-                          _isShowTools = false;
-                        }
-                      });
-                    }),
-                new Flexible(child: _enterWidget()),
-                IconButton(
-                    icon: _isShowFace
-                        ? Icon(Icons.keyboard)
-                        : Icon(Icons.sentiment_very_satisfied),
-                    iconSize: 32,
-                    onPressed: () {
-                      setState(() {
-                        if (_isShowFace) {
-                          _isShowFace = false;
-                        } else {
-                          _hideKeyBoard();
-                          _isShowFace = true;
-                          _isShowVoice = false;
-                          _isShowTools = false;
-                        }
-                      });
-                    }),
-                _isShowSend
-                    ? InkWell(
-                        onTap: () {
-                          _sendTextMessage();
-                        },
-                        child: new Container(
-                          alignment: Alignment.center,
-                          width: 40,
-                          height: 32,
-                          margin: EdgeInsets.only(right: 8),
-                          child: new Text(
-                            '发送',
-                            style: new TextStyle(
-                                fontSize: 14.0, color: Colors.white),
-                          ),
-                          decoration: new BoxDecoration(
-                            color: ObjectUtil.getThemeSwatchColor(),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
+                    });
+                  }),
+              new Flexible(child: _enterWidget()),
+              IconButton(
+                  icon: _isShowFace
+                      ? Icon(Icons.keyboard)
+                      : Icon(Icons.sentiment_very_satisfied),
+                  iconSize: 32,
+                  onPressed: () {
+                    setState(() {
+                      if (_isShowFace) {
+                        _isShowFace = false;
+                      } else {
+                        _hideKeyBoard();
+                        _isShowFace = true;
+                        _isShowVoice = false;
+                        _isShowTools = false;
+                      }
+                    });
+                  }),
+              _isShowSend
+                  ? InkWell(
+                      onTap: () {
+                        _sendTextMessage();
+                      },
+                      child: new Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 32,
+                        margin: EdgeInsets.only(right: 8),
+                        child: new Text(
+                          '发送',
+                          style: new TextStyle(
+                              fontSize: 14.0, color: Colors.white),
                         ),
-                      )
-                    : IconButton(
-                        icon: Icon(Icons.add_circle_outline),
-                        iconSize: 32,
-                        onPressed: () {
-                          setState(() {
-                            if (_isShowTools) {
-                              _isShowTools = false;
-                            } else {
-                              _hideKeyBoard();
-                              _isShowTools = true;
-                              _isShowFace = false;
-                              _isShowVoice = false;
-                            }
-                          });
-                        }),
-              ],
-            ),
+                        decoration: new BoxDecoration(
+                          color: ObjectUtil.getThemeSwatchColor(),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.add_circle_outline),
+                      iconSize: 32,
+                      onPressed: () {
+                        setState(() {
+                          if (_isShowTools) {
+                            _isShowTools = false;
+                          } else {
+                            _hideKeyBoard();
+                            _isShowTools = true;
+                            _isShowFace = false;
+                            _isShowVoice = false;
+                          }
+                        });
+                      }),
+            ],
           ),
         ),
-        (_isShowTools || _isShowFace || _isShowVoice)
-            ? Container(
-                height: 220,
-                child: _bottomWidget(),
-              )
-            : SizedBox(
-                height: 0,
-              )
-      ]),
-    );
+      ),
+      (_isShowTools || _isShowFace || _isShowVoice)
+          ? Container(
+              height: 220,
+              child: _bottomWidget(),
+            )
+          : SizedBox(
+              height: 0,
+            )
+    ]);
   }
 
   _hideKeyBoard() {
@@ -359,61 +466,6 @@ class ChatState extends MessageState<ChatPage> {
                 ))),
       ],
     );
-  }
-
-  _initFaceList() {
-    if (_guideFaceList.length > 0) {
-      _guideFaceList.clear();
-    }
-    if (_guideFigureList.length > 0) {
-      _guideFigureList.clear();
-    }
-    //添加表情图
-    List<String> _faceList = new List();
-    String faceDeletePath =
-        FileUtil.getImagePath('face_delete', dir: 'face', format: 'png');
-    String facePath;
-    for (int i = 0; i < 100; i++) {
-      if (i < 90) {
-        facePath =
-            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'gif');
-      } else {
-        facePath =
-            FileUtil.getImagePath(i.toString(), dir: 'face', format: 'png');
-      }
-      _faceList.add(facePath);
-      if (i == 19 || i == 39 || i == 59 || i == 79 || i == 99) {
-        _faceList.add(faceDeletePath);
-        _guideFaceList.add(_gridView(7, _faceList));
-        _faceList.clear();
-      }
-    }
-    //添加斗图
-    List<String> _figureList = new List();
-    for (int i = 0; i < 96; i++) {
-      if (i == 70 || i == 74) {
-        String facePath =
-            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'png');
-        _figureList.add(facePath);
-      } else {
-        String facePath =
-            FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'gif');
-        _figureList.add(facePath);
-      }
-      if (i == 9 ||
-          i == 19 ||
-          i == 29 ||
-          i == 39 ||
-          i == 49 ||
-          i == 59 ||
-          i == 69 ||
-          i == 79 ||
-          i == 89 ||
-          i == 95) {
-        _guideFigureList.add(_gridView(5, _figureList));
-        _figureList.clear();
-      }
-    }
   }
 
   _faceWidget() {
@@ -525,7 +577,7 @@ class ChatState extends MessageState<ChatPage> {
         circular: false,
         indicator: CircleSwiperIndicator(
             radius: 3.0,
-            padding: EdgeInsets.only(top: 10.0, bottom: 20),
+            padding: EdgeInsets.only(top: 10.0, bottom: 10),
             itemColor: ColorT.gray_99,
             itemActiveColor: ObjectUtil.getThemeSwatchColor()),
         children: _guideToolsList);
@@ -584,6 +636,33 @@ class ChatState extends MessageState<ChatPage> {
             _sendTextMessage();
           }),
     );
+  }
+
+  _messageListView() {
+    return Container(
+        color: ColorT.gray_f0,
+        child: RefreshIndicator(
+            color: ObjectUtil.getThemeSwatchColor(),
+            onRefresh: _onRefresh,
+            child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return _messageListViewItem(index);
+                },
+                itemCount: _messageList.length)));
+  }
+
+  Future<Null> _onRefresh() async {
+    await Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        _initData();
+      });
+    });
+  }
+
+  Widget _messageListViewItem(int index) {
+    MessageEntity _lastEntity = index < 1 ? null : _messageList[index - 1];
+    MessageEntity _entity = _messageList[index];
+    return ChatItemWidgets.buildChatListItem(_lastEntity, _entity);
   }
 
   /*删除好友*/

@@ -17,6 +17,7 @@ class Constants {
   static const String MESSAGE_TYPE_ROOM_CHAT = "chatRoom"; //消息类型：聊天室消息
   static const String MESSAGE_TYPE_OTHERS = "others"; //消息类型：其他消息
   static const String CONTENT_TYPE_SYSTEM = "text"; //消息内容类型：文本
+  static const String CONTENT_TYPE_IMAGE = "image"; //消息内容类型：图像
 
   static const String KET_THEME_COLOR = "ket_theme_color"; //主题色
 

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
-import 'package:flutter_nb/resource/colors.dart';
-import 'package:flutter_nb/ui/page/base/theme_state.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/device_util.dart';
-import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 

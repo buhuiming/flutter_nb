@@ -4,6 +4,7 @@ enum DateFormat {
   YEAR_MONTH_DAY_HOUR_MINUTE, //yyyy-MM-dd HH:mm
   YEAR_MONTH_DAY, //yyyy-MM-dd
   YEAR_MONTH, //yyyy-MM
+  YEAR, //yyyy
   MONTH_DAY, //MM-dd
   MONTH_DAY_HOUR_MINUTE, //MM-dd HH:mm
   HOUR_MINUTE_SECOND, //HH:mm:ss
@@ -177,6 +178,10 @@ class DateUtil {
     return time;
   }
 
+  static String formatDateTime1(String time, DateFormat format) {
+    return formatDateTime(time, format, null, null);
+  }
+
   ///format DateTime.
   ///time            time string.
   ///format          DateFormat type.
@@ -196,6 +201,9 @@ class DateUtil {
         break;
       case DateFormat.YEAR_MONTH: //yyyy-MM
         time = time.substring(0, "yyyy-MM".length);
+        break;
+      case DateFormat.YEAR: //yyyy
+        time = time.substring(0, "yyyy".length);
         break;
       case DateFormat.MONTH_DAY: //MM-dd
         time = time.substring("yyyy-".length, "yyyy-MM-dd".length);
