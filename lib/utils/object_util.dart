@@ -121,8 +121,7 @@ class ObjectUtil {
   static void doExit(BuildContext context) {
     NotificationUtil.instance().cancelAll();
     SPUtil.putBool(Constants.KEY_LOGIN, false);
-    InteractNative.getAppEventSink()
-        .add(InteractNative.CHANGE_PAGE_TO_LOGIN);
+    InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_LOGIN);
     MessageDataBase.get().close();
 //    Navigator.of(context)
 //        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
@@ -135,5 +134,13 @@ class ObjectUtil {
         titleName: null,
         content: null,
         time: null);
+  }
+
+  static bool isNetUri(String uri) {
+    if (uri.isNotEmpty &&
+        (uri.startsWith('http://') || uri.startsWith('https://'))) {
+      return true;
+    }
+    return false;
   }
 }

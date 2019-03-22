@@ -2,6 +2,7 @@
 *.class
 *.lock
 *.log
+*.apk
 *.pyc
 *.swp
 .DS_Store

@@ -88,10 +88,12 @@ class ChatState extends MessageState<ChatPage> {
       }
       _messageList.add(MessageEntity(
           type: 'text',
-          messageOwner: 1,
+          messageOwner: 0,
           senderAccount: '15077501999',
           titleName: '15077501999',
-          contentType: Constants.CONTENT_TYPE_SYSTEM,
+          contentType: Constants.CONTENT_TYPE_IMAGE,
+          contentUrl:
+              FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'gif'),
           content: i.toString() + '人生若安好--' + time,
           time: time));
     }
@@ -640,7 +642,8 @@ class ChatState extends MessageState<ChatPage> {
 
   _messageListView() {
     return Container(
-        color: ColorT.gray_f0,
+//        color: ColorT.gray_f0,
+        color: ColorT.gray_cc,
         child: RefreshIndicator(
             color: ObjectUtil.getThemeSwatchColor(),
             onRefresh: _onRefresh,

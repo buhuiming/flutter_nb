@@ -75,7 +75,7 @@ class ChatItemWidgets {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _headPortrait(entity.imageUrl),
+            _headPortrait(entity.imageUrl, 1),
             SizedBox(width: 10),
             new Expanded(
                 child: Column(
@@ -112,8 +112,8 @@ class ChatItemWidgets {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text(
-                  entity.senderAccount,
-                  style: TextStyle(fontSize: 16, color: ColorT.gray_66),
+                  '我',
+                  style: TextStyle(fontSize: 14, color: ColorT.gray_66),
                 ),
                 SizedBox(height: 5),
                 GestureDetector(
@@ -128,7 +128,7 @@ class ChatItemWidgets {
               ],
             )),
             SizedBox(width: 10),
-            _headPortrait(entity.imageUrl),
+            _headPortrait(entity.imageUrl, 0),
           ],
         ),
       );
@@ -138,13 +138,16 @@ class ChatItemWidgets {
   /*
   *  头像
   */
-  static Widget _headPortrait(String url) {
+  static Widget _headPortrait(String url, int owner) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(6.0),
       child: url.isEmpty
           ? Image.asset(
-              FileUtil.getImagePath('img_headportrait',
-                  dir: 'icon', format: 'png'),
+              (owner == 1
+                  ? FileUtil.getImagePath('img_headportrait',
+                      dir: 'icon', format: 'png')
+                  : FileUtil.getImagePath('logo',
+                      dir: 'splash', format: 'png')),
               width: 44,
               height: 44)
           : Image.network(url, width: 44, height: 44),
@@ -174,6 +177,31 @@ class ChatItemWidgets {
       );
     } else if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
       //图像
+      double size = 110;
+      if (entity.contentUrl.isNotEmpty &&
+          entity.contentUrl.contains('assets/images/face')) {
+        //assets/images/face中的表情
+        size = 32;
+      } else if (entity.contentUrl.isNotEmpty &&
+          entity.contentUrl.contains('assets/images/figure')) {
+        //assets/images/figure中的表情
+        size = 90;
+      }
+      widget = ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Container(
+          padding: EdgeInsets.all((entity.contentUrl.isNotEmpty &&
+                  entity.contentUrl.contains('assets/images/face'))
+              ? 10
+              : 0),
+          color: entity.messageOwner == 1
+              ? Colors.white
+              : Color.fromARGB(255, 158, 234, 106),
+          child: ObjectUtil.isNetUri(entity.contentUrl)
+              ? Image.network(entity.contentUrl, width: size, height: size)
+              : Image.asset(entity.contentUrl, width: size, height: size),
+        ),
+      );
     } else {
       widget = ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
