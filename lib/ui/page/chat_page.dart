@@ -2,6 +2,7 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
@@ -54,49 +55,35 @@ class ChatState extends MessageState<ChatPage> {
   List<Widget> _guideToolsList = new List();
   bool _isFaceFirstList = true;
   List<MessageEntity> _messageList = new List();
-  final int _pageCount = 20; //加载的页数
+  bool _isLoadAll = false; //是否已经加载完本地数据
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getLocalMessage();
     _initData();
     _checkBlackList();
   }
 
-  _initData() {
-    var current = new DateTime.now().millisecondsSinceEpoch;
-    for (int i = 0; i < _pageCount; i++) {
-      var time;
-      if (i == 0) {
-        //2016-03-22 11:11:25
-        time = 1458519025000.toString();
-      } else if (i == 1) {
-        //2016-03-21 10:10:25
-        time = 1458526225000.toString();
-      } else if (i == 2) {
-        //2016-03-22 11:11:25
-        time = 1458616285000.toString();
-      } else if (i == 3) {
-        time = (current - 60 * 60 * 1000).toString();
-      } else if (i == 4) {
-        time = (current - 59 * 60 * 1000).toString();
-      } else if (i == 5) {
-        time = (current - 58 * 60 * 1000).toString();
+  _getLocalMessage() async {
+    await MessageDataBase.get()
+        .getMessageEntityInTypeLimit(widget.senderAccount,
+            offset: _messageList.length, count: 20)
+        .then((listEntity) async {
+      if (null == listEntity || listEntity.length < 1) {
+        _isLoadAll = true;
       } else {
-        time = current.toString();
+        _isLoadAll = false;
       }
-      _messageList.add(MessageEntity(
-          type: 'text',
-          messageOwner: 0,
-          senderAccount: '15077501999',
-          titleName: '15077501999',
-          contentType: Constants.CONTENT_TYPE_IMAGE,
-          contentUrl:
-              FileUtil.getImagePath(i.toString(), dir: 'figure', format: 'gif'),
-          content: i.toString() + '人生若安好--' + time,
-          time: time));
-    }
+      for (MessageEntity entity in listEntity) {
+        _messageList.insert(0, entity);
+      }
+      setState(() {});
+    });
+  }
+
+  _initData() {
     _popString.add('清空记录');
     _popString.add('删除好友');
     _popString.add('加入黑名单');
@@ -642,8 +629,7 @@ class ChatState extends MessageState<ChatPage> {
 
   _messageListView() {
     return Container(
-//        color: ColorT.gray_f0,
-        color: ColorT.gray_cc,
+        color: ColorT.gray_f0,
         child: RefreshIndicator(
             color: ObjectUtil.getThemeSwatchColor(),
             onRefresh: _onRefresh,
@@ -655,11 +641,14 @@ class ChatState extends MessageState<ChatPage> {
   }
 
   Future<Null> _onRefresh() async {
-    await Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        _initData();
-      });
-    });
+    await _getLocalMessage();
+    if (_isLoadAll) {
+      if (_messageList.length < 1) {
+        DialogUtil.buildToast('没有历史消息');
+      } else {
+        DialogUtil.buildToast('已加载全部历史消息');
+      }
+    }
   }
 
   Widget _messageListViewItem(int index) {

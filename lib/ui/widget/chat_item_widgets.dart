@@ -140,18 +140,24 @@ class ChatItemWidgets {
   */
   static Widget _headPortrait(String url, int owner) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(6.0),
-      child: url.isEmpty
-          ? Image.asset(
-              (owner == 1
-                  ? FileUtil.getImagePath('img_headportrait',
-                      dir: 'icon', format: 'png')
-                  : FileUtil.getImagePath('logo',
-                      dir: 'splash', format: 'png')),
-              width: 44,
-              height: 44)
-          : Image.network(url, width: 44, height: 44),
-    );
+        borderRadius: BorderRadius.circular(6.0),
+        child: url.isEmpty
+            ? Image.asset(
+                (owner == 1
+                    ? FileUtil.getImagePath('img_headportrait',
+                        dir: 'icon', format: 'png')
+                    : FileUtil.getImagePath('logo',
+                        dir: 'splash', format: 'png')),
+                width: 44,
+                height: 44)
+            : (ObjectUtil.isNetUri(url)
+                ? Image.network(
+                    url,
+                    width: 44,
+                    height: 44,
+                    fit: BoxFit.fill,
+                  )
+                : Image.asset(url, width: 44, height: 44)));
   }
 
   /*
@@ -170,7 +176,7 @@ class ChatItemWidgets {
               ? Colors.white
               : Color.fromARGB(255, 158, 234, 106),
           child: Text(
-            entity.content + "大萨达撒大所大所多撒大所多撒大所大所大萨达所大所大所大大多所大啊大四打死多 ",
+            entity.content,
             style: TextStyle(fontSize: 16, color: Colors.black),
           ),
         ),
@@ -198,7 +204,12 @@ class ChatItemWidgets {
               ? Colors.white
               : Color.fromARGB(255, 158, 234, 106),
           child: ObjectUtil.isNetUri(entity.contentUrl)
-              ? Image.network(entity.contentUrl, width: size, height: size)
+              ? Image.network(
+                  entity.contentUrl,
+                  width: size,
+                  height: size,
+                  fit: BoxFit.fill,
+                )
               : Image.asset(entity.contentUrl, width: size, height: size),
         ),
       );

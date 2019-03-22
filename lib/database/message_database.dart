@@ -119,6 +119,22 @@ class MessageDataBase {
     return books;
   }
 
+  /*
+  * 查出某个消息类型（某个用户的对话即算一个消息类型）的所有消息
+  */
+  Future<List<MessageEntity>> getMessageEntityInTypeLimit(String senderAccount,
+      {int offset = 0, int count = 20}) async {
+    var db = await _init();
+    await _createTypeTable(db, senderAccount);
+    var result = await db.query('nb_$senderAccount',
+        orderBy: '${MessageEntity.DB_ID} desc', offset: offset, limit: count);
+    List<MessageEntity> books = [];
+    for (Map<String, dynamic> item in result) {
+      books.add(new MessageEntity.fromMap(item));
+    }
+    return books;
+  }
+
   Future insertMessageEntity(String senderAccount, MessageEntity entity) {
     return updateMessageEntity(senderAccount, entity);
   }
