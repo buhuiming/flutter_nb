@@ -2,6 +2,7 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nb/constants/constants.dart';
+import 'package:flutter_nb/database/database_control.dart';
 import 'package:flutter_nb/database/message_database.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/resource/colors.dart';
@@ -61,9 +62,19 @@ class ChatState extends MessageState<ChatPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    DataBaseControl.setCurrentPageName('ChatPage',
+        chatName: widget.title);
     _getLocalMessage();
     _initData();
     _checkBlackList();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    DataBaseControl.removeCurrentPageName('ChatPage',
+        chatName: widget.title);
   }
 
   _getLocalMessage() async {

@@ -45,6 +45,7 @@ class SystemMessageState extends MessageState<SystemMessage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    DataBaseControl.setCurrentPageName('SystemMessagePage');
     WidgetsBinding.instance.addObserver(this);
     _dis = false;
     _getData();
@@ -59,6 +60,7 @@ class SystemMessageState extends MessageState<SystemMessage>
     }
     _dis = true;
     super.dispose();
+    DataBaseControl.removeCurrentPageName('SystemMessagePage');
     WidgetsBinding.instance.removeObserver(this);
   }
 

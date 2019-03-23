@@ -46,7 +46,7 @@ class MessageEntity {
       this.note = '',
       this.isUnread = 0,
       this.messageOwner = 1,
-      this.isRemind = 1,
+      this.isRemind = 0,
       this.id,
       this.isUnreadCount =
           0 //此字段不保存数据库，取值为MessageTypeEntity[isUnreadCount]，主要用来entity数据临时存取

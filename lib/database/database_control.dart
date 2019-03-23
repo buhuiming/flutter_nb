@@ -22,6 +22,24 @@ class DataBaseControl {
       'onContactAdded'; //同意通过，返回添加的好友
   static const String payload_contact_contactDeleted =
       'onContactDeleted'; //删除好友
+  static List _currentPageName = List();
+  static List _currentChatName = List();
+
+  static void setCurrentPageName(String pageName, {String chatName}) {
+    if (!_currentPageName.contains(pageName)) {
+      _currentPageName.add(pageName);
+    }
+    if (chatName != null && !_currentChatName.contains(chatName)) {
+      _currentChatName.add(chatName);
+    }
+  }
+
+  static void removeCurrentPageName(String pageName, {String chatName}) {
+    _currentPageName.remove(pageName);
+    if (chatName != null) {
+      _currentChatName.remove(chatName);
+    }
+  }
 
   /*
   *  解析数据
@@ -136,6 +154,12 @@ class DataBaseControl {
               }); //保存数据库
               break;
           }
+          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != true) {
+            isShowNotification = false;
+          }
           break;
         case Constants.MESSAGE_TYPE_CHAT: //聊天消息
           switch (entity.contentType) {
@@ -189,14 +213,33 @@ class DataBaseControl {
               });
               break;
           }
+          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != true) {
+            isShowNotification = false;
+          }
+          break;
+        case Constants.MESSAGE_TYPE_OTHERS: //其他消息
+          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_OTHERS) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_OTHERS) != true) {
+            isShowNotification = false;
+          }
           break;
       }
-      if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != false &&
-          SPUtil.getBool(Constants.NOTIFICATION_KEY_SYSTEM) != false &&
-          isShowNotification) {
-        NotificationUtil.instance()
-            .build(context)
-            .showSystem(entity.titleName, entity.content, payload);
+      if (isShowNotification) {
+        if ((_currentPageName.contains('ChatPage') &&
+                _currentChatName.contains(entity.titleName)) ||
+            _currentPageName.contains('SystemMessagePage')) {
+          //如果当前页面是SystemMessagePage，或者是ChatPage（且对应聊天对象），则不弹通知
+          print('no notification');
+        } else {
+          NotificationUtil.instance()
+              .build(context)
+              .showSystem(entity.titleName, entity.content, payload);
+        }
       }
     }
   }
