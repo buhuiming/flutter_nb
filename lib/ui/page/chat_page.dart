@@ -57,7 +57,7 @@ class ChatState extends MessageState<ChatPage> {
   bool _isFaceFirstList = true;
   List<MessageEntity> _messageList = new List();
   bool _isLoadAll = false; //是否已经加载完本地数据
-
+  ScrollController _scrollController = new ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -648,6 +648,7 @@ class ChatState extends MessageState<ChatPage> {
                 itemBuilder: (BuildContext context, int index) {
                   return _messageListViewItem(index);
                 },
+                controller: _scrollController,
                 itemCount: _messageList.length)));
   }
 
@@ -665,6 +666,8 @@ class ChatState extends MessageState<ChatPage> {
   Widget _messageListViewItem(int index) {
     MessageEntity _lastEntity = index < 1 ? null : _messageList[index - 1];
     MessageEntity _entity = _messageList[index];
+    print('----pixels--' + _scrollController.position.pixels.toString() +
+        '----maxScrollExtent--' + _scrollController.position.maxScrollExtent.toString());
     return ChatItemWidgets.buildChatListItem(_lastEntity, _entity);
   }
 
