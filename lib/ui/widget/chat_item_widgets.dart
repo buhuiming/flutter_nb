@@ -14,14 +14,14 @@ import 'package:flutter_nb/utils/object_util.dart';
 */
 class ChatItemWidgets {
   static Widget buildChatListItem(
-      MessageEntity lastEntity, MessageEntity entity) {
+      MessageEntity nextEntity, MessageEntity entity) {
     bool _isShowTime = true;
     var showTime; //最终显示的时间
-    if (null == lastEntity) {
+    if (null == nextEntity) {
       _isShowTime = true;
     } else {
       //如果当前消息的时间和上条消息的时间相差，大于3分钟，则要显示当前消息的时间，否则不显示
-      if ((int.parse(entity.time) - int.parse(lastEntity.time)) >
+      if ((int.parse(entity.time) - int.parse(nextEntity.time)).abs() >
           3 * 60 * 1000) {
         _isShowTime = true;
       } else {
@@ -42,6 +42,11 @@ class ChatItemWidgets {
       showTime = indexTime;
     } else if (DateUtil.formatDateTime1(indexTime, DateFormat.YEAR_MONTH) !=
         DateUtil.formatDateTime1(nowTime, DateFormat.YEAR_MONTH)) {
+      //年份相同，对比年月,不同月或不同日，直接显示MM-dd HH:mm
+      showTime =
+          DateUtil.formatDateTime1(indexTime, DateFormat.MONTH_DAY_HOUR_MINUTE);
+    } else if (DateUtil.formatDateTime1(indexTime, DateFormat.YEAR_MONTH_DAY) !=
+        DateUtil.formatDateTime1(nowTime, DateFormat.YEAR_MONTH_DAY)) {
       //年份相同，对比年月,不同月或不同日，直接显示MM-dd HH:mm
       showTime =
           DateUtil.formatDateTime1(indexTime, DateFormat.MONTH_DAY_HOUR_MINUTE);
@@ -94,9 +99,9 @@ class ChatItemWidgets {
                   onLongPress: () {
                     DialogUtil.buildToast('长按了消息');
                   },
-                )
+                ),
               ],
-            ))
+            )),
           ],
         ),
       );
@@ -124,7 +129,16 @@ class ChatItemWidgets {
                   onLongPress: () {
                     DialogUtil.buildToast('长按了消息');
                   },
-                )
+                ),
+                //显示是否发送成功按钮
+                entity.status == '1'
+                    ? IconButton(
+                        icon: Icon(Icons.refresh, color: Colors.red, size: 18),
+                        onPressed: () {})
+                    : SizedBox(
+                        width: 0,
+                        height: 0,
+                      ),
               ],
             )),
             SizedBox(width: 10),

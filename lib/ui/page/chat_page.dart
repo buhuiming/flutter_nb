@@ -62,8 +62,7 @@ class ChatState extends MessageState<ChatPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    DataBaseControl.setCurrentPageName('ChatPage',
-        chatName: widget.title);
+    DataBaseControl.setCurrentPageName('ChatPage', chatName: widget.title);
     _getLocalMessage();
     _initData();
     _checkBlackList();
@@ -73,8 +72,7 @@ class ChatState extends MessageState<ChatPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    DataBaseControl.removeCurrentPageName('ChatPage',
-        chatName: widget.title);
+    DataBaseControl.removeCurrentPageName('ChatPage', chatName: widget.title);
   }
 
   _getLocalMessage() async {
@@ -88,7 +86,8 @@ class ChatState extends MessageState<ChatPage> {
         _isLoadAll = false;
       }
       for (MessageEntity entity in listEntity) {
-        _messageList.insert(0, entity);
+        //最新的一条消息，在list的index=0
+        _messageList.add(entity);
       }
       setState(() {});
     });
@@ -104,9 +103,16 @@ class ChatState extends MessageState<ChatPage> {
           _isShowTools = false;
           _isShowFace = false;
           _isShowVoice = false;
+          _scrollController.jumpTo(0);
         }
       },
     );
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _onRefresh();
+      }
+    });
   }
 
   _checkBlackList() {
@@ -641,34 +647,44 @@ class ChatState extends MessageState<ChatPage> {
   _messageListView() {
     return Container(
         color: ColorT.gray_f0,
-        child: RefreshIndicator(
-            color: ObjectUtil.getThemeSwatchColor(),
-            onRefresh: _onRefresh,
-            child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return _messageListViewItem(index);
-                },
-                controller: _scrollController,
-                itemCount: _messageList.length)));
+        child: Column(
+          //如果只有一条数据，listView的高度由内容决定了，所以要加列，让listView看起来是满屏的
+          children: <Widget>[
+            Flexible(
+                //外层是Column，所以在Column和ListView之间需要有个灵活变动的控件
+                child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return _messageListViewItem(index);
+                    },
+                    //倒置过来的ListView，这样数据多的时候也会显示“底部”（其实是顶部），
+                    //因为正常的listView数据多的时候，没有办法显示在顶部最后一条
+                    reverse: true,
+                    //如果只有一条数据，因为倒置了，数据会显示在最下面，上面有一块空白，
+                    //所以应该让listView高度由内容决定
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    itemCount: _messageList.length))
+          ],
+        ));
   }
 
   Future<Null> _onRefresh() async {
     await _getLocalMessage();
-    if (_isLoadAll) {
-      if (_messageList.length < 1) {
-        DialogUtil.buildToast('没有历史消息');
-      } else {
-        DialogUtil.buildToast('已加载全部历史消息');
-      }
-    }
+//    if (_isLoadAll) {
+//      if (_messageList.length < 1) {
+//        DialogUtil.buildToast('没有历史消息');
+//      } else {
+//        DialogUtil.buildToast('已加载全部历史消息');
+//      }
+//    }
   }
 
   Widget _messageListViewItem(int index) {
-    MessageEntity _lastEntity = index < 1 ? null : _messageList[index - 1];
+    //list最后一条消息（时间上是最老的），是没有下一条了
+    MessageEntity _nextEntity =
+        (index == _messageList.length - 1) ? null : _messageList[index + 1];
     MessageEntity _entity = _messageList[index];
-    print('----pixels--' + _scrollController.position.pixels.toString() +
-        '----maxScrollExtent--' + _scrollController.position.maxScrollExtent.toString());
-    return ChatItemWidgets.buildChatListItem(_lastEntity, _entity);
+    return ChatItemWidgets.buildChatListItem(_nextEntity, _entity);
   }
 
   /*删除好友*/
