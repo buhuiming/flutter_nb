@@ -256,7 +256,7 @@ class Message extends MessageState<MessagePage>
         }
       } else if (entity.type == InteractNative.SYSTEM_MESSAGE_HAS_READ) {
         if (null != map && map.length > 0 && list.length > 0) {
-          map[Constants.MESSAGE_TYPE_SYSTEM_ZH].isUnreadCount = 0;
+          map[entity.senderAccount].isUnreadCount = 0;
         }
       } else if (entity.type == InteractNative.SYSTEM_MESSAGE_DELETE_ALL ||
           entity.type == InteractNative.SYSTEM_MESSAGE_DELETE) {

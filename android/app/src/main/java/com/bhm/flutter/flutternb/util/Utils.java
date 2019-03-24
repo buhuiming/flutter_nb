@@ -8,13 +8,12 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.view.Display;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
-import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.bhm.flutter.flutternb.interfaces.CallBack;
+import com.bhm.flutter.flutternb.listeners.MessageListener;
+import com.hyphenate.chat.EMMessage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,6 +39,8 @@ public class Utils {
         for(CallBack callBack : callBacks){
             callBack.call(o);
         }
+        //记得在不需要的时候移除listener，如在activity的onDestroy()时
+        MessageListener.get().unRegister();
     }
 
     public static String getAppName(Context context, int pID) {
@@ -79,22 +80,40 @@ public class Utils {
     }
 
     private static boolean isNavigationBarShow(Activity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Display display = activity.getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            Point realSize = new Point();
-            display.getSize(size);
-            display.getRealSize(realSize);
-            boolean  result  = realSize.y!=size.y;
-            return realSize.y!=size.y;
-        }else {
-            boolean menu = ViewConfiguration.get(activity).hasPermanentMenuKey();
-            boolean back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-            if(menu || back) {
-                return false;
-            }else {
-                return true;
-            }
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        Point realSize = new Point();
+        display.getSize(size);
+        display.getRealSize(realSize);
+        boolean  result  = realSize.y!=size.y;
+        return realSize.y!=size.y;
+    }
+
+    public static String getChatType(EMMessage message){
+        String chatType;
+        if(message.getChatType() == EMMessage.ChatType.Chat){
+            chatType = "chat";
+        }else if(message.getChatType() == EMMessage.ChatType.ChatRoom){
+            chatType = "chatRoom";
+        }else if(message.getChatType() == EMMessage.ChatType.GroupChat){
+            chatType = "chatGroup";
+        }else{
+            chatType = "chat";
         }
+        return chatType;
+    }
+
+    public static EMMessage.ChatType getChatType(String type){
+        EMMessage.ChatType chatType;
+        if("chat".equals(type)){
+            chatType = EMMessage.ChatType.Chat;
+        }else if("chatRoom".equals(type)){
+            chatType = EMMessage.ChatType.ChatRoom;
+        }else if("chatGroup".equals(type)){
+            chatType = EMMessage.ChatType.GroupChat;
+        }else{
+            chatType = EMMessage.ChatType.Chat;
+        }
+        return chatType;
     }
 }

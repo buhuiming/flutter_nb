@@ -126,8 +126,15 @@ class MoreWidgets {
                                         width: imageSize,
                                         height: imageSize,
                                       )
-                                    : Image.asset(imageUrl,
-                                        width: imageSize, height: imageSize),
+                                    : Image.asset(
+                                        (imageUrl == '' || isNetImage == null)
+                                            ? FileUtil.getImagePath(
+                                                'img_headportrait',
+                                                dir: 'icon',
+                                                format: 'png')
+                                            : imageUrl,
+                                        width: imageSize,
+                                        height: imageSize),
                               ),
                             ]),
                         unread > 0
@@ -720,7 +727,7 @@ class MoreWidgets {
     return Column(
       children: <Widget>[
         SizedBox(
-          height: 10,
+          height: 8,
         ),
         InkWell(
             onTap: () {
@@ -731,10 +738,10 @@ class MoreWidgets {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                width: 56,
-                height: 56,
+                width: 54,
+                height: 54,
                 color: ObjectUtil.getThemeLightColor(),
-                child: Icon(icon, size: 30),
+                child: Icon(icon, size: 28),
               ),
             )),
         SizedBox(

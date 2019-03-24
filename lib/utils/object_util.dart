@@ -110,9 +110,9 @@ class ObjectUtil {
   */
   static Color getThemeSwatchColor({String color: "red"}) {
     return themeSwatchColorMap[
-        SPUtil.getString(Constants.KET_THEME_COLOR) == null
-            ? "red"
-            : SPUtil.getString(Constants.KET_THEME_COLOR)];
+    SPUtil.getString(Constants.KET_THEME_COLOR) == null
+        ? "red"
+        : SPUtil.getString(Constants.KET_THEME_COLOR)];
   }
 
   /*
@@ -127,11 +127,11 @@ class ObjectUtil {
 //        .pushNamedAndRemoveUntil('/LoginPage', (Route<dynamic> route) => false);
   }
 
-  static MessageEntity getDefaultData(String type) {
+  static MessageEntity getDefaultData(String type, String senderAccount) {
     return new MessageEntity(
         type: type,
-        senderAccount: null,
-        titleName: null,
+        senderAccount: senderAccount,
+        titleName: senderAccount,
         content: null,
         time: null);
   }
@@ -142,5 +142,15 @@ class ObjectUtil {
       return true;
     }
     return false;
+  }
+
+  static Map<String, String> buildMessage(MessageEntity messageEntity){
+    Map<String, String> map = {
+      "toChatUsername": messageEntity.senderAccount,
+      "content": messageEntity.content,
+      "chatType": messageEntity.type,
+      "contentType": messageEntity.contentType,
+    };
+    return map;
   }
 }

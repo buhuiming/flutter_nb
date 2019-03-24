@@ -1,0 +1,59 @@
+package com.bhm.flutter.flutternb.listeners;
+
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+
+import java.util.List;
+
+import io.flutter.plugin.common.EventChannel;
+
+public class MessageListener implements EMMessageListener {
+
+    private EventChannel.EventSink mSink;
+    private static final MessageListener LISTENER = new MessageListener();
+    public static MessageListener get(){
+        return LISTENER;
+    }
+
+    private MessageListener(){}
+
+    public MessageListener register(EventChannel.EventSink sink){
+        mSink = sink;
+        return LISTENER;
+    }
+
+    public void unRegister(){
+        EMClient.getInstance().chatManager().removeMessageListener(LISTENER);
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> messages) {
+        //收到消息
+        for(EMMessage message : messages) {
+//            mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
+//                    toJson(new ContactListener.ContactEntity(Utils.getChatType(message),
+//                            "onContactAdded", username))));
+        }
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> messages) {
+        //收到透传消息
+    }
+
+    @Override
+    public void onMessageRead(List<EMMessage> messages) {
+        //收到已读回执
+    }
+
+    @Override
+    public void onMessageDelivered(List<EMMessage> messages) {
+        //收到已送达回执
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage message, Object change) {
+        //消息状态变动
+    }
+}

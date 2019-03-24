@@ -7,6 +7,7 @@ import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/date_util.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
+import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 
 /*
@@ -14,7 +15,8 @@ import 'package:flutter_nb/utils/object_util.dart';
 */
 class ChatItemWidgets {
   static Widget buildChatListItem(
-      MessageEntity nextEntity, MessageEntity entity) {
+      MessageEntity nextEntity, MessageEntity entity,
+      {OnItemClick onResend}) {
     bool _isShowTime = true;
     var showTime; //最终显示的时间
     if (null == nextEntity) {
@@ -66,13 +68,13 @@ class ChatItemWidgets {
                     style: TextStyle(color: ColorT.transparent_50),
                   ))
               : SizedBox(height: 0),
-          _chatItemWidget(entity)
+          _chatItemWidget(entity, onResend)
         ],
       ),
     );
   }
 
-  static Widget _chatItemWidget(MessageEntity entity) {
+  static Widget _chatItemWidget(MessageEntity entity, OnItemClick onResend) {
     if (entity.messageOwner == 1) {
       //对方的消息
       return Container(
@@ -130,15 +132,34 @@ class ChatItemWidgets {
                     DialogUtil.buildToast('长按了消息');
                   },
                 ),
-                //显示是否发送成功按钮
+                //显示是否重发1、发送2中按钮，发送成功0或者null不显示
                 entity.status == '1'
                     ? IconButton(
                         icon: Icon(Icons.refresh, color: Colors.red, size: 18),
-                        onPressed: () {})
-                    : SizedBox(
-                        width: 0,
-                        height: 0,
-                      ),
+                        onPressed: () {
+                          if (null != onResend) {
+                            onResend(entity);
+                          }
+                        })
+                    : (entity.status == '2'
+                        ? Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(top: 20, right: 20),
+                            width: 32.0,
+                            height: 32.0,
+                            child: SizedBox(
+                                width: 12.0,
+                                height: 12.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation(
+                                      ObjectUtil.getThemeSwatchColor()),
+                                  strokeWidth: 2,
+                                )),
+                          )
+                        : SizedBox(
+                            width: 0,
+                            height: 0,
+                          )),
               ],
             )),
             SizedBox(width: 10),

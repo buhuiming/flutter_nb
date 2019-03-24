@@ -17,7 +17,13 @@ class Constants {
   static const String MESSAGE_TYPE_ROOM_CHAT = "chatRoom"; //消息类型：聊天室消息
   static const String MESSAGE_TYPE_OTHERS = "others"; //消息类型：其他消息
   static const String CONTENT_TYPE_SYSTEM = "text"; //消息内容类型：文本
+  static const String CONTENT_TYPE_VOICE = "voice"; //消息内容类型：语音
+  static const String CONTENT_TYPE_VIDEO = "video"; //消息内容类型：视频
   static const String CONTENT_TYPE_IMAGE = "image"; //消息内容类型：图像
+  static const String CONTENT_TYPE_LOCATION = "location"; //消息内容类型：位置
+  static const String CONTENT_TYPE_FILE = "file"; //消息内容类型：文件
+  static const String CONTENT_TYPE_DEFINED = "defined"; //消息内容类型：拓展（自定义）消息
+  static const String CONTENT_TYPE_CMD = "cmd"; //消息内容类型：其他（透传）消息
 
   static const String KET_THEME_COLOR = "ket_theme_color"; //主题色
 

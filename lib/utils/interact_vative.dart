@@ -41,6 +41,7 @@ class InteractNative {
     'getBlackListUsernamesFromDataBase': 'getBlackListUsernamesFromDataBase', //黑名单列表(数据库)
     'removeUserFromBlackList': 'removeUserFromBlackList', //移出黑名单
     'deleteContact': 'deleteContact', //删除好友
+    'sendMessage': 'sendMessage', //发送聊天消息
   };
 
   /*

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 
 import java.util.List;
 
@@ -267,6 +268,27 @@ public class EMClientUtils {
                     @Override
                     public void accept(CallBack<Boolean> callBack1) throws Exception {
                         EMClient.getInstance().contactManager().deleteContact(username);
+                        callBack.call(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.call(throwable.getMessage());
+                    }
+                });
+    }
+
+    /** 发送消息
+     * @param message
+     * @param callBack
+     */
+    public static void sendMessage(final EMMessage message, final CallBack<Boolean> callBack){
+        Observable.just(callBack)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<CallBack<Boolean>>() {
+                    @Override
+                    public void accept(CallBack<Boolean> callBack1) throws Exception {
+                        EMClient.getInstance().chatManager().sendMessage(message);;
                         callBack.call(true);
                     }
                 }, new Consumer<Throwable>() {

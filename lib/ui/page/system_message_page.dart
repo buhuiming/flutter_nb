@@ -104,8 +104,9 @@ class SystemMessageState extends MessageState<SystemMessage>
         .updateAllMessageTypeEntity(Constants.MESSAGE_TYPE_SYSTEM_ZH)
         .then((res) {
       //标记所有系统消息为已读
-      InteractNative.getMessageEventSink().add(
-          ObjectUtil.getDefaultData(InteractNative.SYSTEM_MESSAGE_HAS_READ));
+      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+          InteractNative.SYSTEM_MESSAGE_HAS_READ,
+          Constants.MESSAGE_TYPE_SYSTEM_ZH));
     });
   }
 
@@ -217,7 +218,8 @@ class SystemMessageState extends MessageState<SystemMessage>
                 itemCount = 0;
                 InteractNative.getMessageEventSink().add(
                     ObjectUtil.getDefaultData(
-                        InteractNative.SYSTEM_MESSAGE_DELETE_ALL));
+                        InteractNative.SYSTEM_MESSAGE_DELETE_ALL,
+                        entity.senderAccount));
               });
             });
           } else {
@@ -225,7 +227,8 @@ class SystemMessageState extends MessageState<SystemMessage>
               itemCount = _list.length;
               InteractNative.getMessageEventSink().add(
                   ObjectUtil.getDefaultData(
-                      InteractNative.SYSTEM_MESSAGE_DELETE));
+                      InteractNative.SYSTEM_MESSAGE_DELETE,
+                      entity.senderAccount));
             });
           }
         });
@@ -326,7 +329,8 @@ class SystemMessageState extends MessageState<SystemMessage>
         setState(() {
           itemCount = 0;
           InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
-              InteractNative.SYSTEM_MESSAGE_DELETE_ALL));
+              InteractNative.SYSTEM_MESSAGE_DELETE_ALL,
+              Constants.MESSAGE_TYPE_SYSTEM_ZH));
         });
       });
     });

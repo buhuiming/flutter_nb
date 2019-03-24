@@ -58,6 +58,7 @@ class ChatState extends MessageState<ChatPage> {
   List<MessageEntity> _messageList = new List();
   bool _isLoadAll = false; //是否已经加载完本地数据
   ScrollController _scrollController = new ScrollController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -97,13 +98,22 @@ class ChatState extends MessageState<ChatPage> {
     _popString.add('清空记录');
     _popString.add('删除好友');
     _popString.add('加入黑名单');
+    MessageDataBase.get()
+        .updateAllMessageTypeEntity(widget.senderAccount)
+        .then((res) {
+      //标记改对话所有消息为已读
+      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+          InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
+    });
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         if (visible) {
           _isShowTools = false;
           _isShowFace = false;
           _isShowVoice = false;
-          _scrollController.jumpTo(0);
+          try {
+            _scrollController.position.jumpTo(0);
+          } catch (e) {}
         }
       },
     );
@@ -264,8 +274,8 @@ class ChatState extends MessageState<ChatPage> {
           child: InkWell(
         child: _messageListView(),
         onTap: () {
+          _hideKeyBoard();
           setState(() {
-            _hideKeyBoard();
             _isShowVoice = false;
             _isShowFace = false;
             _isShowTools = false;
@@ -288,10 +298,10 @@ class ChatState extends MessageState<ChatPage> {
                   iconSize: 32,
                   onPressed: () {
                     setState(() {
+                      _hideKeyBoard();
                       if (_isShowVoice) {
                         _isShowVoice = false;
                       } else {
-                        _hideKeyBoard();
                         _isShowVoice = true;
                         _isShowFace = false;
                         _isShowTools = false;
@@ -305,11 +315,11 @@ class ChatState extends MessageState<ChatPage> {
                       : Icon(Icons.sentiment_very_satisfied),
                   iconSize: 32,
                   onPressed: () {
+                    _hideKeyBoard();
                     setState(() {
                       if (_isShowFace) {
                         _isShowFace = false;
                       } else {
-                        _hideKeyBoard();
                         _isShowFace = true;
                         _isShowVoice = false;
                         _isShowTools = false;
@@ -319,7 +329,7 @@ class ChatState extends MessageState<ChatPage> {
               _isShowSend
                   ? InkWell(
                       onTap: () {
-                        _sendTextMessage();
+                        _buildTextMessage();
                       },
                       child: new Container(
                         alignment: Alignment.center,
@@ -341,11 +351,11 @@ class ChatState extends MessageState<ChatPage> {
                       icon: Icon(Icons.add_circle_outline),
                       iconSize: 32,
                       onPressed: () {
+                        _hideKeyBoard();
                         setState(() {
                           if (_isShowTools) {
                             _isShowTools = false;
                           } else {
-                            _hideKeyBoard();
                             _isShowTools = true;
                             _isShowFace = false;
                             _isShowVoice = false;
@@ -358,7 +368,7 @@ class ChatState extends MessageState<ChatPage> {
       ),
       (_isShowTools || _isShowFace || _isShowVoice)
           ? Container(
-              height: 220,
+              height: 210,
               child: _bottomWidget(),
             )
           : SizedBox(
@@ -508,11 +518,11 @@ class ChatState extends MessageState<ChatPage> {
           ],
         )),
         SizedBox(
-          height: 6,
+          height: 2,
         ),
         new Divider(height: 1.0),
         Container(
-          height: 30,
+          height: 24,
           child: Row(
             children: <Widget>[
               Align(
@@ -525,7 +535,7 @@ class ChatState extends MessageState<ChatPage> {
                           color: _isFaceFirstList
                               ? ObjectUtil.getThemeSwatchColor()
                               : _headsetColor,
-                          size: 24,
+                          size: 22,
                         ),
                         onTap: () {
                           setState(() {
@@ -639,7 +649,7 @@ class ChatState extends MessageState<ChatPage> {
             });
           },
           onEditingComplete: () {
-            _sendTextMessage();
+            _buildTextMessage();
           }),
     );
   }
@@ -684,7 +694,10 @@ class ChatState extends MessageState<ChatPage> {
     MessageEntity _nextEntity =
         (index == _messageList.length - 1) ? null : _messageList[index + 1];
     MessageEntity _entity = _messageList[index];
-    return ChatItemWidgets.buildChatListItem(_nextEntity, _entity);
+    return ChatItemWidgets.buildChatListItem(_nextEntity, _entity,
+        onResend: (reSendEntity) {
+      _onResend(reSendEntity); //重发
+    });
   }
 
   /*删除好友*/
@@ -711,8 +724,8 @@ class ChatState extends MessageState<ChatPage> {
             InteractNative.methodNames['addUserToBlackList'], map)
         .then((success) {
       if (success == true) {
-        InteractNative.getMessageEventSink()
-            .add(ObjectUtil.getDefaultData('updateBlackList'));
+        InteractNative.getMessageEventSink().add(
+            ObjectUtil.getDefaultData('updateBlackList', widget.senderAccount));
         _checkBlackList();
       } else {
         DialogUtil.buildToast('加入黑名单失败');
@@ -729,8 +742,8 @@ class ChatState extends MessageState<ChatPage> {
             InteractNative.methodNames['removeUserFromBlackList'], map)
         .then((success) {
       if (success == true) {
-        InteractNative.getMessageEventSink()
-            .add(ObjectUtil.getDefaultData('updateBlackList'));
+        InteractNative.getMessageEventSink().add(
+            ObjectUtil.getDefaultData('updateBlackList', widget.senderAccount));
         _checkBlackList();
       } else {
         DialogUtil.buildToast('移出黑名单失败');
@@ -739,10 +752,63 @@ class ChatState extends MessageState<ChatPage> {
     });
   }
 
-  _sendTextMessage() {
+  //重发
+  _onResend(MessageEntity entity) {
+    if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+      _sendMessage(entity, isResend: true);
+    }
+  }
+
+  _buildTextMessage() {
     if (_controller.text.isEmpty) {
       return;
     }
+    MessageEntity messageEntity = new MessageEntity(
+        type: Constants.MESSAGE_TYPE_CHAT,
+        senderAccount: widget.senderAccount,
+        titleName: widget.senderAccount,
+        content: _controller.text, //如果是图片，则这里是图片的名字
+        time: new DateTime.now().millisecondsSinceEpoch.toString());
+    messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
+    messageEntity.contentUrl = ''; //这里如果是发送图片，则加上的图片的本地名称
+    messageEntity.messageOwner = 0;
+    messageEntity.status = '2';
+    messageEntity.contentType = Constants.CONTENT_TYPE_SYSTEM;
+    setState(() {
+      _messageList.insert(0, messageEntity);
+      _controller.clear();
+    });
+    _sendMessage(messageEntity);
+  }
+
+  _sendMessage(MessageEntity messageEntity, {bool isResend = false}) {
+    if (isResend) {
+      setState(() {
+        messageEntity.status = '2';
+      });
+    }
+    InteractNative.goNativeWithValue(InteractNative.methodNames['sendMessage'],
+            ObjectUtil.buildMessage(messageEntity))
+        .then((success) {
+      if (success == true) {
+        setState(() {
+          messageEntity.status = '0';
+        });
+      } else {
+        //一般黑名单的情况就发送失败
+        DialogUtil.buildToast('发送失败');
+        setState(() {
+          messageEntity.status = '1';
+        });
+      }
+      //插入数据库
+      MessageDataBase.get()
+          .insertMessageEntity(messageEntity.titleName, messageEntity)
+          .then((res) {
+        //刷新消息页面
+        InteractNative.getMessageEventSink().add(messageEntity);
+      });
+    });
   }
 
   _sendFaceMessage() {}
@@ -750,5 +816,9 @@ class ChatState extends MessageState<ChatPage> {
   @override
   void updateData(MessageEntity entity) {
     // TODO: implement updateData
+    if (entity.messageOwner == 0) {
+      //自己发的消息，通知消息页面刷新的时候，这里也会收到，但是这些不处理
+      return;
+    }
   }
 }

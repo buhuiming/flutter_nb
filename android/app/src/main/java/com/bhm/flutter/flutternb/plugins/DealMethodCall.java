@@ -6,9 +6,11 @@ import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.bhm.flutter.flutternb.listeners.CallBackListener;
 import com.bhm.flutter.flutternb.listeners.ConnectionListener;
 import com.bhm.flutter.flutternb.listeners.ContactListener;
+import com.bhm.flutter.flutternb.listeners.MessageListener;
 import com.bhm.flutter.flutternb.util.EMClientUtils;
 import com.bhm.flutter.flutternb.util.Utils;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -44,6 +46,7 @@ class DealMethodCall {
             put("getBlackListUsernamesFromDataBase", "getBlackListUsernamesFromDataBase");//黑名单列表(数据库)
             put("removeUserFromBlackList", "removeUserFromBlackList");//移出黑名单
             put("deleteContact", "deleteContact");//删除好友
+            put("sendMessage", "sendMessage");//发送聊天消息
         }
     };
 
@@ -173,6 +176,47 @@ class DealMethodCall {
                             return false;
                         }
                     });
+        }else if(Objects.equals(methodNames.get("sendMessage"), methodCall.method)){//发送聊天消息
+            EMMessage message;
+            if(Objects.equals(methodCall.argument("contentType"), "text")){//文本
+                message = EMMessage.createTxtSendMessage(Objects.requireNonNull(methodCall.argument("content"))
+                        .toString(), Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "voice")){//语音
+                message = EMMessage.createVoiceSendMessage(Objects.requireNonNull(methodCall.argument("filePath"))
+                                .toString(), methodCall.argument("length") == null ? 0 : (int) methodCall.argument("length"),
+                        Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "video")){//视频
+                message = EMMessage.createVideoSendMessage(Objects.requireNonNull(methodCall.argument("videoPath")).toString(),
+                        Objects.requireNonNull(methodCall.argument("thumbPath")).toString(),
+                        methodCall.argument("videoLength") == null ? 0 : (int) methodCall.argument("videoLength"),
+                        Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "image")){//图像
+                message = EMMessage.createImageSendMessage(Objects.requireNonNull(methodCall.argument("imagePath")).toString(),
+                        methodCall.argument("sendOriginalImage") == null && (boolean) methodCall.argument("sendOriginalImage"),
+                        Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "location")){//位置
+                message = EMMessage.createLocationSendMessage(methodCall.argument("latitude") == null ? 0 : (double) methodCall.argument("latitude"),
+                        methodCall.argument("longitude") == null ? 0 : (double) methodCall.argument("longitude"),
+                        Objects.requireNonNull(methodCall.argument("locationAddress")).toString(),
+                        Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "file")){//文件
+                message = EMMessage.createFileSendMessage(Objects.requireNonNull(methodCall.argument("filePath")).toString(),
+                        Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else if(Objects.equals(methodCall.argument("contentType"), "defined")){//扩展消息
+                //拓展消息有自定义属性，取值后赋值message.setAttribute("attribute1", "value");
+                message = EMMessage.createTxtSendMessage(Objects.requireNonNull(methodCall.argument("content"))
+                        .toString(), Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
+            }else{//其他消息都算是透传消息
+                message = EMMessage.createSendMessage(EMMessage.Type.CMD);
+            }
+            message.setChatType(Utils.getChatType(Objects.requireNonNull(methodCall.argument("chatType")).toString()));
+            EMClientUtils.sendMessage(message, new CallBack<Boolean>() {
+                @Override
+                public Boolean call(Object o) {
+                    result.success(o);
+                    return false;
+                }
+            });
         }
     }
 
@@ -188,6 +232,8 @@ class DealMethodCall {
         EMClient.getInstance().contactManager().setContactListener(new ContactListener(eventSink));
         //注册一个原生APP状态回调的listener
         Utils.addAppCallBack(new CallBackListener(eventSink));
+        //注册消息监听来接收消息
+        EMClient.getInstance().chatManager().addMessageListener(MessageListener.get().register(eventSink));
     }
 
     /**原生调用flutter方法的回调
