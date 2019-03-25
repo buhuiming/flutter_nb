@@ -1,7 +1,8 @@
 package com.bhm.flutter.flutternb.listeners;
 
+import com.alibaba.fastjson.JSON;
 import com.bhm.flutter.flutternb.util.CallBackData;
-import com.google.gson.Gson;
+import com.bhm.flutter.flutternb.util.MessageEntity;
 import com.hyphenate.EMContactListener;
 
 import io.flutter.plugin.common.EventChannel;
@@ -17,54 +18,35 @@ public class ContactListener implements EMContactListener {
     @Override
     public void onContactAdded(String username) {
         //增加联系人时回调此方法
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("chat", "onContactAdded", username))));
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON,
+                JSON.toJSONString(new MessageEntity("chat", "onContactAdded", username))));
     }
 
     @Override
     public void onContactDeleted(String username) {
         //被删除时回调此方法
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("chat", "onContactDeleted", username))));
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON,
+                JSON.toJSONString(new MessageEntity("chat", "onContactDeleted", username))));
     }
 
     @Override
     public void onContactInvited(String username, String reason) {
         //收到好友邀请
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("system", "onContactInvited", username, reason))));
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON,
+                JSON.toJSONString(new MessageEntity("system", "onContactInvited", username, reason))));
     }
 
     @Override
     public void onFriendRequestAccepted(String username) {
         //好友请求被同意
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("system", "onFriendRequestAccepted", username))));
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON,
+                JSON.toJSONString(new MessageEntity("system", "onFriendRequestAccepted", username))));
     }
 
     @Override
     public void onFriendRequestDeclined(String username) {
         //好友请求被拒绝
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, new Gson().
-                toJson(new ContactEntity("system", "onFriendRequestDeclined", username))));
-    }
-
-    class ContactEntity{
-        private String type;
-        private String content_type;
-        private String sender_account;
-        private String note;
-
-        public ContactEntity(String type, String method, String username, String reason){
-            this.type = type;
-            this.content_type = method;
-            this.sender_account = username;
-            this.note = reason;
-        }
-        public ContactEntity(String type, String method, String username){
-            this.type = type;
-            this.content_type = method;
-            this.sender_account = username;
-        }
+        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON,
+                JSON.toJSONString(new MessageEntity("system", "onFriendRequestDeclined", username))));
     }
 }

@@ -185,16 +185,16 @@ class SystemMessageState extends MessageState<SystemMessage>
       status = 1;
       statusText = '已同意';
     }
-    if (entity.contentType == DataBaseControl.payload_contact_invited) {
+    if (entity.method == DataBaseControl.payload_contact_invited) {
       title = '好友邀请';
       content = '用户${entity.senderAccount}请求添加您为好友';
       showStatusBar = true;
       note = '消息验证：${entity.note}';
-    } else if (entity.contentType == DataBaseControl.payload_contact_request) {
+    } else if (entity.method == DataBaseControl.payload_contact_request) {
       title = '添加邀请被拒绝';
       content = '用户${entity.senderAccount}拒绝您的好友添加邀请！';
       showStatusBar = true;
-    } else if (entity.contentType == DataBaseControl.payload_contact_accepted) {
+    } else if (entity.method == DataBaseControl.payload_contact_accepted) {
       title = '添加邀请已同意';
       content = '用户${entity.senderAccount}同意您的好友添加邀请！';
       showStatusBar = true;

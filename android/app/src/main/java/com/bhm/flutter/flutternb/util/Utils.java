@@ -103,6 +103,28 @@ public class Utils {
         return chatType;
     }
 
+    public static String getType(EMMessage.Type type){
+        String result;
+        if(type == EMMessage.Type.TXT){
+            result = "text";
+        }else if(type == EMMessage.Type.VOICE){
+            result = "voice";
+        }else if(type == EMMessage.Type.VIDEO){
+            result = "video";
+        }else if(type == EMMessage.Type.IMAGE){
+            result = "image";
+        }else if(type == EMMessage.Type.LOCATION){
+            result = "location";
+        }else if(type == EMMessage.Type.FILE){
+            result = "file";
+        }else if(type == EMMessage.Type.CMD){
+            result = "cmd";
+        }else{
+            result = "defined";
+        }
+        return result;
+    }
+
     public static EMMessage.ChatType getChatType(String type){
         EMMessage.ChatType chatType;
         if("chat".equals(type)){

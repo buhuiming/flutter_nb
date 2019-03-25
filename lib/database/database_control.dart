@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/database/message_database.dart';
+import 'package:flutter_nb/entity/message_body_eneity.dart';
 import 'package:flutter_nb/entity/message_entity.dart';
+import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/functions.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
@@ -22,6 +24,7 @@ class DataBaseControl {
       'onContactAdded'; //同意通过，返回添加的好友
   static const String payload_contact_contactDeleted =
       'onContactDeleted'; //删除好友
+  static const String onMessageReceived = 'onMessageReceived'; //接收到聊天消息
   static List _currentPageName = List();
   static List _currentChatName = List();
 
@@ -45,14 +48,16 @@ class DataBaseControl {
   *  解析数据
   */
   static void decodeData(Object o,
-      {OnUpdateCallback callBack, @required BuildContext context}) {
+      {OnUpdateCallback callBack,
+      @required BuildContext context,
+      Operation operation}) {
     if (o is String) {
       MessageEntity entity = MessageEntity.fromMap(json.decode(o.toString()));
       String payload;
       bool isShowNotification = false;
       switch (entity.type) {
         case Constants.MESSAGE_TYPE_SYSTEM: //系统消息
-          switch (entity.contentType) {
+          switch (entity.method) {
             case payload_contact_invited: //收到好友邀请
               isShowNotification = true;
               payload = payload_contact_invited;
@@ -110,7 +115,8 @@ class DataBaseControl {
                     .then((onValue) {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName, isUnreadCount: 1);
+                      senderAccount: entity.titleName,
+                      isUnreadCount: unReadCount);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {
@@ -143,7 +149,8 @@ class DataBaseControl {
                     .then((onValue) {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName, isUnreadCount: 1);
+                      senderAccount: entity.titleName,
+                      isUnreadCount: unReadCount);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {
@@ -162,7 +169,7 @@ class DataBaseControl {
           }
           break;
         case Constants.MESSAGE_TYPE_CHAT: //聊天消息
-          switch (entity.contentType) {
+          switch (entity.method) {
             case payload_contact_contactAdded: //好友同意后，返回好友信息
               isShowNotification = false; //不需要弹通知栏
               payload = payload_contact_contactAdded;
@@ -185,7 +192,8 @@ class DataBaseControl {
                     .then((onValue) async {
                   unReadCount = onValue + 1;
                   MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-                      senderAccount: entity.titleName, isUnreadCount: 1);
+                      senderAccount: entity.titleName,
+                      isUnreadCount: unReadCount);
                   MessageDataBase.get()
                       .insertMessageTypeEntity(messageTypeEntity);
                   if (null != callBack) {
@@ -212,6 +220,39 @@ class DataBaseControl {
                 });
               });
               break;
+            case onMessageReceived: //接收到聊天消息
+              isShowNotification = true;
+              payload = o.toString();
+              _dealChatMessage(entity, callBack);
+              break;
+          }
+          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != true) {
+            isShowNotification = false;
+          }
+          break;
+        case Constants.MESSAGE_TYPE_GROUP_CHAT: //群聊消息
+          switch (entity.method) {
+            case onMessageReceived: //接收到聊天消息
+              isShowNotification = true;
+              _dealChatMessage(entity, callBack);
+              break;
+          }
+          if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != null &&
+              SPUtil.getBool(Constants.NOTIFICATION_KEY_CHAT) != true) {
+            isShowNotification = false;
+          }
+          break;
+        case Constants.MESSAGE_TYPE_ROOM_CHAT: //聊天室消息
+          switch (entity.method) {
+            case onMessageReceived: //接收到聊天消息
+              isShowNotification = true;
+              _dealChatMessage(entity, callBack);
+              break;
           }
           if (SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != null &&
               SPUtil.getBool(Constants.NOTIFICATION_KEY_ALL) != true &&
@@ -231,16 +272,67 @@ class DataBaseControl {
       }
       if (isShowNotification) {
         if ((_currentPageName.contains('ChatPage') &&
-                _currentChatName.contains(entity.titleName)) ||
+                _currentChatName.contains(entity.senderAccount)) ||
             _currentPageName.contains('SystemMessagePage')) {
           //如果当前页面是SystemMessagePage，或者是ChatPage（且对应聊天对象），则不弹通知
           print('no notification');
         } else {
           NotificationUtil.instance()
-              .build(context)
+              .build(context, operation)
               .showSystem(entity.titleName, entity.content, payload);
         }
       }
     }
+  }
+
+  static void _dealChatMessage(
+      MessageEntity entity, OnUpdateCallback callBack) {
+    MessageBodyEntity bodyEntity =
+        MessageBodyEntity.fromMap(json.decode(entity.note));
+    switch (entity.contentType) {
+      case Constants.CONTENT_TYPE_SYSTEM: //文本
+        entity.imageUrl = FileUtil.getImagePath('img_headportrait',
+            dir: 'icon', format: 'png'); //这里取本地的，实际要取entity中的
+        entity.contentUrl = '';
+        entity.note = '';
+        entity.status = '0';
+        entity.messageOwner = 1;
+        entity.isUnread = 0;
+        entity.isRemind = 1;
+        entity.titleName = entity.senderAccount;
+        entity.content = bodyEntity.message;
+        break;
+      case Constants.CONTENT_TYPE_VOICE: //语音
+        break;
+      case Constants.CONTENT_TYPE_VIDEO: //视频
+        break;
+      case Constants.CONTENT_TYPE_IMAGE: //图像
+        break;
+      case Constants.CONTENT_TYPE_LOCATION: //位置
+        break;
+      case Constants.CONTENT_TYPE_FILE: //文件
+        break;
+      case Constants.CONTENT_TYPE_CMD: //透传消息
+        break;
+      case Constants.CONTENT_TYPE_DEFINED: //自定义（拓展消息）
+        break;
+    }
+
+    MessageDataBase.get()
+        .insertMessageEntity(entity.titleName, entity)
+        .then((onValue) async {
+      int unReadCount = 0; //先查询出未读数，再加1
+      MessageDataBase.get()
+          .getOneMessageUnreadCount(entity.titleName)
+          .then((onValue) async {
+        unReadCount = onValue + 1;
+        MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
+            senderAccount: entity.titleName, isUnreadCount: unReadCount);
+        MessageDataBase.get().insertMessageTypeEntity(messageTypeEntity);
+        if (null != callBack) {
+          callBack(Constants.MESSAGE_TYPE_SYSTEM, unReadCount, entity);
+        }
+      });
+    });
   }
 }

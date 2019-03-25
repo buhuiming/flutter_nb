@@ -3,6 +3,7 @@
 */
 import 'package:flutter/widgets.dart';
 import 'package:flutter_nb/database/database_control.dart';
+import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_nb/utils/object_util.dart';
 class DataProxy {
   static final DataProxy _dataProxy = new DataProxy._init();
   BuildContext _context;
+  Operation _operation;
 
   static DataProxy build() {
     return _dataProxy;
@@ -17,8 +19,9 @@ class DataProxy {
 
   DataProxy._init();
 
-  void setContext(BuildContext context) {
+  void setContext(BuildContext context, Operation operation) {
     _context = context;
+    _operation = operation;
   }
 
   /*
@@ -65,12 +68,13 @@ class DataProxy {
         unConnect();
       }
     } else if (res.containsKey('json')) {
-      DataBaseControl.decodeData(res.values.elementAt(0), context: _context,
-          callBack: (type, unReadCount, entity) {
-            entity.isUnreadCount = unReadCount;
-            //触发点MessageState
-            InteractNative.getMessageEventSink().add(entity);
-          }); //解析数据保存数据库
+      DataBaseControl.decodeData(res.values.elementAt(0),
+          context: _context,
+          operation: _operation, callBack: (type, unReadCount, entity) {
+        entity.isUnreadCount = unReadCount;
+        //触发点MessageState
+        InteractNative.getMessageEventSink().add(entity);
+      }); //解析数据保存数据库
     }
   }
 

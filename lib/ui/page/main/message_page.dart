@@ -234,7 +234,7 @@ class Message extends MessageState<MessagePage>
     if (null != entity) {
       if (entity.type == Constants.MESSAGE_TYPE_SYSTEM ||
           entity.type == Constants.MESSAGE_TYPE_CHAT) {
-        if (entity.contentType ==
+        if (entity.method ==
             DataBaseControl.payload_contact_contactDeleted) {
           //好友删除
           list.remove(entity.titleName);

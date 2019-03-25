@@ -57,6 +57,7 @@ class ChatState extends MessageState<ChatPage> {
   bool _isFaceFirstList = true;
   List<MessageEntity> _messageList = new List();
   bool _isLoadAll = false; //是否已经加载完本地数据
+  bool _aLive = false;
   ScrollController _scrollController = new ScrollController();
 
   @override
@@ -73,6 +74,14 @@ class ChatState extends MessageState<ChatPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _aLive = false;
+    MessageDataBase.get()
+        .updateAllMessageTypeEntity(widget.senderAccount)
+        .then((res) {
+      //标记改对话所有消息为已读
+      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+          InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
+    });
     DataBaseControl.removeCurrentPageName('ChatPage', chatName: widget.title);
   }
 
@@ -98,13 +107,6 @@ class ChatState extends MessageState<ChatPage> {
     _popString.add('清空记录');
     _popString.add('删除好友');
     _popString.add('加入黑名单');
-    MessageDataBase.get()
-        .updateAllMessageTypeEntity(widget.senderAccount)
-        .then((res) {
-      //标记改对话所有消息为已读
-      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
-          InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
-    });
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         if (visible) {
@@ -201,10 +203,17 @@ class ChatState extends MessageState<ChatPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      appBar: _appBar(),
-      body: _body(),
-    );
+    Widget widgets = MaterialApp(
+        theme: ThemeData(
+            primaryColor: ObjectUtil.getThemeColor(),
+            primarySwatch: ObjectUtil.getThemeSwatchColor(),
+            platform: TargetPlatform.iOS),
+        home: Scaffold(
+          appBar: _appBar(),
+          body: _body(),
+        ));
+    _aLive = true;
+    return widgets;
   }
 
   _appBar() {
@@ -232,7 +241,9 @@ class ChatState extends MessageState<ChatPage> {
                 switch (res) {
                   case 'one':
                     DialogUtil.showBaseDialog(context, '即将删除该对话的全部聊天记录',
-                        right: '删除', left: '再想想', rightClick: (res) {});
+                        right: '删除', left: '再想想', rightClick: (res) {
+                      _deleteAll();
+                    });
                     break;
                   case 'two':
                     DialogUtil.showBaseDialog(context, '确定删除好友吗？',
@@ -266,6 +277,23 @@ class ChatState extends MessageState<ChatPage> {
             })
       ],
     );
+  }
+
+  Future _deleteAll() async {
+    MessageDataBase.get()
+        .deleteMessageTypeEntity(
+            entity: MessageTypeEntity(senderAccount: widget.senderAccount))
+        .then((value) {
+      MessageDataBase.get()
+          .deleteMessageEntity(widget.senderAccount)
+          .then((res) {
+        setState(() {
+          _messageList.clear();
+          InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+              InteractNative.SYSTEM_MESSAGE_DELETE_ALL, widget.senderAccount));
+        });
+      });
+    });
   }
 
   _body() {
@@ -816,9 +844,16 @@ class ChatState extends MessageState<ChatPage> {
   @override
   void updateData(MessageEntity entity) {
     // TODO: implement updateData
-    if (entity.messageOwner == 0) {
+    if (null == entity) {
+      return;
+    }
+    if (entity.messageOwner == 0 && !_aLive) {
       //自己发的消息，通知消息页面刷新的时候，这里也会收到，但是这些不处理
       return;
+    } else if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+      setState(() {
+        _messageList.insert(0, entity);
+      });
     }
   }
 }

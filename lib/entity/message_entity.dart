@@ -20,6 +20,7 @@ class MessageEntity {
   static const String IS_UNREAD_COUNT = "is_unread_count"; //未读数
   static const String NOTE = "note"; //备注
   static const String STATUS = "status"; //状态
+  static const String METHOD = "method"; //方法
 
   String type,
       imageUrl,
@@ -30,6 +31,7 @@ class MessageEntity {
       contentUrl,
       time,
       status,
+      method,
       note;
   int id;
   int isUnread, messageOwner, isRemind, isUnreadCount;
@@ -41,6 +43,7 @@ class MessageEntity {
       @required this.content,
       this.contentType = Constants.CONTENT_TYPE_SYSTEM,
       this.contentUrl = '',
+      this.method = '',
       this.status = '',
       @required this.time,
       this.note = '',
@@ -68,6 +71,7 @@ class MessageEntity {
           isRemind: map[IS_REMIND],
           note: map[NOTE],
           status: map[STATUS],
+          method: map[METHOD],
         );
 
   // Currently not used

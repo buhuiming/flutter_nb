@@ -250,8 +250,8 @@ class Friends extends MessageState<FriendsPage>
     // TODO: implement updateData
     if (entity != null &&
         entity.type == Constants.MESSAGE_TYPE_CHAT &&
-        (entity.contentType == DataBaseControl.payload_contact_contactAdded ||
-            entity.contentType ==
+        (entity.method == DataBaseControl.payload_contact_contactAdded ||
+            entity.method ==
                 DataBaseControl.payload_contact_contactDeleted)) {
       //如果收到的推送消息是聊天消息，并且属于好友增加、好友删除，则属性好友列表
       print('获取朋友列表');

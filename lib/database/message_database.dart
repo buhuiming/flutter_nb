@@ -49,6 +49,7 @@ class MessageDataBase {
           "${MessageEntity.CONTENT_URL} TEXT,"
           "${MessageEntity.TIME} TEXT,"
           "${MessageEntity.NOTE} TEXT,"
+          "${MessageEntity.METHOD} TEXT,"
           "${MessageEntity.STATUS} TEXT,"
           "${MessageEntity.MESSAGE_OWNER} INTEGER,"
           "${MessageEntity.IS_REMIND} INTEGER"
@@ -69,6 +70,7 @@ class MessageDataBase {
         "${MessageEntity.CONTENT_URL} TEXT,"
         "${MessageEntity.TIME} TEXT,"
         "${MessageEntity.NOTE} TEXT,"
+        "${MessageEntity.METHOD} TEXT,"
         "${MessageEntity.STATUS} TEXT,"
         "${MessageEntity.MESSAGE_OWNER} INTEGER,"
         "${MessageEntity.IS_REMIND} INTEGER"
@@ -181,8 +183,8 @@ class MessageDataBase {
     _createTypeTable(db, entity.senderAccount).then((res) async {
       await db.rawInsert(
           'INSERT OR REPLACE INTO '
-          'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.STATUS})'
-          ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.METHOD}, ${MessageEntity.STATUS})'
+          ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
           [
             entity.type,
             entity.imageUrl,
@@ -196,6 +198,7 @@ class MessageDataBase {
             entity.messageOwner,
             entity.isRemind,
             entity.note,
+            entity.method,
             entity.status
           ]);
     });

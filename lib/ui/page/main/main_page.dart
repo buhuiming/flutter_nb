@@ -104,8 +104,8 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   @override
   Widget build(BuildContext context) {
     //NotificationUtil中的context是Login的，此处要替换全局
-    NotificationUtil.instance().build(context);
-    DataProxy.build().setContext(context);
+    NotificationUtil.instance().build(context, operation);
+    DataProxy.build().setContext(context, operation);
     return MaterialApp(
         theme: ThemeData(
             primaryColor: primaryColor,

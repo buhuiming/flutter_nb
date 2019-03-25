@@ -79,5 +79,5 @@ dependencies {
     //Optional compile for GCM (Google Cloud Messaging).
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
     implementation 'com.hyphenate:hyphenate-sdk:3.3.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.alibaba:fastjson:1.2.55'
 }

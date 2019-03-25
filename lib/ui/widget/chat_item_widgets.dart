@@ -201,7 +201,7 @@ class ChatItemWidgets {
   static Widget _contentWidget(MessageEntity entity) {
     Widget widget;
     if (entity.contentType == Constants.CONTENT_TYPE_SYSTEM ||
-        entity.contentType == DataBaseControl.payload_contact_contactAdded) {
+        entity.method == DataBaseControl.payload_contact_contactAdded) {
       //文本
       widget = ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
