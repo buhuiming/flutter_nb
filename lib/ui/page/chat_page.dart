@@ -57,13 +57,21 @@ class ChatState extends MessageState<ChatPage> {
   bool _isFaceFirstList = true;
   List<MessageEntity> _messageList = new List();
   bool _isLoadAll = false; //是否已经加载完本地数据
-  bool _aLive = false;
+  bool _first = false;
   ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
     // TODO: implement initState
+    _first = true;
     super.initState();
+    MessageDataBase.get()
+        .updateAllMessageTypeEntity(widget.senderAccount)
+        .then((res) {
+      //标记改对话所有消息为已读
+      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+          InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
+    });
     DataBaseControl.setCurrentPageName('ChatPage', chatName: widget.title);
     _getLocalMessage();
     _initData();
@@ -74,14 +82,7 @@ class ChatState extends MessageState<ChatPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _aLive = false;
-    MessageDataBase.get()
-        .updateAllMessageTypeEntity(widget.senderAccount)
-        .then((res) {
-      //标记改对话所有消息为已读
-      InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
-          InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
-    });
+    _first = false;
     DataBaseControl.removeCurrentPageName('ChatPage', chatName: widget.title);
   }
 
@@ -212,7 +213,6 @@ class ChatState extends MessageState<ChatPage> {
           appBar: _appBar(),
           body: _body(),
         ));
-    _aLive = true;
     return widgets;
   }
 
@@ -847,10 +847,18 @@ class ChatState extends MessageState<ChatPage> {
     if (null == entity) {
       return;
     }
-    if (entity.messageOwner == 0 && !_aLive) {
+    if (entity.messageOwner == 0 || _first) {
       //自己发的消息，通知消息页面刷新的时候，这里也会收到，但是这些不处理
+      _first = false;
       return;
     } else if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+      MessageDataBase.get()
+          .updateAllMessageTypeEntity(widget.senderAccount)
+          .then((res) {
+        //标记改对话所有消息为已读
+        InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+            InteractNative.SYSTEM_MESSAGE_HAS_READ, widget.senderAccount));
+      });
       setState(() {
         _messageList.insert(0, entity);
       });
