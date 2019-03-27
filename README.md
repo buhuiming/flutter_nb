@@ -1,4 +1,4 @@
-# flutter_nb ([Demo.apk](https://github.com/buhuiming/flutter_nb/blob/master/apk/app-release.apk))
+# flutter_nb ([Demo.apk，账号注册数量有限，公用账号（13800008888，123456）](https://github.com/buhuiming/flutter_nb/blob/master/apk/app-release.apk))
 
 一个集成环信IM的Flutter项目。目前只是Android与flutter双向交互，
 已完成功能：注册、登录、退出登录、自动登录、切换头像、切换主题、消息推送开关、搜索、添加好友、
