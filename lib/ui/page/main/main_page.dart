@@ -58,7 +58,7 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   /*
    * 存放4个页面，跟fragmentList一样
    */
-  var _pageList;
+  List _pageList;
 
   /*
    * 获取bottomTab的颜色和文字
@@ -114,8 +114,7 @@ class _MyHomePageState extends ThemeState<MyHomePage>
         home: Stack(children: <Widget>[
           //为什么登录页面要改成和主页放到一起？因为登录成功时，环信IM即刻推送未登录时收到的消息，而
           //此时主页还未初始化，会导致主页消息不能刷新。
-          Offstage(
-              offstage: !_isShowLogin, child: LoginPage()),
+          Offstage(offstage: !_isShowLogin, child: LoginPage()),
           Offstage(
               offstage: _isShowLogin,
               child: _buildMain != true
@@ -245,8 +244,15 @@ class _MyHomePageState extends ThemeState<MyHomePage>
     } else if (type == InteractNative.CHANGE_PAGE_TO_MAIN) {
       //登录成功后，由登录页面切换到主页
       setState(() {
+        if (null != _pageList) {
+          _pageList.clear();
+          initData();
+        } else {
+          initData();
+        }
         _isShowLogin = false;
         _buildMain = true;
+        _pageController.jumpToPage(0);
       });
     } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
       //退出登录后，由主页切换到登录页面

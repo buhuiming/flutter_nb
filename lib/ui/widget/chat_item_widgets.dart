@@ -203,51 +203,14 @@ class ChatItemWidgets {
     if (entity.contentType == Constants.CONTENT_TYPE_SYSTEM ||
         entity.method == DataBaseControl.payload_contact_contactAdded) {
       //文本
-      widget = ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
-          color: entity.messageOwner == 1
-              ? Colors.white
-              : Color.fromARGB(255, 158, 234, 106),
-          child: Text(
-            entity.content,
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          ),
-        ),
-      );
-    } else if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
-      //图像
-      double size = 110;
-      if (entity.contentUrl.isNotEmpty &&
-          entity.contentUrl.contains('assets/images/face')) {
-        //assets/images/face中的表情
-        size = 32;
-      } else if (entity.contentUrl.isNotEmpty &&
-          entity.contentUrl.contains('assets/images/figure')) {
-        //assets/images/figure中的表情
-        size = 90;
+      if (entity.content.contains('assets/images/face') ||
+          entity.content.contains('assets/images/figure')) {
+        widget = buildImageWidget(entity);
+      } else {
+        widget = buildTextWidget(entity);
       }
-      widget = ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        child: Container(
-          padding: EdgeInsets.all((entity.contentUrl.isNotEmpty &&
-                  entity.contentUrl.contains('assets/images/face'))
-              ? 10
-              : 0),
-          color: entity.messageOwner == 1
-              ? Colors.white
-              : Color.fromARGB(255, 158, 234, 106),
-          child: ObjectUtil.isNetUri(entity.contentUrl)
-              ? Image.network(
-                  entity.contentUrl,
-                  width: size,
-                  height: size,
-                  fit: BoxFit.fill,
-                )
-              : Image.asset(entity.contentUrl, width: size, height: size),
-        ),
-      );
+    } else if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
+      widget = buildImageWidget(entity);
     } else {
       widget = ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -262,5 +225,55 @@ class ChatItemWidgets {
       );
     }
     return widget;
+  }
+
+  static Widget buildTextWidget(MessageEntity entity) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
+        color: entity.messageOwner == 1
+            ? Colors.white
+            : Color.fromARGB(255, 158, 234, 106),
+        child: Text(
+          entity.content,
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  static Widget buildImageWidget(MessageEntity entity) {
+    //图像
+    double size = 110;
+    if (entity.contentUrl.isNotEmpty &&
+        entity.contentUrl.contains('assets/images/face')) {
+      //assets/images/face中的表情
+      size = 32;
+    } else if (entity.contentUrl.isNotEmpty &&
+        entity.contentUrl.contains('assets/images/figure')) {
+      //assets/images/figure中的表情
+      size = 90;
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        padding: EdgeInsets.all((entity.contentUrl.isNotEmpty &&
+                entity.contentUrl.contains('assets/images/face'))
+            ? 10
+            : 0),
+        color: entity.messageOwner == 1
+            ? Colors.white
+            : Color.fromARGB(255, 158, 234, 106),
+        child: ObjectUtil.isNetUri(entity.contentUrl)
+            ? Image.network(
+                entity.contentUrl,
+                width: size,
+                height: size,
+                fit: BoxFit.fill,
+              )
+            : Image.asset(entity.contentUrl, width: size, height: size),
+      ),
+    );
   }
 }

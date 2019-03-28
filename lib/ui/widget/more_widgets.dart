@@ -172,7 +172,7 @@ class MoreWidgets {
                           height: 3.0,
                         ),
                         Text(
-                          content,
+                          content.startsWith('assets/images/f') ? '[表情]' : content,
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,

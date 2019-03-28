@@ -30,8 +30,7 @@ class MessagePage extends StatefulWidget {
   }
 }
 
-class Message extends MessageState<MessagePage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
   var map = Map(); //key,value，跟进list的key查找value
   var list = new List(); //存key,根据最新的消息插入0位置
   bool isShowNoPage = false;
@@ -212,6 +211,9 @@ class Message extends MessageState<MessagePage>
     super.didChangeAppLifecycleState(state);
     //initState后，未调用，所以初始化为resume，当APP进入后台，则为onPause；APP进入前台，为resume
     currentState = state;
+    if (currentState == AppLifecycleState.resumed) {
+      setState(() {});
+    }
   }
 
   @override
@@ -234,8 +236,7 @@ class Message extends MessageState<MessagePage>
     if (null != entity) {
       if (entity.type == Constants.MESSAGE_TYPE_SYSTEM ||
           entity.type == Constants.MESSAGE_TYPE_CHAT) {
-        if (entity.method ==
-            DataBaseControl.payload_contact_contactDeleted) {
+        if (entity.method == DataBaseControl.payload_contact_contactDeleted) {
           //好友删除
           list.remove(entity.titleName);
           map.remove(entity.titleName);

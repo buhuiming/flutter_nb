@@ -357,7 +357,10 @@ class ChatState extends MessageState<ChatPage> {
               _isShowSend
                   ? InkWell(
                       onTap: () {
-                        _buildTextMessage();
+                        if (_controller.text.isEmpty) {
+                          return;
+                        }
+                        _buildTextMessage(_controller.text);
                       },
                       child: new Container(
                         alignment: Alignment.center,
@@ -637,7 +640,8 @@ class ChatState extends MessageState<ChatPage> {
                 if (name.contains('face_delete')) {
                   DialogUtil.buildToast('暂时不会把自定义表情显示在TextField，谁会的教我~');
                 } else {
-                  _sendFaceMessage();
+                  //表情因为取的是assets里的图，所以当初文本发送
+                  _buildTextMessage(name);
                 }
               },
               icon: Image.asset(name,
@@ -677,7 +681,10 @@ class ChatState extends MessageState<ChatPage> {
             });
           },
           onEditingComplete: () {
-            _buildTextMessage();
+            if (_controller.text.isEmpty) {
+              return;
+            }
+            _buildTextMessage(_controller.text);
           }),
     );
   }
@@ -787,18 +794,15 @@ class ChatState extends MessageState<ChatPage> {
     }
   }
 
-  _buildTextMessage() {
-    if (_controller.text.isEmpty) {
-      return;
-    }
+  _buildTextMessage(String content) {
     MessageEntity messageEntity = new MessageEntity(
         type: Constants.MESSAGE_TYPE_CHAT,
         senderAccount: widget.senderAccount,
         titleName: widget.senderAccount,
-        content: _controller.text, //如果是图片，则这里是图片的名字
+        content: content, //如果是assets里的图片，则这里是assets图片的路径
         time: new DateTime.now().millisecondsSinceEpoch.toString());
     messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
-    messageEntity.contentUrl = ''; //这里如果是发送图片，则加上的图片的本地名称
+    messageEntity.contentUrl = content;
     messageEntity.messageOwner = 0;
     messageEntity.status = '2';
     messageEntity.contentType = Constants.CONTENT_TYPE_SYSTEM;
@@ -833,13 +837,18 @@ class ChatState extends MessageState<ChatPage> {
       MessageDataBase.get()
           .insertMessageEntity(messageEntity.titleName, messageEntity)
           .then((res) {
-        //刷新消息页面
-        InteractNative.getMessageEventSink().add(messageEntity);
+        MessageDataBase.get()
+            .getOneMessageUnreadCount(messageEntity.titleName)
+            .then((onValue) {
+          MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
+              senderAccount: messageEntity.titleName, isUnreadCount: onValue);
+          MessageDataBase.get().insertMessageTypeEntity(messageTypeEntity);
+          //刷新消息页面
+          InteractNative.getMessageEventSink().add(messageEntity);
+        });
       });
     });
   }
-
-  _sendFaceMessage() {}
 
   @override
   void updateData(MessageEntity entity) {

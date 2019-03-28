@@ -293,7 +293,7 @@ class DataBaseControl {
       case Constants.CONTENT_TYPE_SYSTEM: //文本
         entity.imageUrl = FileUtil.getImagePath('img_headportrait',
             dir: 'icon', format: 'png'); //这里取本地的，实际要取entity中的
-        entity.contentUrl = '';
+        entity.contentUrl = bodyEntity.message;
         entity.note = '';
         entity.status = '0';
         entity.messageOwner = 1;
