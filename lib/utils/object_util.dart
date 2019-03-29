@@ -144,12 +144,14 @@ class ObjectUtil {
     return false;
   }
 
-  static Map<String, String> buildMessage(MessageEntity messageEntity){
-    Map<String, String> map = {
+  static Map<String, dynamic> buildMessage(MessageEntity messageEntity){
+    Map<String, dynamic> map = {
       "toChatUsername": messageEntity.senderAccount,
       "content": messageEntity.content,
       "chatType": messageEntity.type,
       "contentType": messageEntity.contentType,
+      "contentUrl": messageEntity.contentUrl,
+      "sendOriginalImage": messageEntity.sendOriginalImage,
     };
     return map;
   }

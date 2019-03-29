@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
@@ -84,7 +85,8 @@ class MoreWidgets {
   /*
   *  生成消息-ListView的item
   */
-  static Widget messageListViewItem(String imageUrl, String text,
+  static Widget messageListViewItem(
+      String imageUrl, String text, String contentType,
       {bool isNetImage = false,
       int unread = 0,
       String content = '',
@@ -92,6 +94,23 @@ class MoreWidgets {
       double imageSize = 48.0,
       OnItemClick onItemClick,
       OnItemLongClick onItemLongClick}) {
+    if (contentType == Constants.CONTENT_TYPE_SYSTEM) {
+      content = content.startsWith('assets/images/f') ? '[表情]' : content;
+    } else if (contentType == Constants.CONTENT_TYPE_IMAGE) {
+      content = '[图片]';
+    } else if (contentType == Constants.CONTENT_TYPE_VOICE) {
+      content = '[语音]';
+    } else if (contentType == Constants.CONTENT_TYPE_VIDEO) {
+      content = '[视频]';
+    } else if (contentType == Constants.CONTENT_TYPE_LOCATION) {
+      content = '[位置]';
+    } else if (contentType == Constants.CONTENT_TYPE_FILE) {
+      content = '[文件]';
+    } else if (contentType == Constants.CONTENT_TYPE_CMD) {
+      content = '[透传消息]';
+    } else if (contentType == Constants.CONTENT_TYPE_DEFINED) {
+      content = '[自定义消息]';
+    }
     return InkWell(
         onTap: () {
           if (null != onItemClick) {
@@ -172,7 +191,7 @@ class MoreWidgets {
                           height: 3.0,
                         ),
                         Text(
-                          content.startsWith('assets/images/f') ? '[表情]' : content,
+                          content,
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,

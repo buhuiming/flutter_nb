@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_nb/constants/constants.dart';
@@ -245,16 +247,44 @@ class ChatItemWidgets {
 
   static Widget buildImageWidget(MessageEntity entity) {
     //图像
-    double size = 110;
+    double size = 120;
+    Widget image;
     if (entity.contentUrl.isNotEmpty &&
         entity.contentUrl.contains('assets/images/face')) {
       //assets/images/face中的表情
       size = 32;
+      image = Image.asset(entity.contentUrl, width: size, height: size);
     } else if (entity.contentUrl.isNotEmpty &&
         entity.contentUrl.contains('assets/images/figure')) {
       //assets/images/figure中的表情
       size = 90;
+      image = Image.asset(entity.contentUrl, width: size, height: size);
+    } else if (entity.contentUrl.isNotEmpty &&
+        entity.contentUrl.contains('/storage/emulated/0')) {
+      if (File(entity.contentUrl).existsSync()) {
+        image = Image.asset(
+          entity.contentUrl,
+          width: size,
+          height: size,
+          fit: BoxFit.fill,
+        );
+      } else {
+        image = Image.asset(
+          FileUtil.getImagePath('img_default', dir: 'default', format: 'png'),
+          width: size,
+          height: size,
+          fit: BoxFit.fill,
+        );
+      }
+    } else if (ObjectUtil.isNetUri(entity.contentUrl)) {
+      image = Image.network(
+        entity.contentUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.fill,
+      );
     }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Container(
@@ -265,14 +295,7 @@ class ChatItemWidgets {
         color: entity.messageOwner == 1
             ? Colors.white
             : Color.fromARGB(255, 158, 234, 106),
-        child: ObjectUtil.isNetUri(entity.contentUrl)
-            ? Image.network(
-                entity.contentUrl,
-                width: size,
-                height: size,
-                fit: BoxFit.fill,
-              )
-            : Image.asset(entity.contentUrl, width: size, height: size),
+        child: image,
       ),
     );
   }

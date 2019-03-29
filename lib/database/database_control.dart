@@ -307,6 +307,18 @@ class DataBaseControl {
       case Constants.CONTENT_TYPE_VIDEO: //视频
         break;
       case Constants.CONTENT_TYPE_IMAGE: //图像
+        entity.imageUrl = FileUtil.getImagePath('img_headportrait',
+            dir: 'icon', format: 'png'); //这里取本地的，实际要取entity中的
+        entity.contentUrl = bodyEntity.remoteUrl;//这里取的是远程图，且不做缓存
+        entity.note = '';
+        entity.status = '0';
+        entity.messageOwner = 1;
+        entity.isUnread = 0;
+        entity.isRemind = 1;
+        entity.height = bodyEntity.height;
+        entity.width = bodyEntity.width;
+        entity.titleName = entity.senderAccount;
+        entity.content = bodyEntity.message;
         break;
       case Constants.CONTENT_TYPE_LOCATION: //位置
         break;

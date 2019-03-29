@@ -84,7 +84,7 @@ class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
   Widget _itemWidget(int index) {
     Widget res;
     MessageEntity entity = map[list.elementAt(index).toString()];
-    res = MoreWidgets.messageListViewItem(entity.imageUrl, entity.titleName,
+    res = MoreWidgets.messageListViewItem(entity.imageUrl, entity.titleName, entity.contentType,
         content: entity.content,
         time: TimelineUtil.format(int.parse(entity.time)),
         unread: entity.isUnreadCount, onItemClick: (res) {

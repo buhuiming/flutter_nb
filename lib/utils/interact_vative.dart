@@ -48,7 +48,7 @@ class InteractNative {
   * 调用原生的方法（带参）
   */
   static Future<dynamic> goNativeWithValue(String methodName,
-      [Map<String, String> map]) async {
+      [Map<String, dynamic> map]) async {
     if (null == map) {
       dynamic future = await flutter_to_native.invokeMethod(methodName);
       return future;

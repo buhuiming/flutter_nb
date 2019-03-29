@@ -252,7 +252,6 @@ class _MyHomePageState extends ThemeState<MyHomePage>
         }
         _isShowLogin = false;
         _buildMain = true;
-        _pageController.jumpToPage(0);
       });
     } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
       //退出登录后，由主页切换到登录页面

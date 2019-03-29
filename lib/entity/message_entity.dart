@@ -35,6 +35,12 @@ class MessageEntity {
       note;
   int id;
   int isUnread, messageOwner, isRemind, isUnreadCount;
+
+  //以下字段不存数据库
+  bool sendOriginalImage;
+  int height;
+  int width;
+
   MessageEntity(
       {@required this.type,
       this.imageUrl = '',
@@ -51,6 +57,9 @@ class MessageEntity {
       this.messageOwner = 1,
       this.isRemind = 0,
       this.id,
+      this.sendOriginalImage = false,
+      this.height = 90,
+      this.width = 90,
       this.isUnreadCount =
           0 //此字段不保存数据库，取值为MessageTypeEntity[isUnreadCount]，主要用来entity数据临时存取
       });
@@ -72,6 +81,9 @@ class MessageEntity {
           note: map[NOTE],
           status: map[STATUS],
           method: map[METHOD],
+          height: map['height'],
+          sendOriginalImage: map['sendOriginalImage'],
+          width: map['width'],
         );
 
   // Currently not used

@@ -57,7 +57,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
-    #- assets/images/default/
+    - assets/images/default/
     - assets/images/main_page/
     - assets/images/splash/
     - assets/images/icon/

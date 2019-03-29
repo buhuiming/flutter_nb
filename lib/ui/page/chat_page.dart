@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
+import 'package:flutter_nb/utils/image_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
@@ -604,8 +607,18 @@ class ChatState extends MessageState<ChatPage> {
       _guideToolsList.clear();
     }
     List<Widget> _widgets = new List();
-    _widgets.add(MoreWidgets.buildIcon(Icons.insert_photo, '相册'));
-    _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.insert_photo, '相册', o: (res) {
+      ImageUtil.getGalleryImage().then((imageFile) {
+        //相册取图片
+        _willBuildImageMessage(imageFile);
+      });
+    }));
+    _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄', o: (res) {
+      ImageUtil.getCameraImage().then((imageFile) {
+        //相册取图片
+        _willBuildImageMessage(imageFile);
+      });
+    }));
     _widgets.add(MoreWidgets.buildIcon(Icons.videocam, '视频通话'));
     _widgets.add(MoreWidgets.buildIcon(Icons.location_on, '位置'));
     _widgets.add(MoreWidgets.buildIcon(Icons.view_agenda, '红包'));
@@ -806,6 +819,36 @@ class ChatState extends MessageState<ChatPage> {
     messageEntity.messageOwner = 0;
     messageEntity.status = '2';
     messageEntity.contentType = Constants.CONTENT_TYPE_SYSTEM;
+    setState(() {
+      _messageList.insert(0, messageEntity);
+      _controller.clear();
+      _isShowSend = false;
+    });
+    _sendMessage(messageEntity);
+  }
+
+  _willBuildImageMessage(File imageFile) {
+    DialogUtil.showBaseDialog(context, '是否发送原图？',
+        title: '', right: '原图', left: '压缩图', rightClick: (res) {
+      _buildImageMessage(imageFile, true);
+    }, leftClick: (res) {
+      _buildImageMessage(imageFile, false);
+    });
+  }
+
+  _buildImageMessage(File file, bool sendOriginalImage) {
+    MessageEntity messageEntity = new MessageEntity(
+        type: Constants.MESSAGE_TYPE_CHAT,
+        senderAccount: widget.senderAccount,
+        titleName: widget.senderAccount,
+        content: '',
+        sendOriginalImage: sendOriginalImage,
+        time: new DateTime.now().millisecondsSinceEpoch.toString());
+    messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
+    messageEntity.contentUrl = file.path;
+    messageEntity.messageOwner = 0;
+    messageEntity.status = '2';
+    messageEntity.contentType = Constants.CONTENT_TYPE_IMAGE;
     setState(() {
       _messageList.insert(0, messageEntity);
       _controller.clear();
