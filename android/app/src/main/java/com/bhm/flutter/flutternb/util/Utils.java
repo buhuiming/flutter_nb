@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Environment;
 import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,9 +16,16 @@ import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.bhm.flutter.flutternb.listeners.MessageListener;
 import com.hyphenate.chat.EMMessage;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class Utils {
 
@@ -137,5 +145,51 @@ public class Utils {
             chatType = EMMessage.ChatType.Chat;
         }
         return chatType;
+    }
+
+    public static void setFilePath(){
+        Observable.just(1)
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        String dir = Environment.getExternalStorageDirectory().getAbsolutePath()
+                                + File.separator;
+                        File file = new File(dir + "BHMFlutter/voice");
+                        deleteFile(file, 1000);
+                        if(!file.exists()){
+                            file.mkdirs();
+                        }
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+    }
+
+    private static void deleteFile(File file, int count){
+        if(file.isDirectory()){
+            File[] childFiles = file.listFiles();
+            if(childFiles == null){
+                return;
+            }
+            //根据时间排序
+            Arrays.sort(childFiles, new Comparator<File>() {
+                public int compare(File p1, File p2) {
+                    if (p1.lastModified() < p2.lastModified()) {
+                        return -1;
+                    }
+                    return 1;
+                }
+            });
+            if(childFiles.length >= count){//超过count后，把超出的部分删除（删除最早的）
+                for (int i = 0; i < childFiles.length - count; i++) {
+                    childFiles[i].delete();
+                }
+            }
+        }
     }
 }

@@ -32,7 +32,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name=".FlutterNBApplication"
-        android:label="buhuiming"
+        android:label="BHMFlutter"
         tools:replace="android:appComponentFactory"
         android:appComponentFactory="FlutterNBApplication"
         android:icon="@mipmap/ic_launcher_new">

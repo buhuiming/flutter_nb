@@ -18,6 +18,8 @@ import 'package:flutter_nb/utils/image_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_record/flutter_record.dart';
+import 'package:vibration/vibration.dart';
 
 /*
 *  发送聊天信息
@@ -62,12 +64,17 @@ class ChatState extends MessageState<ChatPage> {
   bool _isLoadAll = false; //是否已经加载完本地数据
   bool _first = false;
   ScrollController _scrollController = new ScrollController();
+  String _audioIconPath = '';
+  FlutterRecord _flutterRecord;
+  String _voiceFilePath = '';
+  String _voiceFileName = '';
 
   @override
   void initState() {
     // TODO: implement initState
     _first = true;
     super.initState();
+    _flutterRecord = FlutterRecord();
     MessageDataBase.get()
         .updateAllMessageTypeEntity(widget.senderAccount)
         .then((res) {
@@ -441,70 +448,103 @@ class ChatState extends MessageState<ChatPage> {
                 ))),
         Align(
             alignment: Alignment.center,
-            child: Container(
-                padding: EdgeInsets.all(20),
-                child: GestureDetector(
-                  onScaleStart: (res) {
-                    setState(() {
-                      voiceText = '松开 结束';
-                      voiceBackground = ColorT.divider;
-                    });
-                  },
-                  onScaleEnd: (res) {
-                    if (_headsetColor == ObjectUtil.getThemeLightColor()) {
-                      DialogUtil.buildToast('试听功能暂未实现');
-                    } else if (_highlightColor ==
-                        ObjectUtil.getThemeLightColor()) {
-                      DialogUtil.buildToast('删除功能暂未实现');
-                    } else {
-                      DialogUtil.buildToast('发送语音');
-                    }
-                    setState(() {
-                      voiceText = '按住 说话';
-                      voiceBackground = ObjectUtil.getThemeLightColor();
-                      _headsetColor = ColorT.gray_99;
-                      _highlightColor = ColorT.gray_99;
-                    });
-                  },
-                  onScaleUpdate: (res) {
-                    print(res.toString());
-                    if (res.focalPoint.dy > 550 && res.focalPoint.dy < 620) {
-                      if (res.focalPoint.dx > 10 && res.focalPoint.dx < 80) {
+            child: Column(
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(top: 10),
+                    child: _audioIconPath == ''
+                        ? SizedBox(
+                            width: 30,
+                            height: 30,
+                          )
+                        : Image.asset(
+                            FileUtil.getImagePath(_audioIconPath,
+                                dir: 'icon', format: 'png'),
+                            width: 30,
+                            height: 30,
+                            color: ObjectUtil.getThemeSwatchColor(),
+                          )),
+                Container(
+                    padding: EdgeInsets.all(10),
+                    child: GestureDetector(
+                      onScaleStart: (res) {
+                        _startRecord();
+                      },
+                      onScaleEnd: (res) {
+                        if (_headsetColor == ObjectUtil.getThemeLightColor()) {
+                          DialogUtil.buildToast('试听功能暂未实现');
+                          _flutterRecord.stopRecorder();
+                        } else if (_highlightColor ==
+                            ObjectUtil.getThemeLightColor()) {
+                          DialogUtil.buildToast('删除功能暂未实现');
+                          _flutterRecord.stopRecorder();
+                        } else {
+                          _flutterRecord.stopRecorder().then((res) {
+                            File file = File(_voiceFilePath);
+                            _flutterRecord
+                                .getDuration(path: _voiceFileName) //需要去掉文件类型后缀
+                                .then((length) {
+                              print('voice length is---' + length.toString());
+                              if (length < 1000) {
+                                //小于1s不发送
+                                file.delete();
+                                DialogUtil.buildToast('你说话时间太短啦~');
+                              } else {
+                                //发送语音
+                              }
+                            });
+                          });
+                        }
                         setState(() {
-                          voiceText = '松开 试听';
-                          _headsetColor = ObjectUtil.getThemeLightColor();
-                        });
-                      } else if (res.focalPoint.dx > 330 &&
-                          res.focalPoint.dx < 400) {
-                        setState(() {
-                          voiceText = '松开 删除';
-                          _highlightColor = ObjectUtil.getThemeLightColor();
-                        });
-                      } else {
-                        setState(() {
-                          voiceText = '松开 结束';
+                          _audioIconPath = '';
+                          voiceText = '按住 说话';
+                          voiceBackground = ObjectUtil.getThemeLightColor();
                           _headsetColor = ColorT.gray_99;
                           _highlightColor = ColorT.gray_99;
                         });
-                      }
-                    } else {
-                      setState(() {
-                        voiceText = '松开 结束';
-                        _headsetColor = ColorT.gray_99;
-                        _highlightColor = ColorT.gray_99;
-                      });
-                    }
-                  },
-                  child: new CircleAvatar(
-                    child: new Text(
-                      voiceText,
-                      style:
-                          new TextStyle(fontSize: 17.0, color: ColorT.gray_33),
-                    ),
-                    radius: 60,
-                    backgroundColor: voiceBackground,
-                  ),
-                ))),
+                      },
+                      onScaleUpdate: (res) {
+                        if (res.focalPoint.dy > 550 &&
+                            res.focalPoint.dy < 620) {
+                          if (res.focalPoint.dx > 10 &&
+                              res.focalPoint.dx < 80) {
+                            setState(() {
+                              voiceText = '松开 试听';
+                              _headsetColor = ObjectUtil.getThemeLightColor();
+                            });
+                          } else if (res.focalPoint.dx > 330 &&
+                              res.focalPoint.dx < 400) {
+                            setState(() {
+                              voiceText = '松开 删除';
+                              _highlightColor = ObjectUtil.getThemeLightColor();
+                            });
+                          } else {
+                            setState(() {
+                              voiceText = '松开 结束';
+                              _headsetColor = ColorT.gray_99;
+                              _highlightColor = ColorT.gray_99;
+                            });
+                          }
+                        } else {
+                          setState(() {
+                            voiceText = '松开 结束';
+                            _headsetColor = ColorT.gray_99;
+                            _highlightColor = ColorT.gray_99;
+                          });
+                        }
+                      },
+                      child: new CircleAvatar(
+                        child: new Text(
+                          voiceText,
+                          style: new TextStyle(
+                              fontSize: 17.0, color: ColorT.gray_33),
+                        ),
+                        radius: 60,
+                        backgroundColor: voiceBackground,
+                      ),
+                    ))
+              ],
+            )),
         Align(
             alignment: Alignment.centerRight,
             child: Container(
@@ -516,6 +556,38 @@ class ChatState extends MessageState<ChatPage> {
                 ))),
       ],
     );
+  }
+
+  _startRecord() {
+    Vibration.vibrate(duration: 50);
+    setState(() {
+      voiceText = '松开 结束';
+      voiceBackground = ColorT.divider;
+    });
+    //flutterRecord这个框架把文件都存在了根目录，所以要在MainActivity创建文件../BHMFlutter/voice/
+    _voiceFileName =
+        'BHMFlutter/voice/' + DateTime.now().millisecondsSinceEpoch.toString();
+    _flutterRecord
+        .startRecorder(path: _voiceFileName, maxVolume: 10.0)
+        .then((voiceFilePath) {
+      print('voice file path-- ' + voiceFilePath);
+      _voiceFilePath = voiceFilePath;
+    });
+
+    _flutterRecord.volumeSubscription.stream.listen((volume) {
+      setState(() {
+        if (volume <= 0) {
+          _audioIconPath = '';
+        } else if (volume > 0 && volume < 3) {
+          _audioIconPath = 'audio_player_1';
+        } else if (volume < 5) {
+          _audioIconPath = 'audio_player_2';
+        } else if (volume < 10) {
+          _audioIconPath = 'audio_player_3';
+        }
+        print('volume--- ' + volume.toString());
+      });
+    });
   }
 
   _faceWidget() {
