@@ -491,6 +491,7 @@ class ChatState extends MessageState<ChatPage> {
                                 DialogUtil.buildToast('你说话时间太短啦~');
                               } else {
                                 //发送语音
+                                _buildVoiceMessage(file, length);
                               }
                             });
                           });
@@ -817,6 +818,25 @@ class ChatState extends MessageState<ChatPage> {
     return ChatItemWidgets.buildChatListItem(_nextEntity, _entity,
         onResend: (reSendEntity) {
       _onResend(reSendEntity); //重发
+    }, onItemClick: (onClickEntity) {
+      MessageEntity entity = onClickEntity;
+      if (entity.contentType == Constants.CONTENT_TYPE_VOICE) {
+        //点击了语音
+        if (_entity.isVoicePlaying) {
+          //正在播放，就停止播放
+          setState(() {
+            _entity.isVoicePlaying = false;
+          });
+        } else {
+          setState(() {
+            for (MessageEntity other in _messageList) {
+              other.isVoicePlaying = false;
+              //停止其他正在播放的
+            }
+            _entity.isVoicePlaying = true;
+          });
+        }
+      }
     });
   }
 
@@ -926,6 +946,26 @@ class ChatState extends MessageState<ChatPage> {
       _controller.clear();
     });
     _sendMessage(messageEntity);
+  }
+
+  _buildVoiceMessage(File file, int length) {
+    MessageEntity messageEntity = new MessageEntity(
+        type: Constants.MESSAGE_TYPE_CHAT,
+        senderAccount: widget.senderAccount,
+        titleName: widget.senderAccount,
+        content: '',
+        time: new DateTime.now().millisecondsSinceEpoch.toString());
+    messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
+    messageEntity.contentUrl = file.path;
+    messageEntity.messageOwner = 0;
+    messageEntity.length = length;
+    messageEntity.status = '2';
+    messageEntity.contentType = Constants.CONTENT_TYPE_VOICE;
+    setState(() {
+      _messageList.insert(0, messageEntity);
+      _controller.clear();
+    });
+//    _sendMessage(messageEntity);
   }
 
   _sendMessage(MessageEntity messageEntity, {bool isResend = false}) {

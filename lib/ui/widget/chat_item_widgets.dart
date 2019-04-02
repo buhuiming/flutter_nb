@@ -18,7 +18,7 @@ import 'package:flutter_nb/utils/object_util.dart';
 class ChatItemWidgets {
   static Widget buildChatListItem(
       MessageEntity nextEntity, MessageEntity entity,
-      {OnItemClick onResend}) {
+      {OnItemClick onResend, OnItemClick onItemClick}) {
     bool _isShowTime = true;
     var showTime; //最终显示的时间
     if (null == nextEntity) {
@@ -70,13 +70,14 @@ class ChatItemWidgets {
                     style: TextStyle(color: ColorT.transparent_50),
                   ))
               : SizedBox(height: 0),
-          _chatItemWidget(entity, onResend)
+          _chatItemWidget(entity, onResend, onItemClick)
         ],
       ),
     );
   }
 
-  static Widget _chatItemWidget(MessageEntity entity, OnItemClick onResend) {
+  static Widget _chatItemWidget(
+      MessageEntity entity, OnItemClick onResend, OnItemClick onItemClick) {
     if (entity.messageOwner == 1) {
       //对方的消息
       return Container(
@@ -98,7 +99,9 @@ class ChatItemWidgets {
                 GestureDetector(
                   child: _contentWidget(entity),
                   onTap: () {
-                    DialogUtil.buildToast('点击了消息');
+                    if (null != onItemClick) {
+                      onItemClick(entity);
+                    }
                   },
                   onLongPress: () {
                     DialogUtil.buildToast('长按了消息');
@@ -128,7 +131,9 @@ class ChatItemWidgets {
                 GestureDetector(
                   child: _contentWidget(entity),
                   onTap: () {
-                    DialogUtil.buildToast('点击了消息');
+                    if (null != onItemClick) {
+                      onItemClick(entity);
+                    }
                   },
                   onLongPress: () {
                     DialogUtil.buildToast('长按了消息');
@@ -213,6 +218,8 @@ class ChatItemWidgets {
       }
     } else if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
       widget = buildImageWidget(entity);
+    } else if (entity.contentType == Constants.CONTENT_TYPE_VOICE) {
+      widget = buildVoiceWidget(entity);
     } else {
       widget = ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -297,6 +304,70 @@ class ChatItemWidgets {
             : Color.fromARGB(255, 158, 234, 106),
         child: image,
       ),
+    );
+  }
+
+  static Widget buildVoiceWidget(MessageEntity entity) {
+    double width;
+    if (entity.length < 5000) {
+      width = 90;
+    } else if (entity.length < 10000) {
+      width = 140;
+    } else if (entity.length < 20000) {
+      width = 180;
+    } else {
+      width = 200;
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+          width: width,
+          color: entity.messageOwner == 1
+              ? Colors.white
+              : Color.fromARGB(255, 158, 234, 106),
+          child: Row(
+            mainAxisAlignment: entity.messageOwner == 1
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end,
+            children: <Widget>[
+              entity.messageOwner == 1
+                  ? Text('')
+                  : Text((entity.length ~/ 1000).toString() + 's',
+                      style: TextStyle(fontSize: 18, color: Colors.black)),
+              SizedBox(
+                width: 5,
+              ),
+              entity.isVoicePlaying
+                  ? Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 1, right: 1),
+                      width: 18.0,
+                      height: 18.0,
+                      child: SizedBox(
+                          width: 14.0,
+                          height: 14.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.black),
+                            strokeWidth: 2,
+                          )),
+                    )
+                  : Image.asset(
+                      FileUtil.getImagePath('audio_player_3',
+                          dir: 'icon', format: 'png'),
+                      width: 18,
+                      height: 18,
+                      color: Colors.black,
+                    ),
+              SizedBox(
+                width: 5,
+              ),
+              entity.messageOwner == 1
+                  ? Text((entity.length ~/ 1000).toString() + 's',
+                      style: TextStyle(fontSize: 18, color: Colors.black))
+                  : Text(''),
+            ],
+          )),
     );
   }
 }

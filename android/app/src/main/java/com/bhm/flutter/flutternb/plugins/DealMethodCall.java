@@ -182,7 +182,7 @@ class DealMethodCall {
                 message = EMMessage.createTxtSendMessage(Objects.requireNonNull(methodCall.argument("content"))
                         .toString(), Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
             }else if(Objects.equals(methodCall.argument("contentType"), "voice")){//语音
-                message = EMMessage.createVoiceSendMessage(Objects.requireNonNull(methodCall.argument("filePath"))
+                message = EMMessage.createVoiceSendMessage(Objects.requireNonNull(methodCall.argument("contentUrl"))
                                 .toString(), methodCall.argument("length") == null ? 0 : (int) methodCall.argument("length"),
                         Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
             }else if(Objects.equals(methodCall.argument("contentType"), "video")){//视频

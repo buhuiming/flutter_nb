@@ -40,6 +40,8 @@ class MessageEntity {
   bool sendOriginalImage;
   int height;
   int width;
+  int length;
+  bool isVoicePlaying;
 
   MessageEntity(
       {@required this.type,
@@ -60,6 +62,8 @@ class MessageEntity {
       this.sendOriginalImage = false,
       this.height = 90,
       this.width = 90,
+      this.length = 0,
+      this.isVoicePlaying = false,
       this.isUnreadCount =
           0 //此字段不保存数据库，取值为MessageTypeEntity[isUnreadCount]，主要用来entity数据临时存取
       });
@@ -84,6 +88,8 @@ class MessageEntity {
           height: map['height'],
           sendOriginalImage: map['sendOriginalImage'],
           width: map['width'],
+          length: map['length'],
+          isVoicePlaying: map['isVoicePlaying'],
         );
 
   // Currently not used
