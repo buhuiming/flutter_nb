@@ -15,6 +15,8 @@ import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
+import 'package:flutter_nb/utils/object_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 /*
 *  主页
@@ -89,9 +91,32 @@ class _MyHomePageState extends ThemeState<MyHomePage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getPermission();
     _isShowLogin = widget.isShowLogin;
     _buildMain = !widget.isShowLogin;
     initData();
+  }
+
+  _getPermission(){
+    //请求读写权限
+    ObjectUtil.getPermissions([PermissionGroup.storage]).then((res) {
+      if (res[PermissionGroup.storage] == PermissionStatus.denied ||
+          res[PermissionGroup.storage] == PermissionStatus.disabled ||
+          res[PermissionGroup.storage] == PermissionStatus.unknown) {
+        //用户拒绝，禁用，或者不可用
+        DialogUtil.showBaseDialog(context, '获取不到读写权限，APP不能正常使用',
+            right: '去设置', left: '取消', rightClick: (res) {
+              PermissionHandler().openAppSettings();
+            });
+      } else if (res[PermissionGroup.storage] == PermissionStatus.granted) {
+        //用户同意，创建文件夹
+        InteractNative.goNativeWithValue(
+            InteractNative.methodNames['createFiles'], null);
+      } else if (res[PermissionGroup.storage] == PermissionStatus.restricted) {
+        //用户同意IOS的回调
+
+      }
+    });
   }
 
   @override

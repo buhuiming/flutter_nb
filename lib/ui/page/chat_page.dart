@@ -19,7 +19,10 @@ import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:flutter_record/flutter_record.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 
 /*
 *  发送聊天信息
@@ -63,18 +66,22 @@ class ChatState extends MessageState<ChatPage> {
   List<MessageEntity> _messageList = new List();
   bool _isLoadAll = false; //是否已经加载完本地数据
   bool _first = false;
+  bool _alive = false;
   ScrollController _scrollController = new ScrollController();
   String _audioIconPath = '';
   FlutterRecord _flutterRecord;
   String _voiceFilePath = '';
   String _voiceFileName = '';
+  MusicFinder _audioPlayer;
 
   @override
   void initState() {
     // TODO: implement initState
     _first = true;
+    _alive = true;
     super.initState();
     _flutterRecord = FlutterRecord();
+    _audioPlayer = MusicFinder();
     MessageDataBase.get()
         .updateAllMessageTypeEntity(widget.senderAccount)
         .then((res) {
@@ -86,14 +93,40 @@ class ChatState extends MessageState<ChatPage> {
     _getLocalMessage();
     _initData();
     _checkBlackList();
+    _getPermission();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
+    _alive = false;
+    _audioPlayer.stop();
     super.dispose();
     _first = false;
     DataBaseControl.removeCurrentPageName('ChatPage', chatName: widget.title);
+  }
+
+  _getPermission() {
+    //请求读写权限
+    ObjectUtil.getPermissions([
+      PermissionGroup.storage,
+      PermissionGroup.camera,
+      PermissionGroup.speech,
+      PermissionGroup.location,
+    ]).then((res) {
+      if (res[PermissionGroup.storage] == PermissionStatus.denied ||
+          res[PermissionGroup.storage] == PermissionStatus.disabled ||
+          res[PermissionGroup.storage] == PermissionStatus.unknown) {
+        //用户拒绝，禁用，或者不可用
+        DialogUtil.showBaseDialog(context, '获取不到权限，APP不能正常使用',
+            right: '去设置', left: '取消', rightClick: (res) {
+          PermissionHandler().openAppSettings();
+        });
+      } else if (res[PermissionGroup.storage] == PermissionStatus.granted) {
+      } else if (res[PermissionGroup.storage] == PermissionStatus.restricted) {
+        //用户同意IOS的回调
+      }
+    });
   }
 
   _getLocalMessage() async {
@@ -586,7 +619,6 @@ class ChatState extends MessageState<ChatPage> {
         } else if (volume < 10) {
           _audioIconPath = 'audio_player_3';
         }
-        print('volume--- ' + volume.toString());
       });
     });
   }
@@ -818,12 +850,13 @@ class ChatState extends MessageState<ChatPage> {
     return ChatItemWidgets.buildChatListItem(_nextEntity, _entity,
         onResend: (reSendEntity) {
       _onResend(reSendEntity); //重发
-    }, onItemClick: (onClickEntity) {
+    }, onItemClick: (onClickEntity) async {
       MessageEntity entity = onClickEntity;
       if (entity.contentType == Constants.CONTENT_TYPE_VOICE) {
         //点击了语音
-        if (_entity.isVoicePlaying) {
+        if (_entity.isVoicePlaying == true) {
           //正在播放，就停止播放
+          await _audioPlayer.stop();
           setState(() {
             _entity.isVoicePlaying = false;
           });
@@ -833,7 +866,20 @@ class ChatState extends MessageState<ChatPage> {
               other.isVoicePlaying = false;
               //停止其他正在播放的
             }
+            _audioPlayer.play(_entity.contentUrl,
+                isLocal:
+                    (_entity.contentUrl.startsWith('http') ? false : true));
             _entity.isVoicePlaying = true;
+          });
+          Observable.just(1)
+              .delay(new Duration(milliseconds: _entity.length))
+              .listen((_) {
+                if(_alive) {
+                  setState(() {
+                    _entity.isVoicePlaying = false;
+                    _audioPlayer.stop();
+                  });
+                }
           });
         }
       }
@@ -965,7 +1011,7 @@ class ChatState extends MessageState<ChatPage> {
       _messageList.insert(0, messageEntity);
       _controller.clear();
     });
-//    _sendMessage(messageEntity);
+    _sendMessage(messageEntity);
   }
 
   _sendMessage(MessageEntity messageEntity, {bool isResend = false}) {

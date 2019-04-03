@@ -29,8 +29,10 @@ dependencies:
   image_picker: ^0.5.0+3 #相机相册
   #webview_flutter: ^0.3.4 #WebView
   keyboard_visibility: ^0.5.2 #软键盘
-  flutter_record: ^0.3.5 #录音、播放
+  flutter_record: ^0.3.5 #录音、播放(播放的地址作者写死了，不支持http)
   vibration: ^1.0.1 #震动
+  permission_handler: ^3.0.0 #权限申请
+  flute_music_player: ^0.0.6 #播放器
 
   flukit:
       git:

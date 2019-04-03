@@ -51,8 +51,13 @@ class MessageDataBase {
           "${MessageEntity.NOTE} TEXT,"
           "${MessageEntity.METHOD} TEXT,"
           "${MessageEntity.STATUS} TEXT,"
+          "${MessageEntity.THUMBPATH} TEXT,"
+          "${MessageEntity.LATITUDE} TEXT,"
+          "${MessageEntity.LONGITUDE} TEXT,"
+          "${MessageEntity.LOCATIONADDRESS} TEXT,"
           "${MessageEntity.MESSAGE_OWNER} INTEGER,"
-          "${MessageEntity.IS_REMIND} INTEGER"
+          "${MessageEntity.IS_REMIND} INTEGER,"
+          "${MessageEntity.LENGTH} INTEGER"
           ")");
     });
   }
@@ -72,8 +77,13 @@ class MessageDataBase {
         "${MessageEntity.NOTE} TEXT,"
         "${MessageEntity.METHOD} TEXT,"
         "${MessageEntity.STATUS} TEXT,"
+        "${MessageEntity.THUMBPATH} TEXT,"
+        "${MessageEntity.LATITUDE} TEXT,"
+        "${MessageEntity.LONGITUDE} TEXT,"
+        "${MessageEntity.LOCATIONADDRESS} TEXT,"
         "${MessageEntity.MESSAGE_OWNER} INTEGER,"
-        "${MessageEntity.IS_REMIND} INTEGER"
+        "${MessageEntity.IS_REMIND} INTEGER,"
+        "${MessageEntity.LENGTH} INTEGER"
         ")");
   }
 
@@ -183,8 +193,27 @@ class MessageDataBase {
     _createTypeTable(db, entity.senderAccount).then((res) async {
       await db.rawInsert(
           'INSERT OR REPLACE INTO '
-          'nb_$senderAccount(${MessageEntity.TYPE}, ${MessageEntity.IMAGE_URL}, ${MessageEntity.IS_UNREAD}, ${MessageEntity.SENDER_ACCOUNT}, ${MessageEntity.TITLE_NAME}, ${MessageEntity.CONTENT}, ${MessageEntity.CONTENT_TYPE}, ${MessageEntity.CONTENT_URL}, ${MessageEntity.TIME}, ${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.IS_REMIND}, ${MessageEntity.NOTE}, ${MessageEntity.METHOD}, ${MessageEntity.STATUS})'
-          ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          'nb_$senderAccount('
+          '${MessageEntity.TYPE},'
+          ' ${MessageEntity.IMAGE_URL},'
+          ' ${MessageEntity.IS_UNREAD},'
+          ' ${MessageEntity.SENDER_ACCOUNT},'
+          ' ${MessageEntity.TITLE_NAME},'
+          ' ${MessageEntity.CONTENT},'
+          ' ${MessageEntity.CONTENT_TYPE},'
+          ' ${MessageEntity.CONTENT_URL},'
+          ' ${MessageEntity.TIME},'
+          ' ${MessageEntity.MESSAGE_OWNER},'
+          ' ${MessageEntity.IS_REMIND},'
+          ' ${MessageEntity.NOTE},'
+          ' ${MessageEntity.METHOD},'
+          ' ${MessageEntity.LENGTH},'
+          ' ${MessageEntity.LATITUDE},'
+          ' ${MessageEntity.LONGITUDE},'
+          ' ${MessageEntity.LOCATIONADDRESS},'
+          ' ${MessageEntity.THUMBPATH},'
+          ' ${MessageEntity.STATUS})'
+          ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
           [
             entity.type,
             entity.imageUrl,
@@ -199,6 +228,11 @@ class MessageDataBase {
             entity.isRemind,
             entity.note,
             entity.method,
+            entity.length,
+            entity.latitude,
+            entity.longitude,
+            entity.locationAddress,
+            entity.thumbPath,
             entity.status
           ]);
     });

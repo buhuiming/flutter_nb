@@ -5,6 +5,7 @@ class MessageBodyEntity {
   String fileName;
   int height;
   int width;
+  int length;
   String remoteUrl; //远程图
   String thumbnailUrl; //缩略图
   bool sendOriginalImage;
@@ -13,6 +14,7 @@ class MessageBodyEntity {
       this.fileName,
       this.height,
       this.width,
+      this.length,
       this.remoteUrl,
       this.thumbnailUrl,
       this.sendOriginalImage});
@@ -23,6 +25,7 @@ class MessageBodyEntity {
           fileName: map['fileName'],
           height: map['height'],
           width: map['width'],
+          length: map['length'],
           remoteUrl: map['remoteUrl'],
           thumbnailUrl: map['thumbnailUrl'],
           sendOriginalImage: map['sendOriginalImage'],

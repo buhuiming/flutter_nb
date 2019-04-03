@@ -17,10 +17,14 @@ class MessageEntity {
   static const String TIME = "time"; //消息发送时间，不可以为空
   static const String MESSAGE_OWNER = "message_owner"; //消息发送方，0自己,1对方
   static const String IS_REMIND = "is_remind"; //是否提醒 0不提醒,1提醒
-  static const String IS_UNREAD_COUNT = "is_unread_count"; //未读数
   static const String NOTE = "note"; //备注
   static const String STATUS = "status"; //状态
   static const String METHOD = "method"; //方法
+  static const String LENGTH = "length"; //时长
+  static const String THUMBPATH = "thumbPath"; //缩略图地址
+  static const String LATITUDE = "latitude";
+  static const String LONGITUDE = "longitude";
+  static const String LOCATIONADDRESS = "locationAddress";
 
   String type,
       imageUrl,
@@ -32,15 +36,19 @@ class MessageEntity {
       time,
       status,
       method,
-      note;
+      note,
+      latitude,
+      longitude,
+      thumbPath,
+      locationAddress;
   int id;
   int isUnread, messageOwner, isRemind, isUnreadCount;
+  int length;
 
   //以下字段不存数据库
   bool sendOriginalImage;
   int height;
   int width;
-  int length;
   bool isVoicePlaying;
 
   MessageEntity(
@@ -53,12 +61,16 @@ class MessageEntity {
       this.contentUrl = '',
       this.method = '',
       this.status = '',
+      this.locationAddress = '',
       @required this.time,
       this.note = '',
+      this.thumbPath = '',
       this.isUnread = 0,
       this.messageOwner = 1,
       this.isRemind = 0,
       this.id,
+      this.latitude,
+      this.longitude,
       this.sendOriginalImage = false,
       this.height = 90,
       this.width = 90,
@@ -88,8 +100,12 @@ class MessageEntity {
           height: map['height'],
           sendOriginalImage: map['sendOriginalImage'],
           width: map['width'],
-          length: map['length'],
+          length: map[LENGTH],
           isVoicePlaying: map['isVoicePlaying'],
+          thumbPath: map[THUMBPATH],
+          latitude: map[LATITUDE],
+          longitude: map[LONGITUDE],
+          locationAddress: map[LOCATIONADDRESS],
         );
 
   // Currently not used
@@ -108,6 +124,11 @@ class MessageEntity {
       IS_REMIND: isRemind,
       NOTE: note,
       STATUS: status,
+      LENGTH: length,
+      THUMBPATH: thumbPath,
+      LATITUDE: latitude,
+      LONGITUDE: longitude,
+      LOCATIONADDRESS: locationAddress,
     };
   }
 }

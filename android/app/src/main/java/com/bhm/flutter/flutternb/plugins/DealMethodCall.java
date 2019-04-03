@@ -47,6 +47,7 @@ class DealMethodCall {
             put("removeUserFromBlackList", "removeUserFromBlackList");//移出黑名单
             put("deleteContact", "deleteContact");//删除好友
             put("sendMessage", "sendMessage");//发送聊天消息
+            put("createFiles", "createFiles");//创建APP文件夹
         }
     };
 
@@ -217,6 +218,8 @@ class DealMethodCall {
                     return false;
                 }
             });
+        }else if(Objects.equals(methodNames.get("createFiles"), methodCall.method)) {//创建APP文件夹
+            Utils.setFilePath();
         }
     }
 

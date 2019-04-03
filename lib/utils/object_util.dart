@@ -8,6 +8,7 @@ import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ObjectUtil {
   static bool isNotEmpty(Object object) {
@@ -110,9 +111,9 @@ class ObjectUtil {
   */
   static Color getThemeSwatchColor({String color: "red"}) {
     return themeSwatchColorMap[
-    SPUtil.getString(Constants.KET_THEME_COLOR) == null
-        ? "red"
-        : SPUtil.getString(Constants.KET_THEME_COLOR)];
+        SPUtil.getString(Constants.KET_THEME_COLOR) == null
+            ? "red"
+            : SPUtil.getString(Constants.KET_THEME_COLOR)];
   }
 
   /*
@@ -144,7 +145,7 @@ class ObjectUtil {
     return false;
   }
 
-  static Map<String, dynamic> buildMessage(MessageEntity messageEntity){
+  static Map<String, dynamic> buildMessage(MessageEntity messageEntity) {
     Map<String, dynamic> map = {
       "toChatUsername": messageEntity.senderAccount,
       "content": messageEntity.content,
@@ -155,5 +156,10 @@ class ObjectUtil {
       "length": messageEntity.length,
     };
     return map;
+  }
+
+  static Future<Map<PermissionGroup, PermissionStatus>> getPermissions(
+      List<PermissionGroup> permissions) async {
+    return await PermissionHandler().requestPermissions(permissions);
   }
 }

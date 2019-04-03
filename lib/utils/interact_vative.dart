@@ -42,6 +42,7 @@ class InteractNative {
     'removeUserFromBlackList': 'removeUserFromBlackList', //移出黑名单
     'deleteContact': 'deleteContact', //删除好友
     'sendMessage': 'sendMessage', //发送聊天消息
+    'createFiles': 'createFiles', //创建APP文件夹
   };
 
   /*

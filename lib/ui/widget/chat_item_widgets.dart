@@ -338,7 +338,7 @@ class ChatItemWidgets {
               SizedBox(
                 width: 5,
               ),
-              entity.isVoicePlaying
+              entity.isVoicePlaying == true
                   ? Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: 1, right: 1),
