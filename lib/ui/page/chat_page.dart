@@ -506,28 +506,36 @@ class ChatState extends MessageState<ChatPage> {
                       onScaleEnd: (res) {
                         if (_headsetColor == ObjectUtil.getThemeLightColor()) {
                           DialogUtil.buildToast('试听功能暂未实现');
-                          _flutterRecord.stopRecorder();
+                          if (_flutterRecord.isRecording) {
+                            _flutterRecord.stopRecorder();
+                          }
                         } else if (_highlightColor ==
                             ObjectUtil.getThemeLightColor()) {
-                          DialogUtil.buildToast('删除功能暂未实现');
-                          _flutterRecord.stopRecorder();
+                          File file = File(_voiceFilePath);
+                          file.delete();
+                          if (_flutterRecord.isRecording) {
+                            _flutterRecord.stopRecorder();
+                          }
                         } else {
-                          _flutterRecord.stopRecorder().then((res) {
-                            File file = File(_voiceFilePath);
-                            _flutterRecord
-                                .getDuration(path: _voiceFileName) //需要去掉文件类型后缀
-                                .then((length) {
-                              print('voice length is---' + length.toString());
-                              if (length < 1000) {
-                                //小于1s不发送
-                                file.delete();
-                                DialogUtil.buildToast('你说话时间太短啦~');
-                              } else {
-                                //发送语音
-                                _buildVoiceMessage(file, length);
-                              }
+                          if (_flutterRecord.isRecording) {
+                            _flutterRecord.stopRecorder().then((res) {
+                              File file = File(_voiceFilePath);
+                              _flutterRecord
+                                  .getDuration(
+                                      path: _voiceFileName) //需要去掉文件类型后缀
+                                  .then((length) {
+                                print('voice length is---' + length.toString());
+                                if (length < 1000) {
+                                  //小于1s不发送
+                                  file.delete();
+                                  DialogUtil.buildToast('你说话时间太短啦~');
+                                } else {
+                                  //发送语音
+                                  _buildVoiceMessage(file, length);
+                                }
+                              });
                             });
-                          });
+                          }
                         }
                         setState(() {
                           _audioIconPath = '';
@@ -874,12 +882,12 @@ class ChatState extends MessageState<ChatPage> {
           Observable.just(1)
               .delay(new Duration(milliseconds: _entity.length))
               .listen((_) {
-                if(_alive) {
-                  setState(() {
-                    _entity.isVoicePlaying = false;
-                    _audioPlayer.stop();
-                  });
-                }
+            if (_alive) {
+              setState(() {
+                _entity.isVoicePlaying = false;
+                _audioPlayer.stop();
+              });
+            }
           });
         }
       }
