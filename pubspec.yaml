@@ -33,6 +33,7 @@ dependencies:
   vibration: ^1.0.1 #震动
   permission_handler: ^3.0.0 #权限申请
   flute_music_player: ^0.0.6 #播放器
+  photo_view: ^0.2.4
 
   flukit:
       git:
