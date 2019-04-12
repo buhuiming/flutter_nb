@@ -7,40 +7,10 @@ import 'package:photo_view/photo_view.dart';
 /*
 *  图片查看
 */
-class PhotoViewPage extends StatefulWidget {
+class PhotoViewPage extends StatelessWidget {
   final List<String> images;
 
   PhotoViewPage({Key key, this.images}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return PhotoViewState();
-  }
-}
-
-class PhotoViewState extends State<PhotoViewPage> {
-  List<Widget> _listWidget = new List();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _initData();
-  }
-
-  _initData() {
-    for (String url in widget.images) {
-      _listWidget.add(_itemWidget(url));
-    }
-  }
-
-  Widget _itemWidget(String url) {
-    return PhotoView(
-      imageProvider:
-          url.startsWith("http") ? NetworkImage(url) : AssetImage(url),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +19,31 @@ class PhotoViewState extends State<PhotoViewPage> {
   }
 
   Widget _buildWidget(BuildContext context) {
+    List<Widget> _listWidget = new List();
+    for (String url in images) {
+      _listWidget.add(_itemWidget(url));
+    }
     return Container(
         child: GestureDetector(
-      child: Swiper(
-          autoStart: false,
-          circular: false,
-          indicator: CircleSwiperIndicator(
-              radius: 4.0,
-              padding: EdgeInsets.only(bottom: 20.0),
-              itemColor: ColorT.gray_99,
-              itemActiveColor: ObjectUtil.getThemeSwatchColor()),
-          children: _listWidget),
-      onTap: () {
-        Navigator.pop(context);
-      },
-    ));
+          child: Swiper(
+              autoStart: false,
+              circular: false,
+              indicator: CircleSwiperIndicator(
+                  radius: 4.0,
+                  padding: EdgeInsets.only(bottom: 20.0),
+                  itemColor: ColorT.gray_99,
+                  itemActiveColor: ObjectUtil.getThemeSwatchColor()),
+              children: _listWidget),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ));
+  }
+
+  Widget _itemWidget(String url) {
+    return PhotoView(
+      imageProvider:
+      url.startsWith("http") ? NetworkImage(url) : AssetImage(url),
+    );
   }
 }

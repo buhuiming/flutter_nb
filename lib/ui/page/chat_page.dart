@@ -730,7 +730,7 @@ class ChatState extends MessageState<ChatPage> {
     }));
     _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄', o: (res) {
       ImageUtil.getCameraImage().then((imageFile) {
-        //相册取图片
+        //相机取图片
         _willBuildImageMessage(imageFile);
       });
     }));
@@ -984,6 +984,9 @@ class ChatState extends MessageState<ChatPage> {
   }
 
   _willBuildImageMessage(File imageFile) {
+    if(imageFile == null || imageFile.path.isEmpty){
+      return;
+    }
     DialogUtil.showBaseDialog(context, '是否发送原图？',
         title: '', right: '原图', left: '压缩图', rightClick: (res) {
       _buildImageMessage(imageFile, true);
