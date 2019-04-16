@@ -14,6 +14,7 @@ import 'package:flutter_nb/ui/page/photo_view_page.dart';
 import 'package:flutter_nb/ui/widget/chat_item_widgets.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/ui/widget/popupwindow_widget.dart';
 import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/image_util.dart';
@@ -25,6 +26,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flute_music_player/flute_music_player.dart';
+import 'dart:math';
 
 /*
 *  发送聊天信息
@@ -729,9 +731,14 @@ class ChatState extends MessageState<ChatPage> {
       });
     }));
     _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄', o: (res) {
-      ImageUtil.getCameraImage().then((imageFile) {
-        //相机取图片
-        _willBuildImageMessage(imageFile);
+      PopupWindowUtil.showCameraChosen(context, onCallBack: (type, file){
+        if(type == 1){
+          //相机取图片
+          _willBuildImageMessage(file);
+        }else if(type == 2){
+          //相机拍视频
+          _buildVideoMessage(file);
+        }
       });
     }));
     _widgets.add(MoreWidgets.buildIcon(Icons.videocam, '视频通话'));
@@ -1028,6 +1035,27 @@ class ChatState extends MessageState<ChatPage> {
     messageEntity.length = length;
     messageEntity.status = '2';
     messageEntity.contentType = Constants.CONTENT_TYPE_VOICE;
+    setState(() {
+      _messageList.insert(0, messageEntity);
+      _controller.clear();
+    });
+    _sendMessage(messageEntity);
+  }
+
+  _buildVideoMessage(Map file) {
+    MessageEntity messageEntity = new MessageEntity(
+        type: Constants.MESSAGE_TYPE_CHAT,
+        senderAccount: widget.senderAccount,
+        titleName: widget.senderAccount,
+        content: '',
+        time: new DateTime.now().millisecondsSinceEpoch.toString());
+    messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
+    messageEntity.contentUrl = file['videoPath'];
+    messageEntity.thumbPath = file['thumbPath'];
+    messageEntity.messageOwner = 0;
+    messageEntity.length = int.parse(file['length']) + 1;
+    messageEntity.status = '2';
+    messageEntity.contentType = Constants.CONTENT_TYPE_VIDEO;
     setState(() {
       _messageList.insert(0, messageEntity);
       _controller.clear();

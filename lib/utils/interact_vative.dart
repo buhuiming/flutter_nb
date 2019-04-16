@@ -43,6 +43,7 @@ class InteractNative {
     'deleteContact': 'deleteContact', //删除好友
     'sendMessage': 'sendMessage', //发送聊天消息
     'createFiles': 'createFiles', //创建APP文件夹
+    'shootVideo': 'shootVideo', //拍摄小视频
   };
 
   /*

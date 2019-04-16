@@ -7,12 +7,15 @@ import com.bhm.flutter.flutternb.listeners.CallBackListener;
 import com.bhm.flutter.flutternb.listeners.ConnectionListener;
 import com.bhm.flutter.flutternb.listeners.ContactListener;
 import com.bhm.flutter.flutternb.listeners.MessageListener;
+import com.bhm.flutter.flutternb.ui.VideoRecordActivity;
 import com.bhm.flutter.flutternb.util.EMClientUtils;
 import com.bhm.flutter.flutternb.util.Utils;
+import com.bhm.sdk.onresult.ActivityResult;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import io.flutter.app.FlutterActivity;
@@ -48,6 +51,7 @@ class DealMethodCall {
             put("deleteContact", "deleteContact");//删除好友
             put("sendMessage", "sendMessage");//发送聊天消息
             put("createFiles", "createFiles");//创建APP文件夹
+            put("shootVideo", "shootVideo");//拍摄小视频
         }
     };
 
@@ -220,6 +224,23 @@ class DealMethodCall {
             });
         }else if(Objects.equals(methodNames.get("createFiles"), methodCall.method)) {//创建APP文件夹
             Utils.setFilePath();
+        }else if(Objects.equals(methodNames.get("shootVideo"), methodCall.method)) {//拍摄小视频
+            Intent intent = new Intent(activity, VideoRecordActivity.class);
+            new ActivityResult(activity).startForResult(intent, new ActivityResult.Callback() {
+                @Override
+                public void onActivityResult(int resultCode, Intent data) {
+                    if(data != null){
+                        String videoPath = data.getStringExtra("result");
+                        String thumbPath = data.getStringExtra("thumbPath");
+                        int length = data.getIntExtra("length", 0);
+                        Map<String, String> map = new HashMap<>();
+                        map.put("videoPath", videoPath);
+                        map.put("thumbPath", thumbPath);
+                        map.put("length", String.valueOf(length));
+                        result.success(map);
+                    }
+                }
+            });
         }
     }
 

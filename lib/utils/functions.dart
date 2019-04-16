@@ -19,5 +19,7 @@ typedef OnItemLongClick = Future<void> Function(Object); //控件点击时触发
 
 typedef OnCallBack = Future<void> Function(Object);
 
+typedef OnCallBackWithType = Future<void> Function(int, Object);
+
 typedef OnUpdateCallback = Future<void> Function(
     Object, int, MessageEntity); //数据更新时触发

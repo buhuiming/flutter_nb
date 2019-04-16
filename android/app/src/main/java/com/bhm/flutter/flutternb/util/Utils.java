@@ -155,10 +155,15 @@ public class Utils {
                     public void accept(Integer integer) throws Exception {
                         String dir = Environment.getExternalStorageDirectory().getAbsolutePath()
                                 + File.separator;
-                        File file = new File(dir + "BHMFlutter/voice");
-                        deleteFile(file, 1000);
-                        if(!file.exists()){
-                            file.mkdirs();
+                        File fileVoice = new File(dir + "BHMFlutter/voice");
+                        deleteFile(fileVoice, 1000);
+                        File fileVideo = new File(dir + "BHMFlutter/video");
+                        deleteFile(fileVideo, 2000);
+                        if(!fileVoice.exists()){
+                            fileVoice.mkdirs();
+                        }
+                        if(!fileVideo.exists()){
+                            fileVideo.mkdirs();
                         }
                     }
 

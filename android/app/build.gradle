@@ -80,4 +80,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
     implementation 'com.hyphenate:hyphenate-sdk:3.3.0'
     implementation 'com.alibaba:fastjson:1.2.55'
+    //轻触拍照，长按摄像
+    implementation 'cjt.library.wheel:camera:1.1.9'
+    //拒绝重写Activity或Fragment的onActivityResult方法
+    implementation 'com.bhm.sdk.bhmlibrary:ActivityResult:1.0.2'
 }
