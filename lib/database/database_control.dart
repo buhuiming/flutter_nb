@@ -49,8 +49,8 @@ class DataBaseControl {
   */
   static void decodeData(Object o,
       {OnUpdateCallback callBack,
-      @required BuildContext context,
-      Operation operation}) {
+        @required BuildContext context,
+        Operation operation}) {
     if (o is String) {
       MessageEntity entity = MessageEntity.fromMap(json.decode(o.toString()));
       String payload;
@@ -208,8 +208,8 @@ class DataBaseControl {
               entity.titleName = entity.senderAccount;
               MessageDataBase.get()
                   .deleteMessageTypeEntity(
-                      entity: MessageTypeEntity(
-                          senderAccount: entity.senderAccount))
+                  entity: MessageTypeEntity(
+                      senderAccount: entity.senderAccount))
                   .then((res) {
                 MessageDataBase.get()
                     .deleteMessageEntity(entity.senderAccount)
@@ -272,14 +272,24 @@ class DataBaseControl {
       }
       if (isShowNotification) {
         if ((_currentPageName.contains('ChatPage') &&
-                _currentChatName.contains(entity.senderAccount)) ||
+            _currentChatName.contains(entity.senderAccount)) ||
             _currentPageName.contains('SystemMessagePage')) {
           //如果当前页面是SystemMessagePage，或者是ChatPage（且对应聊天对象），则不弹通知
           print('no notification');
         } else {
+          String content = entity.content;
+          if(content == null || content == ''){
+            if(entity.contentType == Constants.CONTENT_TYPE_VOICE){
+              content = '[语音]';
+            }else if(entity.contentType == Constants.CONTENT_TYPE_VIDEO){
+              content = '[视频]';
+            }else if(entity.contentType == Constants.CONTENT_TYPE_IMAGE){
+              content = '[图片]';
+            }
+          }
           NotificationUtil.instance()
               .build(context, operation)
-              .showSystem(entity.titleName, entity.content, payload);
+              .showSystem(entity.titleName, content, payload);
         }
       }
     }
@@ -288,7 +298,7 @@ class DataBaseControl {
   static void _dealChatMessage(
       MessageEntity entity, OnUpdateCallback callBack) {
     MessageBodyEntity bodyEntity =
-        MessageBodyEntity.fromMap(json.decode(entity.note));
+    MessageBodyEntity.fromMap(json.decode(entity.note));
     switch (entity.contentType) {
       case Constants.CONTENT_TYPE_SYSTEM: //文本
         entity.imageUrl = FileUtil.getImagePath('img_headportrait',
@@ -318,6 +328,20 @@ class DataBaseControl {
         entity.length = bodyEntity.length;
         break;
       case Constants.CONTENT_TYPE_VIDEO: //视频
+        entity.imageUrl = FileUtil.getImagePath('img_headportrait',
+            dir: 'icon', format: 'png'); //这里取本地的，实际要取entity中的
+        entity.contentUrl = bodyEntity.remoteUrl;//这里取的是远程视频，且不做缓存
+        entity.note = '';
+        entity.status = '0';
+        entity.messageOwner = 1;
+        entity.isUnread = 0;
+        entity.isRemind = 1;
+        entity.height = bodyEntity.height;
+        entity.width = bodyEntity.width;
+        entity.titleName = entity.senderAccount;
+        entity.content = bodyEntity.message;
+        entity.length = bodyEntity.duration;
+        entity.thumbPath = bodyEntity.thumbnailUrl;
         break;
       case Constants.CONTENT_TYPE_IMAGE: //图像
         entity.imageUrl = FileUtil.getImagePath('img_headportrait',

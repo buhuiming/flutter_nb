@@ -220,6 +220,8 @@ class ChatItemWidgets {
       widget = buildImageWidget(entity);
     } else if (entity.contentType == Constants.CONTENT_TYPE_VOICE) {
       widget = buildVoiceWidget(entity);
+    } else if (entity.contentType == Constants.CONTENT_TYPE_VIDEO) {
+      widget = buildVideoWidget(entity);
     } else {
       widget = ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -368,6 +370,66 @@ class ChatItemWidgets {
                   : Text(''),
             ],
           )),
+    );
+  }
+
+  static Widget buildVideoWidget(MessageEntity entity) {
+    //视频
+    double size = 120;
+    Widget image;
+    if (entity.thumbPath.isNotEmpty &&
+        entity.thumbPath.contains('/storage/emulated/0')) {
+      if (File(entity.thumbPath).existsSync()) {
+        image = Image.asset(
+          entity.thumbPath,
+          width: size,
+          height: size,
+          fit: BoxFit.fill,
+        );
+      } else {
+        image = Image.asset(
+          FileUtil.getImagePath('img_default', dir: 'default', format: 'png'),
+          width: size,
+          height: size,
+          fit: BoxFit.fill,
+        );
+      }
+    } else if (ObjectUtil.isNetUri(entity.thumbPath)) {
+      image = Image.network(
+        entity.thumbPath,
+        width: size,
+        height: size,
+        fit: BoxFit.fill,
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        color: entity.messageOwner == 1
+            ? Colors.white
+            : Color.fromARGB(255, 158, 234, 106),
+        child: Stack(
+          children: <Widget>[
+            image,
+            Container(
+              padding: EdgeInsets.all(40),
+              child: Icon(
+                Icons.play_circle_outline,
+                color: Colors.white,
+                size: 40,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 90, top: 98),
+              child: Text(
+                '${entity.length}秒',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

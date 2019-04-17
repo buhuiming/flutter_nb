@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flukit/flukit.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,13 +21,11 @@ import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/image_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:flutter_record/flutter_record.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
-import 'package:flute_music_player/flute_music_player.dart';
-import 'dart:math';
 
 /*
 *  发送聊天信息
@@ -731,11 +730,11 @@ class ChatState extends MessageState<ChatPage> {
       });
     }));
     _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, '拍摄', o: (res) {
-      PopupWindowUtil.showCameraChosen(context, onCallBack: (type, file){
-        if(type == 1){
+      PopupWindowUtil.showCameraChosen(context, onCallBack: (type, file) {
+        if (type == 1) {
           //相机取图片
           _willBuildImageMessage(file);
-        }else if(type == 2){
+        } else if (type == 2) {
           //相机拍视频
           _buildVideoMessage(file);
         }
@@ -991,7 +990,7 @@ class ChatState extends MessageState<ChatPage> {
   }
 
   _willBuildImageMessage(File imageFile) {
-    if(imageFile == null || imageFile.path.isEmpty){
+    if (imageFile == null || imageFile.path.isEmpty) {
       return;
     }
     DialogUtil.showBaseDialog(context, '是否发送原图？',

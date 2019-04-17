@@ -191,9 +191,9 @@ class DealMethodCall {
                                 .toString(), methodCall.argument("length") == null ? 0 : (int) methodCall.argument("length"),
                         Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
             }else if(Objects.equals(methodCall.argument("contentType"), "video")){//视频
-                message = EMMessage.createVideoSendMessage(Objects.requireNonNull(methodCall.argument("videoPath")).toString(),
+                message = EMMessage.createVideoSendMessage(Objects.requireNonNull(methodCall.argument("contentUrl")).toString(),
                         Objects.requireNonNull(methodCall.argument("thumbPath")).toString(),
-                        methodCall.argument("videoLength") == null ? 0 : (int) methodCall.argument("videoLength"),
+                        methodCall.argument("length") == null ? 0 : (int) methodCall.argument("length"),
                         Objects.requireNonNull(methodCall.argument("toChatUsername")).toString());
             }else if(Objects.equals(methodCall.argument("contentType"), "image")){//图像
                 message = EMMessage.createImageSendMessage(Objects.requireNonNull(methodCall.argument("contentUrl")).toString(),

@@ -154,6 +154,7 @@ class ObjectUtil {
       "contentUrl": messageEntity.contentUrl,
       "sendOriginalImage": messageEntity.sendOriginalImage,
       "length": messageEntity.length,
+      "thumbPath": messageEntity.thumbPath,
     };
     return map;
   }

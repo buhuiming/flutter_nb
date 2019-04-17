@@ -1,18 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flukit/flukit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/constants/constants.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/base/web_view_page.dart';
 import 'package:flutter_nb/ui/page/main/main_page.dart';
-import 'package:flutter_nb/utils/data_proxy.dart';
 import 'package:flutter_nb/utils/file_util.dart';
 import 'package:flutter_nb/utils/interact_vative.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/sp_util.dart';
 import 'package:flutter_nb/utils/timer_util.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flukit/flukit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class SplashPage extends StatefulWidget {
   @override
