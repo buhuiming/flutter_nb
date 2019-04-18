@@ -12,6 +12,7 @@ import 'package:flutter_nb/entity/message_entity.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/page/base/messag_state.dart';
 import 'package:flutter_nb/ui/page/photo_view_page.dart';
+import 'package:flutter_nb/ui/page/video_player_page.dart';
 import 'package:flutter_nb/ui/widget/chat_item_widgets.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
@@ -905,6 +906,14 @@ class ChatState extends MessageState<ChatPage> {
             new CupertinoPageRoute<void>(
                 builder: (ctx) => PhotoViewPage(
                       images: [entity.contentUrl],
+                    )));
+      } else if (entity.contentType == Constants.CONTENT_TYPE_VIDEO) {
+        //点击了视频
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => VideoPlayerPage(
+                      entity.contentUrl,
                     )));
       }
     });

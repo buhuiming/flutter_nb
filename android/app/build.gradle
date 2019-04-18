@@ -59,6 +59,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     /*环信IM集成*/
     //use legacy for android 6.0
     useLibrary 'org.apache.http.legacy'
