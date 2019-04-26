@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/object_util.dart';
+
 /*
 *  发现
 */
@@ -17,7 +19,7 @@ class FoundPage extends StatefulWidget {
   }
 }
 
-class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin{
+class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -28,19 +30,37 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin{
       appBar: MoreWidgets.buildAppBar(context, '发现'),
       body: new ListView(
         children: <Widget>[
-          header(context),
-          header(context),
-          header(context),
-          header(context),
-          header(context),
+          MoreWidgets.defaultListViewItem(Icons.camera, '朋友圈',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30,
+              isDivider: false),
+          MoreWidgets.buildDivider(),
+          MoreWidgets.defaultListViewItem(Icons.album, '资讯',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30),
+          MoreWidgets.defaultListViewItem(Icons.airport_shuttle, '干货',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30,
+              isDivider: false),
+          MoreWidgets.buildDivider(),
+          MoreWidgets.defaultListViewItem(Icons.dashboard, '项目',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30),
+          MoreWidgets.defaultListViewItem(Icons.description, '体系',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30),
+          MoreWidgets.defaultListViewItem(Icons.insert_link, '小程序',
+              textColor: Colors.black,
+              iconColor: ObjectUtil.getThemeSwatchColor(),
+              imageSize: 30,
+              isDivider: false),
         ],
       ),
-    );
-  }
-
-  Widget header(BuildContext context) {
-    return new Image.network(
-      'http://i2.yeyou.itc.cn/2014/huoying/hd_20140925/hyimage06.jpg',
     );
   }
 
