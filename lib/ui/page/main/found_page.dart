@@ -1,7 +1,12 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/object_util.dart';
+import 'package:flutter_nb/utils/timer_util.dart';
 
 /*
 *  发现
@@ -20,6 +25,12 @@ class FoundPage extends StatefulWidget {
 }
 
 class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
+  var progress = 0;
+  var length = '00:01:14';
+  AudioCache _audioPlayer;
+  AudioPlayer _fixedPlayer;
+  TimerUtil _timerUtil;
+
   @override
   Widget build(BuildContext context) {
     return layout(context);
@@ -27,7 +38,61 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
 
   Widget layout(BuildContext context) {
     return new Scaffold(
-      appBar: MoreWidgets.buildAppBar(context, '发现'),
+      appBar: MoreWidgets.buildAppBar(context, '发现', actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.album),
+            onPressed: () {
+              if (progress > 0) {
+                NotificationUtil.instance()
+                    .build(context, null)
+                    .cancel(id: 9999);
+                _fixedPlayer.stop();
+                _timerUtil.cancel();
+                length = '00:00:00';
+                progress = 0;
+                return;
+              }
+              _fixedPlayer =  new AudioPlayer();
+              _audioPlayer = new AudioCache(fixedPlayer: _fixedPlayer);
+              _timerUtil = new TimerUtil(mTotalTime: 74 * 1000);
+              _timerUtil.setOnTimerTickCallback((int tick) {
+                double _tick = tick / 1000;
+                setState(() {
+                  progress = 74 - _tick.toInt();
+                  if (_tick.toInt() > 60) {
+                    if (_tick.toInt() - 60 >= 10) {
+                      length = '00:01:' + (_tick.toInt() - 60).toString();
+                    } else {
+                      length = '00:01:0' + (_tick.toInt() - 60).toString();
+                    }
+                  } else if (_tick.toInt() == 60) {
+                    length = '00:01:00';
+                  } else if (tick > 0) {
+                    if (_tick.toInt() >= 10) {
+                      length = '00:00:' + _tick.toInt().toString();
+                    } else {
+                      length = '00:00:0' + _tick.toInt().toString();
+                    }
+                  } else {
+                    length = '00:00:00';
+                    progress = 0;
+                  }
+                  NotificationUtil.instance()
+                      .build(context, null)
+                      .showMusic(progress, length);
+                  if (_tick == 0) {
+                    NotificationUtil.instance()
+                        .build(context, null)
+                        .cancel(id: 9999);
+                    _timerUtil.cancel();
+                    _fixedPlayer.stop();
+                  }
+                });
+              });
+              _timerUtil.startCountDown();
+              _audioPlayer.play("sounds/demo.mp3");
+            })
+      ]),
       body: new ListView(
         children: <Widget>[
           MoreWidgets.defaultListViewItem(Icons.camera, '朋友圈',

@@ -73,6 +73,9 @@ class NotificationUtil {
           new CupertinoPageRoute<void>(builder: (ctx) => SystemMessagePage()));
     } else {
       MessageEntity entity = MessageEntity.fromMap(json.decode(payload));
+      if (null == entity) {
+        return;
+      }
       if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
         //聊天消息，跳转聊天对话页面
         Navigator.push(
@@ -99,6 +102,33 @@ class NotificationUtil {
 
   Future showOthers(String title, String content, String payload) async {
     return _show(3, title, content, payload);
+  }
+
+  Future showMusic(int progress, String length) async {
+    AndroidNotificationDetails firstNotificationAndroidSpecifics =
+        new AndroidNotificationDetails(
+            NotificationConfig.GROUP_CHANNEL_ID_OTHERS,
+            NotificationConfig.GROUP_CHANNEL_NAME_OTHERS,
+            NotificationConfig.GROUP_CHANNEL_DESCRIPTION_OTHERS,
+            importance: Importance.Max,
+            priority: Priority.High,
+            groupKey: NotificationConfig.GROUP_KEY_OTHERS,
+            autoCancel: false,
+            playSound: false,
+            enableVibration: false,
+            showProgress: true,
+            ongoing: true,
+            maxProgress: 74,
+            progress: progress);
+    NotificationDetails firstNotificationPlatformSpecifics =
+        new NotificationDetails(
+            firstNotificationAndroidSpecifics, new IOSNotificationDetails());
+    return await flutterLocalNotificationsPlugin.show(
+      9999,
+      "平凡之路",
+      length,
+      firstNotificationPlatformSpecifics,
+    );
   }
 
   Future _show(int type, String title, String content, String payload,

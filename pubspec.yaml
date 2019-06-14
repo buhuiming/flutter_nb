@@ -33,6 +33,7 @@ dependencies:
   vibration: ^1.0.1 #震动
   permission_handler: ^3.0.0 #权限申请
   flute_music_player: ^0.0.6 #播放器
+  audioplayers: ^0.10.0 #播放器
   photo_view: ^0.2.4 #图片预览
   video_player: ^0.10.0+5 # 视频播放器
 
@@ -69,6 +70,8 @@ flutter:
     - assets/images/icon/
     - assets/images/face/
     - assets/images/figure/
+
+    - assets/sounds/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
