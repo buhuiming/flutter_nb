@@ -42,6 +42,9 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
         IconButton(
             icon: Icon(Icons.album),
             onPressed: () {
+              if(ObjectUtil.isFastClick()){
+                return;
+              }
               if (progress > 0) {
                 NotificationUtil.instance()
                     .build(context, null)

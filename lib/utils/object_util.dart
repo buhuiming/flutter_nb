@@ -163,4 +163,16 @@ class ObjectUtil {
       List<PermissionGroup> permissions) async {
     return await PermissionHandler().requestPermissions(permissions);
   }
+
+  static var clickTime = 0;
+
+  static bool isFastClick(){
+    var current = new DateTime.now().millisecondsSinceEpoch;
+    if(current - clickTime > 1500){
+      clickTime = current;
+      return false;
+    }
+    clickTime = current;
+    return true;
+  }
 }
