@@ -271,8 +271,8 @@ class ChatItemWidgets {
     } else if (entity.contentUrl.isNotEmpty &&
         entity.contentUrl.contains('/storage/emulated/0')) {
       if (File(entity.contentUrl).existsSync()) {
-        image = Image.asset(
-          entity.contentUrl,
+        image = Image.file(
+          File(entity.contentUrl),
           width: size,
           height: size,
           fit: BoxFit.fill,
