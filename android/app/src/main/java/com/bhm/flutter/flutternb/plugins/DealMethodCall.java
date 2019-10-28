@@ -66,9 +66,8 @@ class DealMethodCall {
                     Objects.requireNonNull(methodCall.argument("password")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("login"), methodCall.method)){//登录
@@ -76,17 +75,15 @@ class DealMethodCall {
                     Objects.requireNonNull(methodCall.argument("password")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("logout"), methodCall.method)){//退出登录
             EMClientUtils.logout(new CallBack<Boolean>() {
                 @Override
-                public Boolean call(Object o) {
-                    result.success(o);
-                    return false;
+                public void call(Object o) {
+                    Utils.doOnMainThread(result, o);
                 }
             });
         }else if(Objects.equals(methodNames.get("autoLogin"), methodCall.method)){//自动登录
@@ -106,35 +103,31 @@ class DealMethodCall {
                     Objects.requireNonNull(methodCall.argument("reason")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("refusedFriends"), methodCall.method)){//拒绝好友添加邀请
             EMClientUtils.refusedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("acceptedFriends"), methodCall.method)){//同意好友添加邀请
             EMClientUtils.acceptedFriends(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("getAllContacts"), methodCall.method)){//获取好友列表
             EMClientUtils.getAllContactsFromServer(new CallBack<Boolean>() {
                 @Override
-                public Boolean call(Object o) {
-                    result.success(o);
-                    return false;
+                public void call(Object o) {
+                    Utils.doOnMainThread(result, o);
                 }
             });
         }else if(Objects.equals(methodNames.get("addUserToBlackList"), methodCall.method)){//拉入黑名单
@@ -142,43 +135,38 @@ class DealMethodCall {
             EMClientUtils.addUserToBlackList(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     isNeed, new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("getBlackListUsernames"), methodCall.method)){//黑名单列表
             EMClientUtils.getBlackListUsernames(new CallBack<Boolean>() {
                 @Override
-                public Boolean call(Object o) {
-                    result.success(o);
-                    return false;
+                public void call(Object o) {
+                    Utils.doOnMainThread(result, o);
                 }
             });
         }else if(Objects.equals(methodNames.get("getBlackListUsernamesFromDataBase"), methodCall.method)){//黑名单列表
             EMClientUtils.getBlackListUsernamesFromDataBase(new CallBack<Boolean>() {
                 @Override
-                public Boolean call(Object o) {
-                    result.success(o);
-                    return false;
+                public void call(Object o) {
+                    Utils.doOnMainThread(result, o);
                 }
             });
         }else if(Objects.equals(methodNames.get("removeUserFromBlackList"), methodCall.method)){//移出黑名单
             EMClientUtils.removeUserFromBlackList(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("deleteContact"), methodCall.method)){//删除好友
             EMClientUtils.deleteContact(Objects.requireNonNull(methodCall.argument("username")).toString(),
                     new CallBack<Boolean>() {
                         @Override
-                        public Boolean call(Object o) {
-                            result.success(o);
-                            return false;
+                        public void call(Object o) {
+                            Utils.doOnMainThread(result, o);
                         }
                     });
         }else if(Objects.equals(methodNames.get("sendMessage"), methodCall.method)){//发送聊天消息
@@ -217,9 +205,8 @@ class DealMethodCall {
             message.setChatType(Utils.getChatType(Objects.requireNonNull(methodCall.argument("chatType")).toString()));
             EMClientUtils.sendMessage(message, new CallBack<Boolean>() {
                 @Override
-                public Boolean call(Object o) {
-                    result.success(o);
-                    return false;
+                public void call(Object o) {
+                    Utils.doOnMainThread(result, o);
                 }
             });
         }else if(Objects.equals(methodNames.get("createFiles"), methodCall.method)) {//创建APP文件夹
@@ -237,7 +224,7 @@ class DealMethodCall {
                         map.put("videoPath", videoPath);
                         map.put("thumbPath", thumbPath);
                         map.put("length", String.valueOf(length));
-                        result.success(map);
+                        Utils.doOnMainThread(result, map);
                     }
                 }
             });

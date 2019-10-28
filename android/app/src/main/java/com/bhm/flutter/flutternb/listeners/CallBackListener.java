@@ -2,6 +2,7 @@ package com.bhm.flutter.flutternb.listeners;
 
 import com.bhm.flutter.flutternb.interfaces.CallBack;
 import com.bhm.flutter.flutternb.util.CallBackData;
+import com.bhm.flutter.flutternb.util.Utils;
 
 import io.flutter.plugin.common.EventChannel;
 
@@ -17,8 +18,7 @@ public class CallBackListener implements CallBack {
     }
 
     @Override
-    public Object call(Object o) {
-        mSink.success(CallBackData.setData(CallBackData.TYPE_OF_STRING, "onDestroy"));//APP onDestroy时调用
-        return null;
+    public void call(Object o) {
+        Utils.doOnMainThread(mSink, CallBackData.setData(CallBackData.TYPE_OF_STRING, "onDestroy"));//APP onDestroy时调用
     }
 }

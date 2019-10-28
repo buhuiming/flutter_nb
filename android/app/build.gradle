@@ -88,5 +88,6 @@ dependencies {
     //轻触拍照，长按摄像
     implementation 'cjt.library.wheel:camera:1.1.9'
     //拒绝重写Activity或Fragment的onActivityResult方法
-    implementation 'com.bhm.sdk.bhmlibrary:ActivityResult:1.0.2'
+    implementation 'com.bhm.sdk.bhmlibrary:ActivityResult:1.0.3'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }

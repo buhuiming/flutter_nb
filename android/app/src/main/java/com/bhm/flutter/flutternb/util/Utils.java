@@ -23,10 +23,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.MethodChannel;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class Utils {
 
     private static final List<CallBack> callBacks = new ArrayList<>();
@@ -196,5 +200,17 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static void doOnMainThread(EventChannel.EventSink mSink, Object o){
+        Observable.just(1L)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> mSink.success(o));
+    }
+
+    public static void doOnMainThread(MethodChannel.Result result, Object o){
+        Observable.just(1L)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> result.success(o));
     }
 }

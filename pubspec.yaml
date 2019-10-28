@@ -22,11 +22,11 @@ dependencies:
   shared_preferences: ^0.4.3 #存储
   synchronized: ^2.0.2+1 #异步相关
   rxdart: ^0.20.0 #Rx
-  cached_network_image: ^0.6.0+1 #网络图片
+  cached_network_image: ^1.1.2+1 #网络图片
   fluttertoast: ^3.0.1 #提示
   sqflite: ^1.1.1 #数据库
   flutter_local_notifications: ^0.5.2 #通知栏
-  image_picker: ^0.5.0+3 #相机相册
+  image_picker: ^0.6.1+8 #相机相册
   #webview_flutter: ^0.3.4 #WebView
   keyboard_visibility: ^0.5.2 #软键盘
   flutter_record: ^0.3.5 #录音、播放(播放的地址作者写死了，不支持http)
@@ -34,7 +34,7 @@ dependencies:
   permission_handler: ^3.0.0 #权限申请
   flute_music_player: ^0.0.6 #播放器
   audioplayers: ^0.10.0 #播放器
-  photo_view: ^0.2.4 #图片预览
+  photo_view: ^0.7.0 #图片预览
   video_player: ^0.10.0+5 # 视频播放器
 
   flukit:

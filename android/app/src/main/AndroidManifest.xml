@@ -42,9 +42,13 @@
     <application
         android:name=".FlutterNBApplication"
         android:label="BHMFlutter"
-        tools:replace="android:appComponentFactory,android:label"
-        android:appComponentFactory="FlutterNBApplication"
-        android:icon="@mipmap/ic_launcher_new">
+        tools:replace="android:label"
+        android:icon="@mipmap/ic_launcher_new"
+        android:networkSecurityConfig="@xml/network_security_config">
+        <!--9.0加的，哦哦-->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTop"

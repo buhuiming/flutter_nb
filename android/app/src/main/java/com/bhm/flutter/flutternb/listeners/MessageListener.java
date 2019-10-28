@@ -41,7 +41,7 @@ public class MessageListener implements EMMessageListener {
             MessageEntity entity = new MessageEntity(Utils.getChatType(message),"onMessageReceived",
                     Utils.getType(message.getType()), message.getFrom(), String.valueOf(message.getMsgTime()),
                     JSON.toJSONString(message.getBody()));
-            mSink.success(CallBackData.setData(CallBackData.TYPE_OF_JSON, JSON.toJSONString(entity)));
+            Utils.doOnMainThread(mSink, CallBackData.setData(CallBackData.TYPE_OF_JSON, JSON.toJSONString(entity)));
             Log.i("MessageListener", "收到消息----> " + message.toString());
         }
     }
