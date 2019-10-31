@@ -20,10 +20,11 @@ class DialogUtil {
         content: new Text(str),
         duration: Duration(milliseconds: 1500),
         backgroundColor: ObjectUtil.getThemeSwatchColor());
-    Scaffold.of(context).showSnackBar(snackBar);
+    Scaffold.of(context).showSnackBar(snackBar);//Scaffold.of(context)是一个state，context对应的state必须的暴露的
   }
 
   //如果context在Scaffold之前，弹不出请用这个
+  //使用GlobalKey开销较大，如果有其他可选方案，应尽量避免使用它
   static buildSnakeBarByKey(String str, GlobalKey<ScaffoldState> key) {
     final snackBar = new SnackBar(
         content: new Text(str),

@@ -70,7 +70,7 @@ class DataProxy {
     } else if (res.containsKey('json')) {
       DataBaseControl.decodeData(res.values.elementAt(0),
           context: _context,
-          operation: _operation, callBack: (type, unReadCount, entity) {
+          operation: _operation, callBack: (type, unReadCount, entity) async{
         entity.isUnreadCount = unReadCount;
         //触发点MessageState
         InteractNative.getMessageEventSink().add(entity);

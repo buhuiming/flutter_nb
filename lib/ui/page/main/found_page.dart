@@ -1,12 +1,15 @@
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flute_music_player/flute_music_player.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
 import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_nb/utils/timer_util.dart';
+
+import '../pyq_page.dart';
 
 /*
 *  发现
@@ -102,7 +105,14 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
               imageSize: 30,
-              isDivider: false),
+              isDivider: false,
+              onItemClick: (res){
+                Navigator.push(
+                    context,
+                    new CupertinoPageRoute<void>(
+                        builder: (ctx) => PYQPage()));
+                  return;
+              }),
           MoreWidgets.buildDivider(),
           MoreWidgets.defaultListViewItem(Icons.album, '资讯',
               textColor: Colors.black,
