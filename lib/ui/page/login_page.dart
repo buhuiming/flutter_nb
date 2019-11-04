@@ -90,6 +90,14 @@ class _LoginState extends State<Login> {
                           prefixIcon: Icon(Icons.phone_android),
                           contentPadding: EdgeInsets.fromLTRB(0, 6, 16, 6),
                           filled: true,
+//                          // 未获得焦点下划线设为灰色
+//                          enabledBorder: UnderlineInputBorder(
+//                            borderSide: BorderSide(color: Colors.grey),
+//                          ),
+//                          //获得焦点下划线设为蓝色
+//                          focusedBorder: UnderlineInputBorder(
+//                            borderSide: BorderSide(color: Colors.blue),
+//                          ),
                           fillColor: Colors.transparent,
                           border: InputBorder.none,
                           labelStyle: TextStyle(
@@ -132,6 +140,9 @@ class _LoginState extends State<Login> {
                             )),
                         onEditingComplete: () {
                           _checkInput(context, operation);
+                        },
+                        onSubmitted: (res) {
+                          //onEditingComplete和onSubmitted：这两个回调都是在输入框输入完成时触发
                         }),
                   ),
                   SizedBox(height: 15.0),
