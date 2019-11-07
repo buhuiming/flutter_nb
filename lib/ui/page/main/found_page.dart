@@ -3,6 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/ui/page/information_page.dart';
+import 'package:flutter_nb/ui/page/quality_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
@@ -45,7 +47,7 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
         IconButton(
             icon: Icon(Icons.album),
             onPressed: () {
-              if(ObjectUtil.isFastClick()){
+              if (ObjectUtil.isFastClick()) {
                 return;
               }
               if (progress > 0) {
@@ -58,7 +60,7 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
                 progress = 0;
                 return;
               }
-              _fixedPlayer =  new AudioPlayer();
+              _fixedPlayer = new AudioPlayer();
               _audioPlayer = new AudioCache(fixedPlayer: _fixedPlayer);
               _timerUtil = new TimerUtil(mTotalTime: 74 * 1000);
               _timerUtil.setOnTimerTickCallback((int tick) {
@@ -105,24 +107,33 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
               imageSize: 30,
-              isDivider: false,
-              onItemClick: (res){
-                Navigator.push(
-                    context,
-                    new CupertinoPageRoute<void>(
-                        builder: (ctx) => PYQPage()));
-                  return;
-              }),
+              isDivider: false, onItemClick: (res) {
+            Navigator.push(context,
+                new CupertinoPageRoute<void>(builder: (ctx) => PYQPage()));
+            return;
+          }),
           MoreWidgets.buildDivider(),
           MoreWidgets.defaultListViewItem(Icons.album, '资讯',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
-              imageSize: 30),
+              imageSize: 30, onItemClick: (res) {
+            Navigator.push(
+                context,
+                new CupertinoPageRoute<void>(
+                    builder: (ctx) => InformationPage()));
+            return;
+          }),
           MoreWidgets.defaultListViewItem(Icons.airport_shuttle, '干货',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
               imageSize: 30,
-              isDivider: false),
+              isDivider: false, onItemClick: (res) {
+            Navigator.push(
+                context,
+                new CupertinoPageRoute<void>(
+                    builder: (ctx) => QualityPage()));
+            return;
+          }),
           MoreWidgets.buildDivider(),
           MoreWidgets.defaultListViewItem(Icons.dashboard, '项目',
               textColor: Colors.black,

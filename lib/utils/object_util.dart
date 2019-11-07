@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -25,6 +26,13 @@ class ObjectUtil {
       return true;
     }
     return false;
+  }
+
+  /*
+  * 随机取一个颜色
+  */
+  static Color getRandomColor(){
+    return themeColorMap.values.toList()[Random.secure().nextInt(themeColorMap.length)];
   }
 
   /*
