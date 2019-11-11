@@ -13,6 +13,55 @@ class PYQPage extends StatefulWidget {
   }
 }
 
+class PYQPageState1 extends State<PYQPage> {
+  double _top = 0.0; //距顶部的偏移
+  double _left = 0.0; //距左边的偏移
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: MoreWidgets.buildAppBar(
+          context,
+          '朋友圈',
+          centerTitle: true,
+          elevation: 2.0,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+        ),
+        body: Stack(
+          children: <Widget>[
+            Positioned(
+              top: _top,
+              left: _left,
+              child: GestureDetector(
+                child: CircleAvatar(child: Text("A")),
+                //手指按下时会触发此回调
+                onPanDown: (DragDownDetails e) {
+                  //打印手指按下的位置(相对于屏幕)
+                  print("用户手指按下：${e.globalPosition}");
+                },
+                //手指滑动时会触发此回调
+                onPanUpdate: (DragUpdateDetails e) {
+                  //用户手指滑动时，更新偏移，重新构建
+                  setState(() {
+                    _left += e.delta.dx;
+                    _top += e.delta.dy;
+                  });
+                },
+                onPanEnd: (DragEndDetails e) {
+                  //打印滑动结束时在x、y轴上的速度
+                  print(e.velocity);
+                },
+              ),
+            )
+          ],
+        ));
+  }
+}
+
 class PYQPageState extends State<PYQPage> {
   TouchMovePainter painter;
   static final double _width =
@@ -70,9 +119,8 @@ class PYQPageState extends State<PYQPage> {
                 },
                 onPanUpdate: (detail) {
                   setState(() {
-                    moveOffset = detail.globalPosition -
-                        lastStartOffset +
-                        idleOffset;
+                    moveOffset =
+                        detail.globalPosition - lastStartOffset + idleOffset;
                     moveOffset =
                         Offset(max(0, moveOffset.dx), max(0, moveOffset.dy));
                   });

@@ -20,7 +20,8 @@ class DialogUtil {
         content: new Text(str),
         duration: Duration(milliseconds: 1500),
         backgroundColor: ObjectUtil.getThemeSwatchColor());
-    Scaffold.of(context).showSnackBar(snackBar);//Scaffold.of(context)是一个state，context对应的state必须的暴露的
+    Scaffold.of(context).showSnackBar(
+        snackBar); //Scaffold.of(context)是一个state，context对应的state必须的暴露的
   }
 
   //如果context在Scaffold之前，弹不出请用这个
@@ -44,7 +45,7 @@ class DialogUtil {
       OnItemClick rightClick}) {
     showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: true, //点击对话框barrier(遮罩)时是否关闭它
         builder: (BuildContext context) => new AlertDialog(
                 shape: RoundedRectangleBorder(
                     side: BorderSide.none,
