@@ -21,6 +21,8 @@
 
 ### 5、[关于Flutter沉浸式状态栏](https://www.jianshu.com/p/0a74b134705b)
 
+### 6、[Flutter优缺点](https://www.jianshu.com/p/b7f457e492c3)
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
