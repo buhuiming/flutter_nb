@@ -23,6 +23,8 @@
 
 ### 6、[Flutter优缺点](https://www.jianshu.com/p/b7f457e492c3)
 
+### 7、[Flutter开发规范](https://www.jianshu.com/p/31ba91db2154)
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
