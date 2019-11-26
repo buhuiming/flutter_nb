@@ -1,10 +1,11 @@
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/ui/page/information_page.dart';
+import 'package:flutter_nb/ui/page/project_page.dart';
 import 'package:flutter_nb/ui/page/quality_page.dart';
+import 'package:flutter_nb/ui/page/system_page.dart';
 import 'package:flutter_nb/ui/widget/loading_widget.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
 import 'package:flutter_nb/utils/notification_util.dart';
@@ -128,21 +129,27 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
               iconColor: ObjectUtil.getThemeSwatchColor(),
               imageSize: 30,
               isDivider: false, onItemClick: (res) {
-            Navigator.push(
-                context,
-                new CupertinoPageRoute<void>(
-                    builder: (ctx) => QualityPage()));
+            Navigator.push(context,
+                new CupertinoPageRoute<void>(builder: (ctx) => QualityPage()));
             return;
           }),
           MoreWidgets.buildDivider(),
           MoreWidgets.defaultListViewItem(Icons.dashboard, '项目',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
-              imageSize: 30),
+              imageSize: 30, onItemClick: (res) {
+            Navigator.push(context,
+                new CupertinoPageRoute<void>(builder: (ctx) => ProjectPage()));
+            return;
+          }),
           MoreWidgets.defaultListViewItem(Icons.description, '体系',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
-              imageSize: 30),
+              imageSize: 30, onItemClick: (res) {
+            Navigator.push(context,
+                new CupertinoPageRoute<void>(builder: (ctx) => SystemPage()));
+            return;
+          }),
           MoreWidgets.defaultListViewItem(Icons.insert_link, '小程序',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),

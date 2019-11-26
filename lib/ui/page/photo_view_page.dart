@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
@@ -43,7 +45,7 @@ class PhotoViewPage extends StatelessWidget {
   Widget _itemWidget(String url) {
     return PhotoView(
       imageProvider:
-      url.startsWith("http") ? NetworkImage(url) : AssetImage(url),
+      url.startsWith("http") ? NetworkImage(url) : FileImage(File(url)),
     );
   }
 }
