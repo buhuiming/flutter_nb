@@ -2,6 +2,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nb/ui/page/circular_progress.dart';
 import 'package:flutter_nb/ui/page/information_page.dart';
 import 'package:flutter_nb/ui/page/project_page.dart';
 import 'package:flutter_nb/ui/page/quality_page.dart';
@@ -153,8 +154,11 @@ class Found extends State<FoundPage> with AutomaticKeepAliveClientMixin {
           MoreWidgets.defaultListViewItem(Icons.insert_link, '小程序',
               textColor: Colors.black,
               iconColor: ObjectUtil.getThemeSwatchColor(),
-              imageSize: 30,
-              isDivider: false),
+              imageSize: 30, onItemClick: (res) {
+            Navigator.push(context,
+                new CupertinoPageRoute<void>(builder: (ctx) => GradientCircularProgressRoute()));
+            return;
+          }, isDivider: false),
         ],
       ),
     );
