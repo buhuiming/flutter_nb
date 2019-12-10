@@ -81,6 +81,13 @@ class SystemMessageState extends MessageState<SystemMessage>
         print('refresh data');
       });
     }
+    //可以使用以下
+//    // 如果APP不在在前台
+//    if (currentState == AppLifecycleState.inactive) {
+//
+//    } else if (currentState == AppLifecycleState.resumed) {
+//      // 在前台
+//    }
   }
 
   @override

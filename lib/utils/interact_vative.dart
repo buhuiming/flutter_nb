@@ -13,7 +13,8 @@ class InteractNative {
 
   static StreamSubscription streamSubscription;
 
-  static BehaviorSubject<Object> _appEvent = BehaviorSubject<Object>(); //APP内部通信对象
+  static BehaviorSubject<Object> _appEvent =
+      BehaviorSubject<Object>(); //APP内部通信对象
   static BehaviorSubject<MessageEntity> _messageEvent =
       BehaviorSubject<MessageEntity>(); //APP内部通信对象
 
@@ -38,7 +39,8 @@ class InteractNative {
     'getAllContacts': 'getAllContacts', //获取好友列表
     'addUserToBlackList': 'addUserToBlackList', //拉入黑名单
     'getBlackListUsernames': 'getBlackListUsernames', //黑名单列表
-    'getBlackListUsernamesFromDataBase': 'getBlackListUsernamesFromDataBase', //黑名单列表(数据库)
+    'getBlackListUsernamesFromDataBase':
+        'getBlackListUsernamesFromDataBase', //黑名单列表(数据库)
     'removeUserFromBlackList': 'removeUserFromBlackList', //移出黑名单
     'deleteContact': 'deleteContact', //删除好友
     'sendMessage': 'sendMessage', //发送聊天消息
@@ -51,13 +53,17 @@ class InteractNative {
   */
   static Future<dynamic> goNativeWithValue(String methodName,
       [Map<String, dynamic> map]) async {
-    if (null == map) {
-      dynamic future = await flutter_to_native.invokeMethod(methodName);
-      return future;
-    } else {
-      dynamic future = await flutter_to_native.invokeMethod(methodName, map);
-      return future;
+    dynamic future;
+    try {
+      if (null == map) {
+        future = await flutter_to_native.invokeMethod(methodName);
+      } else {
+        future = await flutter_to_native.invokeMethod(methodName, map);
+      }
+    } on PlatformException catch (e) {
+      future = false;
     }
+    return future;
   }
 
   /*
@@ -123,6 +129,7 @@ class InteractNative {
       _messageEvent.close();
     }
   }
+
   static void closeAppStream() {
     if (null != _appEvent) {
       _appEvent.close();
