@@ -5,6 +5,8 @@
            系统消息推送、系统消息列表、消息删除、数据库存储，通知栏提醒、加入黑名单、移出黑名单、
            删除好友、发送文本消息、发送图片（表情）消息、发送语音消息、发送小视频等
            
+## 本项目开发结束时，环信仍未推出flutter即时通讯sdk， 现今环信已经推出sdk，http://www.easemob.com/download/im
+           
 ## [急急急~ TextField上显示自定义表情，谁会？？？]()
 
 ## Getting Started（[效果图](https://github.com/buhuiming/flutter_nb/tree/master/screens/screen.md)，图片加载不出点[这里](https://www.jianshu.com/p/b1763de834a4)）
