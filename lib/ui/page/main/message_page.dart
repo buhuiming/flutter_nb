@@ -44,7 +44,7 @@ class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Observable.just(1).delay(new Duration(milliseconds: 1200)).listen((_) {
+    Future.delayed(Duration(milliseconds: 1200), () {
       NotificationUtil.instance().cancelMessage();
     });
     _popString.add('标记未读');
@@ -212,7 +212,9 @@ class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
     //initState后，未调用，所以初始化为resume，当APP进入后台，则为onPause；APP进入前台，为resume
     currentState = state;
     if (currentState == AppLifecycleState.resumed) {
-      setState(() {});
+      setState(() {
+
+      });
     }
   }
 

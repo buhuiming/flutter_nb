@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flukit/flukit.dart';
-import 'package:flute_music_player/flute_music_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,6 @@ import 'package:flutter_nb/utils/object_util.dart';
 import 'package:flutter_record/flutter_record.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
 
 /*
@@ -76,7 +76,8 @@ class ChatState extends MessageState<ChatPage> {
   FlutterRecord _flutterRecord;
   String _voiceFilePath = '';
   String _voiceFileName = '';
-  MusicFinder _audioPlayer;
+  AudioCache _audioPlayer;
+  AudioPlayer _fixedPlayer;
 
   @override
   void initState() {
@@ -85,7 +86,8 @@ class ChatState extends MessageState<ChatPage> {
     _alive = true;
     super.initState();
     _flutterRecord = FlutterRecord();
-    _audioPlayer = MusicFinder();
+    _fixedPlayer = new AudioPlayer();
+    _audioPlayer = new AudioCache(fixedPlayer: _fixedPlayer);
     MessageDataBase.get()
         .updateAllMessageTypeEntity(widget.senderAccount)
         .then((res) {
@@ -104,7 +106,7 @@ class ChatState extends MessageState<ChatPage> {
   void dispose() {
     // TODO: implement dispose
     _alive = false;
-    _audioPlayer.stop();
+    _fixedPlayer.stop();
     super.dispose();
     _first = false;
     DataBaseControl.removeCurrentPageName('ChatPage', chatName: widget.title);
@@ -873,7 +875,7 @@ class ChatState extends MessageState<ChatPage> {
         //点击了语音
         if (_entity.isVoicePlaying == true) {
           //正在播放，就停止播放
-          await _audioPlayer.stop();
+          await _fixedPlayer.stop();
           setState(() {
             _entity.isVoicePlaying = false;
           });
@@ -883,18 +885,16 @@ class ChatState extends MessageState<ChatPage> {
               other.isVoicePlaying = false;
               //停止其他正在播放的
             }
-            _audioPlayer.play(_entity.contentUrl,
+            _fixedPlayer.play(_entity.contentUrl,
                 isLocal:
                     (_entity.contentUrl.startsWith('http') ? false : true));
             _entity.isVoicePlaying = true;
           });
-          Observable.just(1)
-              .delay(new Duration(milliseconds: _entity.length))
-              .listen((_) {
+          Future.delayed(Duration(milliseconds: entity.length), () {
             if (_alive) {
               setState(() {
                 _entity.isVoicePlaying = false;
-                _audioPlayer.stop();
+                _fixedPlayer.stop();
               });
             }
           });

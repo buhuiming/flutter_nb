@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nb/resource/colors.dart';
 import 'package:flutter_nb/ui/widget/more_widgets.dart';
+import 'package:flutter_nb/utils/dialog_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -109,22 +110,27 @@ class WebViewState extends State<WebViewPage> {
                   ])
         ],
       ),
-      body: new WebView(
-        onWebViewCreated: (WebViewController webViewController) {
-          _webViewController = webViewController;
-          _webViewController.addListener(() {
-            int _scrollY = _webViewController.scrollY.toInt();
-            if (_scrollY < 480 && _isShowFloatBtn) {
-              _isShowFloatBtn = false;
-              setState(() {});
-            } else if (_scrollY > 480 && !_isShowFloatBtn) {
-              _isShowFloatBtn = true;
-              setState(() {});
-            }
-          });
+      body: InkWell(
+        onTap: (){
+          DialogUtil.buildToast('点击了');
         },
-        initialUrl: widget.url,
-        javascriptMode: JavascriptMode.unrestricted,
+        child: new WebView(
+          onWebViewCreated: (WebViewController webViewController) {
+            _webViewController = webViewController;
+            _webViewController.addListener(() {
+              int _scrollY = _webViewController.scrollY.toInt();
+              if (_scrollY < 480 && _isShowFloatBtn) {
+                _isShowFloatBtn = false;
+                setState(() {});
+              } else if (_scrollY > 480 && !_isShowFloatBtn) {
+                _isShowFloatBtn = true;
+                setState(() {});
+              }
+            });
+          },
+          initialUrl: widget.url,
+          javascriptMode: JavascriptMode.unrestricted,
+        ),
       ),
       floatingActionButton: _buildFloatingActionButton(),
     );

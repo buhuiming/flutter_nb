@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _checkPage() {
-    Observable.just(1).delay(new Duration(milliseconds: 1000)).listen((_) {
+    Future.delayed(Duration(milliseconds: 1000), () {
       if (SPUtil.getBool(Constants.KEY_LOGIN) != true) {
         isLogin = false;
       } else {
