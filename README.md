@@ -7,7 +7,7 @@
            
 ## 现今环信已经推出sdk，http://www.easemob.com/download/im
            
-## [急急急~ TextField上显示自定义表情，谁会？？？]()
+## [TextField上显示自定义表情](https://www.jianshu.com/p/e9ccc4d7e01f)
 
 ## Getting Started（[效果图](https://github.com/buhuiming/flutter_nb/tree/master/screens/screen.md)，图片加载不出点[这里](https://www.jianshu.com/p/b1763de834a4)）
 
